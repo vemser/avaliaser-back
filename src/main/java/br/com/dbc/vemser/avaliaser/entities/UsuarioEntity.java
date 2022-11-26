@@ -35,6 +35,10 @@ public class UsuarioEntity implements UserDetails {
     private char ativo;
 
     @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity")
+    private Set<AvaliacaoEntity> avaliacoes;
+
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USUARIO_CARGO",
             joinColumns = @JoinColumn(name = "ID_USUARIO"),

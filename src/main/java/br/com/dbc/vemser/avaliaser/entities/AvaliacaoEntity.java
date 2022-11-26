@@ -1,10 +1,8 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -39,8 +37,22 @@ public class AvaliacaoEntity {
     @Column(name = "Data_Criacao")
     private LocalDate dataCriacao;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_acompanhamento", referencedColumnName = "id_acompanhamento")
+    @ToString.Exclude
+    private AcompanhamentoEntity acompanhamentoEntity;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_aluno", referencedColumnName = "id_aluno")
+    @ToString.Exclude
+    private AlunoEntity alunoEntity;
 
-
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
+    @ToString.Exclude
+    private UsuarioEntity usuarioEntity;
 
 }

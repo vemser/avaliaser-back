@@ -1,10 +1,8 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 @Getter
@@ -27,5 +25,11 @@ public class FeedBackEntity {
 
     @Column(name = "id_aluno", insertable = false, updatable = false)
     private Integer idAluno;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_aluno", referencedColumnName = "id_aluno")
+    @ToString.Exclude
+    private AlunoEntity alunoEntity;
 
 }

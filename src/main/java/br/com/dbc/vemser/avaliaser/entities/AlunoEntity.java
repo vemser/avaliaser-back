@@ -2,12 +2,14 @@ package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,5 +37,14 @@ public class AlunoEntity {
 
     @Column(name = "ativo")
     private Ativo ativo;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity")
+    private Set<AvaliacaoEntity> avaliacoes;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity")
+    private Set<FeedBackEntity> feedBack;
+
 
 }
