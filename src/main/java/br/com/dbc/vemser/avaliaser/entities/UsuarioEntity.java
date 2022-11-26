@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,13 +33,14 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "foto")
     private Byte[] image;
     @Column(name = "ativo")
-    private char ativo;
+    @Enumerated(EnumType.STRING)
+    private Ativo ativo;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity")
     private Set<AvaliacaoEntity> avaliacoes;
 
-    @JsonIgnore
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USUARIO_CARGO",
             joinColumns = @JoinColumn(name = "ID_USUARIO"),
@@ -78,6 +80,6 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return ativo == 'S';
+        return ativo.ordinal() == 1;
     }
 }

@@ -15,13 +15,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService implements UserDetailsService {
 
-    private final UsuarioRepository usuarioService;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        Optional<UsuarioEntity> usuarioOptional = usuarioService.findByEmail(email);
-//        re
-        return null;
+        Optional<UsuarioEntity> usuario = usuarioRepository.findByEmail(email);
+        return usuario.orElseThrow(() -> new UsernameNotFoundException("Usuário inválido."));
     }
 
 

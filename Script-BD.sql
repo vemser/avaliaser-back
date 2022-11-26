@@ -16,10 +16,10 @@ CREATE TABLE CARGO (
   PRIMARY KEY (id_cargo)
 );
 
-CREATE TABLE "USUARIO" (
+CREATE TABLE USUARIO (
   id_usuario NUMBER NOT NULL,
-  nome VARCHAR2(255) NOT NULL,
-  email VARCHAR2(255) UNIQUE NOT NULL,
+  nome VARCHAR2(100) NOT NULL,
+  email VARCHAR2(100) UNIQUE NOT NULL,
   senha VARCHAR2(255) NOT NULL,
   foto BLOB,
   ativo CHAR(1) NOT NULL,
@@ -117,8 +117,17 @@ START WITH 1
 INCREMENT BY 1
 NOCACHE NOCYCLE;
 
+INSERT INTO CARGO(ID_CARGO, NOME)
+   VALUES (seq_cargo.nextval, 'ROLE_ADMIN');
+
+   INSERT INTO CARGO(ID_CARGO, NOME)
+   VALUES (seq_cargo.nextval, 'ROLE_GESTOR');
+
+   INSERT INTO CARGO(ID_CARGO, NOME)
+   VALUES (seq_cargo.nextval, 'ROLE_INSTRUTOR');
 
 
-
+INSERT INTO USUARIO(id_usuario, nome, email, ativo)
+VALUES (seq_usuario.nextval, 'Paulo Sergio Silva Junior', 'paulo.sergio@dbccompany.com.br', '$2a$10$8MDmeCJlZMcNJTzzXO7Xi.nHKJLlWajTJe6/8WKgVJbgOvIDXKGVa')
 
 

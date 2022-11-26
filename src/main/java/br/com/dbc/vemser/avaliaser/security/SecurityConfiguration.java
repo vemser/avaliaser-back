@@ -8,8 +8,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -27,10 +27,12 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
-                                //autorizações -> auth
-                                authz.antMatchers("/auth/fazer-login").permitAll()
+                        //autorizações -> auth
+                        authz.antMatchers("/auth").permitAll()
+                                .antMatchers("/auth/usuario-logado").hasAnyRole("ADMIN","GESTOR","INSTRUTOR")
+                                .anyRequest().authenticated()
                 );
-        // 1 - verifica token
+
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -57,7 +59,7 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new SCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
