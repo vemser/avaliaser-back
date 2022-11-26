@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,4 +18,14 @@ public class FeedBackEntity {
     @SequenceGenerator(name = "FEED_SEQUENCIA", sequenceName = "SEQ_FEEDBACK", allocationSize = 1)
     @Column(name = "id_feedback")
     private Integer idFeedBack;
+
+    @Column(name = "descricao")
+    private String descricao;
+
+    @Column(name = "tipo")
+    private Tipo tipo;
+
+    @Column(name = "id_aluno", insertable = false, updatable = false)
+    private Integer idAluno;
+
 }
