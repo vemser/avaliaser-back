@@ -28,6 +28,9 @@ public class TokenService {
     @Value("${jwt.expiration.login}")
     private Integer login;
 
+    @Value("${jwt.expiration.recuperacao}")
+    private Integer recuperacao;
+
     public String getToken(UsuarioEntity usuario){
 
         Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
@@ -35,6 +38,26 @@ public class TokenService {
 
         List<String> cargoUsuario = new ArrayList<>();
         cargoUsuario.add(usuario.getCargo().getAuthority());
+
+
+        String token = Jwts.builder()
+                .setIssuer("avaliaser")
+                .claim(Claims.ID, usuario.getIdUsuario().toString())
+                .claim(CARGO, cargoUsuario)
+                .setIssuedAt(dataAtual)
+                .setExpiration(dataExpiracao)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+
+        return token;
+    }
+
+    public String retornarTokenRecuperacaoSenha(UsuarioEntity usuario){
+        Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Date dataExpiracao = Date.from(LocalDateTime.now().plusMinutes(recuperacao).atZone(ZoneId.systemDefault()).toInstant());
+
+        List<String> cargoUsuario = new ArrayList<>();
+        cargoUsuario.add("ROLE_RECUPERACAO");
 
 
         String token = Jwts.builder()
