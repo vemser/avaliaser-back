@@ -11,4 +11,8 @@ public enum Cargo {
         this.descricao = descricao;
     }
 
+    public Integer getInteger(){
+        return this.descricao;
+    }
+
 }

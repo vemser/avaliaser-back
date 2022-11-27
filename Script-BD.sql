@@ -18,11 +18,15 @@ CREATE TABLE CARGO (
 
 CREATE TABLE USUARIO (
   id_usuario NUMBER NOT NULL,
+  id_cargo NUMBER NOT NULL,
   nome VARCHAR2(100) NOT NULL,
   email VARCHAR2(100) UNIQUE NOT NULL,
   senha VARCHAR2(255) NOT NULL,
   foto BLOB,
   ativo CHAR(1) NOT NULL,
+  CONSTRAINT FK_USUARIO_CARGO
+    FOREIGN KEY (id_cargo)
+      REFERENCES CARGO(id_cargo),
   PRIMARY KEY (id_usuario)
 );
 
@@ -75,16 +79,6 @@ CREATE TABLE AVALIACAO (
       REFERENCES USUARIO(id_usuario)
 );
 
-CREATE TABLE USUARIO_CARGO (
-  id_cargo NUMBER,
-  id_usuario NUMBER,
-  CONSTRAINT FK_CARGO_USUARIO
-    FOREIGN KEY (id_cargo)
-      REFERENCES CARGO(id_cargo),
-  CONSTRAINT FK_USUARIO_CARGO
-    FOREIGN KEY (id_usuario)
-      REFERENCES USUARIO(id_usuario)
-);
 
 
 CREATE SEQUENCE SEQ_USUARIO
@@ -127,7 +121,7 @@ INSERT INTO CARGO(ID_CARGO, NOME)
    VALUES (seq_cargo.nextval, 'ROLE_INSTRUTOR');
 
 
-INSERT INTO USUARIO(id_usuario, nome, email, ativo)
-VALUES (seq_usuario.nextval, 'Paulo Sergio Silva Junior', 'paulo.sergio@dbccompany.com.br', '$2a$10$8MDmeCJlZMcNJTzzXO7Xi.nHKJLlWajTJe6/8WKgVJbgOvIDXKGVa')
+INSERT INTO USUARIO(id_usuario, id_cargo, nome, email, senha, ativo)
+VALUES (seq_usuario.nextval, 1, 'Paulo Sergio Silva Junior', 'paulo.sergio@dbccompany.com.br', '$2a$10$8MDmeCJlZMcNJTzzXO7Xi.nHKJLlWajTJe6/8WKgVJbgOvIDXKGVa', 'S')
 
 

@@ -3,7 +3,10 @@ package br.com.dbc.vemser.avaliaser.controllers;
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -41,11 +44,15 @@ public class UsuarioController {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/novo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<UsuarioLogadoDTO> salvar(@RequestParam MultipartFile file,
-                               @RequestBody @Valid UsuarioCreateDTO usuario) throws IOException {
-
-        UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuario, file);
+    @PostMapping(value = "/cadastrar-usuario", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<UsuarioLogadoDTO> salvar(@RequestPart(value = "file") MultipartFile file,
+                                                   @RequestParam String nome,
+                                                   @RequestParam String email,
+                                                   @RequestParam String senha,
+                                                   @RequestParam Cargo cargo) throws IOException {
+        UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO(email,senha,nome,cargo);
+        UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, file);
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
+
 }
