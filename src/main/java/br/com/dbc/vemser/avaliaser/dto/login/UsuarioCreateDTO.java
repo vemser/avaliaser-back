@@ -16,5 +16,5 @@ public class UsuarioCreateDTO {
     private String email;
     private String senha;
     private String nome;
-    private Cargo cargo;
+
 }

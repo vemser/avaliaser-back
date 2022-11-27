@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Feedback")
 public class FeedBackEntity {
     @Id

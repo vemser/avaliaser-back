@@ -29,7 +29,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<String> loginUsuario(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<String> loginUsuario(@RequestBody LoginDTO loginDTO) {
         log.info("Logando usuário...");
         String token = usuarioService.loginUsuario(loginDTO);
         log.info("Usuário logado com sucesso.");
@@ -37,22 +37,24 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuario-logado")
-    public ResponseEntity<UsuarioLogadoDTO> getUsuarioLogado(){
+    public ResponseEntity<UsuarioLogadoDTO> getUsuarioLogado() {
         log.info("Retornando Usuário logado...");
         UsuarioLogadoDTO usuario = usuarioService.getUsuarioLogado();
         log.info("Retorno de usuário logado com sucesso.");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/cadastrar-usuario", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UsuarioLogadoDTO> salvar(@RequestPart(value = "file") MultipartFile file,
-                                                   @RequestParam String nome,
-                                                   @RequestParam String email,
-                                                   @RequestParam String senha,
-                                                   @RequestParam Cargo cargo) throws IOException {
-        UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO(email,senha,nome,cargo);
-        UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, file);
-        return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
+    @PostMapping(value = "/cadastrar-usuario")
+    public ResponseEntity<UsuarioLogadoDTO> cadastrarUsuario(@RequestParam Cargo cargo,
+                                                             @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws IOException{
+    UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, cargo);
+        return new ResponseEntity<>(usuarioLogadoDTO,HttpStatus.OK);
+}
+    @PutMapping(value = "/upload-imagem/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<UsuarioLogadoDTO> uploadImagem(@RequestPart(value = "file") MultipartFile file,
+                                                         @RequestParam(value = "idUsuario") Integer idUsuario) throws IOException {
+            UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.uploadImagem(file, idUsuario);
+            return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
 }
