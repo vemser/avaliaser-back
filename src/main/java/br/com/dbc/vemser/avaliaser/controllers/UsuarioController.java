@@ -37,7 +37,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuario-logado")
-    public ResponseEntity<UsuarioLogadoDTO> getUsuarioLogado() {
+    public ResponseEntity<UsuarioLogadoDTO> getUsuarioLogado() throws IOException {
         log.info("Retornando Usuário logado...");
         UsuarioLogadoDTO usuario = usuarioService.getUsuarioLogado();
         log.info("Retorno de usuário logado com sucesso.");
@@ -55,6 +55,31 @@ public class UsuarioController {
                                                          @RequestParam(value = "idUsuario") Integer idUsuario) throws IOException {
             UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.uploadImagem(file, idUsuario);
             return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
+    }
+
+    @PutMapping(value ="/atualizar-usuario-logado", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<UsuarioLogadoDTO> updateUsuario(@RequestPart(value = "file") MultipartFile file,
+                                                          @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws IOException {
+        return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(file, usuarioCreateDTO), HttpStatus.OK);
+    }
+
+    @PutMapping(value ="/atualizar-usuario-byId", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<UsuarioLogadoDTO> updateUsuarioById(@RequestPart(value = "file") MultipartFile file,
+                                                              @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO,
+                                                              @PathVariable Integer idUsuario ) throws IOException {
+        return new ResponseEntity<>(usuarioService.atualizarUsuario(file, usuarioCreateDTO, idUsuario), HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/delete-usuario-logado")
+    public void delete() throws IOException {
+        usuarioService.desativarUsuario();
+    }
+
+    @DeleteMapping("/delete-usuarioByID/{idUsuario}")
+    public ResponseEntity<Void> deletarUsuarioCliente(@PathVariable Integer idUsuario) throws IOException {
+        usuarioService.desativarUsuarioById(idUsuario);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

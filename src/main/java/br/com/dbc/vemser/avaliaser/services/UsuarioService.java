@@ -35,6 +35,24 @@ public class UsuarioService {
 
 
 
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
+    }
+
+    public UsuarioEntity getLoggedUser() throws IOException {
+        return findById(getIdLoggedUser());
+    }
+    public UsuarioEntity findByEmail(String email) throws IOException {
+        return usuarioRepository.findByEmail(email)
+                    .orElseThrow(() -> new IOException("USUARIO_NAO_ENCONTRADO"));
+    }
+
+    public UsuarioEntity findById(Integer idLoggedUser) throws IOException {
+        return usuarioRepository.findById(idLoggedUser)
+                .orElseThrow(() -> new IOException("USUARIO_NAO_ENCONTRADO"));
+    }
+
+
     public UsuarioLogadoDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo)
             throws IOException {
         CargoEntity cargoBanco = cargoService.findById(cargo.getInteger());
@@ -53,17 +71,34 @@ public class UsuarioService {
         return usuarioLogadoDTO;
     }
 
-    public UsuarioLogadoDTO uploadImagem(MultipartFile imagem, Integer id) throws IOException {
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(id).get();
+    public UsuarioLogadoDTO atualizarUsuarioLogado(MultipartFile imagem, UsuarioCreateDTO usuarioCreateDTO) throws  IOException {
+        UsuarioEntity usuarioRecuperado = getLoggedUser();
+        return atualizarUsuario(imagem, usuarioCreateDTO, usuarioRecuperado.getIdUsuario());
+    }
 
-        byte[] imagemBytes = imagem.getBytes();
+    public UsuarioLogadoDTO atualizarUsuario(MultipartFile imagem, UsuarioCreateDTO usuarioCreateDTO, Integer id) throws IOException {
+        UsuarioEntity usuarioEntity = findById(id);
 
-        usuarioEntity.setImage(ImageUtil.compressImage(imagemBytes));
-
+        usuarioEntity.setNome(usuarioCreateDTO.getNome());
+        usuarioEntity.setEmail(usuarioCreateDTO.getEmail());
+        usuarioEntity.setImage(getImagemEmBytes(imagem));
         UsuarioLogadoDTO usuarioLogadoDTO =
                 objectMapper.convertValue(usuarioRepository.save(usuarioEntity),UsuarioLogadoDTO.class);
-
         return usuarioLogadoDTO;
+    }
+
+    public UsuarioLogadoDTO uploadImagem(MultipartFile imagem, Integer id) throws IOException {
+        UsuarioEntity usuarioEntity = usuarioRepository.findById(id).get();
+        usuarioEntity.setImage(getImagemEmBytes(imagem));
+        UsuarioLogadoDTO usuarioLogadoDTO =
+                objectMapper.convertValue(usuarioRepository.save(usuarioEntity),UsuarioLogadoDTO.class);
+        return usuarioLogadoDTO;
+    }
+
+    private static byte[] getImagemEmBytes(MultipartFile imagem) throws IOException {
+        byte[] imagemBytes = imagem.getBytes();
+        byte[] imagemRecebida = ImageUtil.compressImage(imagemBytes);
+        return imagemRecebida;
     }
 
 
@@ -81,11 +116,10 @@ public class UsuarioService {
         return tokenService.getToken(usuario);
     }
 
-    public UsuarioLogadoDTO getUsuarioLogado(){
-        String idUsuario = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
-        Integer idUsuarioLogado = Integer.valueOf(idUsuario);
-        UsuarioEntity usuario = usuarioRepository.findById(idUsuarioLogado).get();
+    public UsuarioLogadoDTO getUsuarioLogado() throws IOException {
+
+        UsuarioEntity usuario = getLoggedUser();
         UsuarioLogadoDTO usuarioLogado = new UsuarioLogadoDTO();
         usuarioLogado.setIdUsuario(usuario.getIdUsuario());
         usuarioLogado.setNome(usuario.getNome());
@@ -93,5 +127,18 @@ public class UsuarioService {
         usuarioLogado.setCargo(usuario.getCargo().getNome());
         return usuarioLogado;
     }
+
+    public void desativarUsuario() throws IOException {
+        UsuarioEntity usuario = getLoggedUser();
+        usuario.setAtivo(Ativo.N);
+        usuarioRepository.save(usuario);
+    }
+
+    public void desativarUsuarioById(Integer id) throws IOException {
+        UsuarioEntity usuario = findById(id);
+        usuario.setAtivo(Ativo.N);
+        usuarioRepository.save(usuario);
+    }
+
 
 }
