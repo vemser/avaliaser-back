@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,8 +29,10 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
                         //autorizações -> auth
-                        authz.antMatchers("/auth").permitAll()
+                        authz.antMatchers("/auth/login").permitAll()
                                 .antMatchers("/auth/usuario-logado").hasAnyRole("ADMIN","GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.PUT,"/**").hasRole("ADMIN")
+                                .antMatchers("/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
 

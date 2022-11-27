@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +33,6 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
-
 
 
     public Integer getIdLoggedUser() {
@@ -47,11 +47,26 @@ public class UsuarioService {
                     .orElseThrow(() -> new IOException("USUARIO_NAO_ENCONTRADO"));
     }
 
-    public UsuarioEntity findById(Integer idLoggedUser) throws IOException {
-        return usuarioRepository.findById(idLoggedUser)
+    public UsuarioEntity findById(Integer id) throws IOException {
+        return usuarioRepository.findById(id)
                 .orElseThrow(() -> new IOException("USUARIO_NAO_ENCONTRADO"));
     }
 
+    public UsuarioLogadoDTO findByIdDTO(Integer id) throws IOException {
+        UsuarioEntity usuario = findById(id);
+        return converterUsuarioLogado(usuario);
+    }
+
+    public List<UsuarioLogadoDTO> findAll() throws IOException {
+        List<UsuarioEntity> usuarioEntities = usuarioRepository.findAll();
+        return usuarioEntities.stream()
+                .map(this::converterUsuarioLogado).toList();
+    }
+
+    public UsuarioLogadoDTO converterUsuarioLogado(UsuarioEntity usuarioEntity){
+        UsuarioLogadoDTO usuarioLogadoDTO = objectMapper.convertValue(usuarioEntity, UsuarioLogadoDTO.class);
+        return usuarioLogadoDTO;
+    }
 
     public UsuarioLogadoDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo)
             throws IOException {
@@ -71,10 +86,10 @@ public class UsuarioService {
         return usuarioLogadoDTO;
     }
 
-    public UsuarioLogadoDTO atualizarUsuarioLogado(MultipartFile imagem, UsuarioCreateDTO usuarioCreateDTO) throws  IOException {
-        UsuarioEntity usuarioRecuperado = getLoggedUser();
-        return atualizarUsuario(imagem, usuarioCreateDTO, usuarioRecuperado.getIdUsuario());
-    }
+//    public UsuarioLogadoDTO atualizarUsuarioLogado(MultipartFile imagem, UsuarioCreateDTO usuarioCreateDTO) throws  IOException {
+//        UsuarioEntity usuarioRecuperado = getLoggedUser();
+//        return atualizarUsuario(imagem, usuarioCreateDTO, usuarioRecuperado.getIdUsuario());
+//    }
 
     public UsuarioLogadoDTO atualizarUsuario(MultipartFile imagem, UsuarioCreateDTO usuarioCreateDTO, Integer id) throws IOException {
         UsuarioEntity usuarioEntity = findById(id);
@@ -86,7 +101,6 @@ public class UsuarioService {
                 objectMapper.convertValue(usuarioRepository.save(usuarioEntity),UsuarioLogadoDTO.class);
         return usuarioLogadoDTO;
     }
-
     public UsuarioLogadoDTO uploadImagem(MultipartFile imagem, Integer id) throws IOException {
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id).get();
         usuarioEntity.setImage(getImagemEmBytes(imagem));
@@ -94,14 +108,11 @@ public class UsuarioService {
                 objectMapper.convertValue(usuarioRepository.save(usuarioEntity),UsuarioLogadoDTO.class);
         return usuarioLogadoDTO;
     }
-
     private static byte[] getImagemEmBytes(MultipartFile imagem) throws IOException {
         byte[] imagemBytes = imagem.getBytes();
         byte[] imagemRecebida = ImageUtil.compressImage(imagemBytes);
         return imagemRecebida;
     }
-
-
     public String loginUsuario(LoginDTO loginDTO){
         UsernamePasswordAuthenticationToken userPassAuthToken =
                 new UsernamePasswordAuthenticationToken(
@@ -115,8 +126,6 @@ public class UsuarioService {
         UsuarioEntity usuario = (UsuarioEntity) principal;
         return tokenService.getToken(usuario);
     }
-
-
     public UsuarioLogadoDTO getUsuarioLogado() throws IOException {
 
         UsuarioEntity usuario = getLoggedUser();
@@ -128,17 +137,9 @@ public class UsuarioService {
         return usuarioLogado;
     }
 
-    public void desativarUsuario() throws IOException {
-        UsuarioEntity usuario = getLoggedUser();
-        usuario.setAtivo(Ativo.N);
-        usuarioRepository.save(usuario);
-    }
-
     public void desativarUsuarioById(Integer id) throws IOException {
         UsuarioEntity usuario = findById(id);
         usuario.setAtivo(Ativo.N);
         usuarioRepository.save(usuario);
     }
-
-
 }

@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.controllers;
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -28,12 +30,20 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @PostMapping
-    public ResponseEntity<String> loginUsuario(@RequestBody LoginDTO loginDTO) {
-        log.info("Logando usuário...");
-        String token = usuarioService.loginUsuario(loginDTO);
-        log.info("Usuário logado com sucesso.");
-        return new ResponseEntity<>(token, HttpStatus.OK);
+
+
+    @GetMapping("/listar-usuarios")
+    public ResponseEntity<List<UsuarioLogadoDTO>> listarUsuario() throws IOException {
+        log.info("Retornando Usuário logado...");
+        List<UsuarioLogadoDTO> usuario = usuarioService.findAll();
+        log.info("Retorno de usuário logado com sucesso.");
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
+    @GetMapping("/usuarioById/{idUsuario}")
+    public ResponseEntity<UsuarioLogadoDTO> getUsuarioById(@PathVariable Integer idUsuario) throws IOException {
+        UsuarioLogadoDTO usuario = usuarioService.findByIdDTO(idUsuario);
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @GetMapping("/usuario-logado")
@@ -42,6 +52,14 @@ public class UsuarioController {
         UsuarioLogadoDTO usuario = usuarioService.getUsuarioLogado();
         log.info("Retorno de usuário logado com sucesso.");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUsuario(@RequestBody LoginDTO loginDTO) {
+        log.info("Logando usuário...");
+        String token = usuarioService.loginUsuario(loginDTO);
+        log.info("Usuário logado com sucesso.");
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @PostMapping(value = "/cadastrar-usuario")
@@ -57,23 +75,19 @@ public class UsuarioController {
             return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value ="/atualizar-usuario-logado", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UsuarioLogadoDTO> updateUsuario(@RequestPart(value = "file") MultipartFile file,
-                                                          @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws IOException {
-        return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(file, usuarioCreateDTO), HttpStatus.OK);
-    }
+//    @PutMapping(value ="/atualizar-usuario-logado", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+//    public ResponseEntity<UsuarioLogadoDTO> updateUsuario(@RequestPart(value = "file") MultipartFile file,
+//                                                          @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws IOException {
+//        return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(file, usuarioCreateDTO), HttpStatus.OK);
+//    }
 
-    @PutMapping(value ="/atualizar-usuario-byId", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(value ="/atualizar-usuario-byId/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UsuarioLogadoDTO> updateUsuarioById(@RequestPart(value = "file") MultipartFile file,
-                                                              @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO,
+                                                              @RequestParam String nome,
+                                                              @RequestParam String email,
                                                               @PathVariable Integer idUsuario ) throws IOException {
+        UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO(email, null, nome);
         return new ResponseEntity<>(usuarioService.atualizarUsuario(file, usuarioCreateDTO, idUsuario), HttpStatus.OK);
-    }
-
-
-    @DeleteMapping("/delete-usuario-logado")
-    public void delete() throws IOException {
-        usuarioService.desativarUsuario();
     }
 
     @DeleteMapping("/delete-usuarioByID/{idUsuario}")
