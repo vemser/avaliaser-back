@@ -8,6 +8,6 @@ import java.util.List;
 public class UsuarioLogadoDTO {
 
     private String nome;
-//    private byte[] foto;
+    private byte[] foto;
     private String cargo;
 }

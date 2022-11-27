@@ -1,8 +1,11 @@
 package br.com.dbc.vemser.avaliaser.services;
 
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
 import br.com.dbc.vemser.avaliaser.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,10 +15,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -23,9 +33,33 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final AuthenticationManager authenticationManager;
+    private final CargoService cargoService;
+    private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
 
+
+
+    public UsuarioLogadoDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, MultipartFile imagem) throws IOException {
+        CargoEntity cargo = cargoService.findById(usuarioCreateDTO.getCargo().ordinal());
+        String senhaEncode = passwordEncoder.encode(usuarioCreateDTO.getSenha());
+
+        //OBTEM A IMAGEM E TRANSFORMA EM BYTES[]
+
+        byte[] imagemCapturada = imagem.getBytes();//Converte ByteArrayOutputStream para byte[]
+
+        UsuarioEntity usuarioEntity = new UsuarioEntity();
+        usuarioEntity.setEmail(usuarioCreateDTO.getEmail());
+        usuarioEntity.setSenha(senhaEncode);
+        usuarioEntity.setCargo(cargo);
+        usuarioEntity.setImage(imagemCapturada);
+        usuarioEntity.setAtivo(Ativo.S);
+        usuarioRepository.save(usuarioEntity);
+
+        UsuarioLogadoDTO usuarioLogadoDTO = objectMapper.convertValue(usuarioEntity, UsuarioLogadoDTO.class);
+
+        return usuarioLogadoDTO;
+    }
     public String loginUsuario(LoginDTO loginDTO){
         UsernamePasswordAuthenticationToken userPassAuthToken =
                 new UsernamePasswordAuthenticationToken(

@@ -1,17 +1,25 @@
 package br.com.dbc.vemser.avaliaser.controllers;
 
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.IOException;
+
+@Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 @RequestMapping("/auth")
 public class UsuarioController {
 
@@ -31,5 +39,13 @@ public class UsuarioController {
         UsuarioLogadoDTO usuario = usuarioService.getUsuarioLogado();
         log.info("Retorno de usuário logado com sucesso.");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/novo", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<UsuarioLogadoDTO> salvar(@RequestParam MultipartFile file,
+                               @RequestBody @Valid UsuarioCreateDTO usuario) throws IOException {
+
+        UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuario, file);
+        return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 }
