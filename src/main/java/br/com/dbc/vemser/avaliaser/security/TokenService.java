@@ -1,6 +1,5 @@
 package br.com.dbc.vemser.avaliaser.security;
 
-import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,14 +33,14 @@ public class TokenService {
         Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         Date dataExpiracao = Date.from(LocalDateTime.now().plusDays(login).atZone(ZoneId.systemDefault()).toInstant());
 
-        List<String> cargosUsuario = usuario.getCargos().stream()
-                .map(CargoEntity::getAuthority)
-                .toList();
+        List<String> cargoUsuario = new ArrayList<>();
+        cargoUsuario.add(usuario.getCargo().getAuthority());
+
 
         String token = Jwts.builder()
                 .setIssuer("avaliaser")
                 .claim(Claims.ID, usuario.getIdUsuario().toString())
-                .claim(CARGO, cargosUsuario)
+                .claim(CARGO, cargoUsuario)
                 .setIssuedAt(dataAtual)
                 .setExpiration(dataExpiracao)
                 .signWith(SignatureAlgorithm.HS256, secret)

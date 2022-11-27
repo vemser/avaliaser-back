@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,19 +17,13 @@ public class CargoEntity implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CARGO_SEQUENCIA")
     @SequenceGenerator(name = "CARGO_SEQUENCIA", sequenceName = "SEQ_CARGO", allocationSize = 1)
-    @Column(name = "ID_CARGO")
+    @Column(name = "id_cargo")
     private Integer idCargo;
-
     @Column(name = "NOME")
     private String nome;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "USUARIO_CARGO",
-            joinColumns = @JoinColumn(name = "ID_CARGO"),
-            inverseJoinColumns = @JoinColumn(name = "ID_USUARIO")
-    )
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cargo")
     private Set<UsuarioEntity> usuarios;
 
     @Override

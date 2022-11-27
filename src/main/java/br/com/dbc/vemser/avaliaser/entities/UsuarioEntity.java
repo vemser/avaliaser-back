@@ -2,12 +2,14 @@ package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -22,6 +24,10 @@ public class UsuarioEntity implements UserDetails {
     @SequenceGenerator(name = "USUARIO_SEQUENCIA", sequenceName = "seq_usuario", allocationSize = 1)
     @Column(name = "id_usuario")
     private Integer idUsuario;
+
+    @Column(name = "id_cargo", insertable = false, updatable = false)
+    private Integer idCargo;
+
     @Column(name = "nome")
     private String nome;
     @Column(name = "email")
@@ -31,7 +37,7 @@ public class UsuarioEntity implements UserDetails {
 
     @Lob
     @Column(name = "foto")
-    private Byte[] image;
+    private byte[] image;
     @Column(name = "ativo")
     @Enumerated(EnumType.STRING)
     private Ativo ativo;
@@ -39,18 +45,17 @@ public class UsuarioEntity implements UserDetails {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity")
     private Set<AvaliacaoEntity> avaliacoes;
-
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "USUARIO_CARGO",
-            joinColumns = @JoinColumn(name = "ID_USUARIO"),
-            inverseJoinColumns = @JoinColumn(name = "ID_CARGO"))
-    private Set<CargoEntity> cargos;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cargo", referencedColumnName = "id_cargo")
+    private CargoEntity cargo;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return cargos; // por enquanto
+        Set<CargoEntity> cargos = new HashSet<>();
+        cargos.add(cargo);
+        return cargos;
     }
 
     @Override

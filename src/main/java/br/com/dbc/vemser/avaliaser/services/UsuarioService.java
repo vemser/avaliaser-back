@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
 import br.com.dbc.vemser.avaliaser.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +24,6 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
-
     private final ObjectMapper objectMapper;
 
     public String loginUsuario(LoginDTO loginDTO){
@@ -45,11 +45,10 @@ public class UsuarioService {
 
         Integer idUsuarioLogado = Integer.valueOf(idUsuario);
         UsuarioEntity usuario = usuarioRepository.findById(idUsuarioLogado).get();
-        List<String> cargos = usuario.getCargos().stream()
-                .map(cargo -> cargo.getNome())
-                .toList();
-        UsuarioLogadoDTO usuarioLogado = objectMapper.convertValue(usuario, UsuarioLogadoDTO.class);
-        usuarioLogado.setCargo(cargos.get(0));
+        UsuarioLogadoDTO usuarioLogado = new UsuarioLogadoDTO();
+        usuarioLogado.setNome(usuario.getNome());
+//        usuarioLogado.setFoto(null);
+        usuarioLogado.setCargo(usuario.getCargo().getNome());
         return usuarioLogado;
     }
 
