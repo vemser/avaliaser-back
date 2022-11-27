@@ -1,17 +1,18 @@
 package br.com.dbc.vemser.avaliaser.services;
 
-import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.*;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
 import br.com.dbc.vemser.avaliaser.security.TokenService;
+import br.com.dbc.vemser.avaliaser.services.enums.TipoEmails;
 import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.hibernate.id.UUIDGenerator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +35,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
 
 
     public Integer getIdLoggedUser() {
@@ -68,10 +71,13 @@ public class UsuarioService {
         return usuarioLogadoDTO;
     }
 
-    public UsuarioLogadoDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo)
+    public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo)
             throws IOException {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()-_=+[{]}\\|;:,./?";
+        String senha = RandomStringUtils.random( 8, characters );
+
         CargoEntity cargoBanco = cargoService.findById(cargo.getInteger());
-        String senhaEncode = passwordEncoder.encode(usuarioCreateDTO.getSenha());
+        String senhaEncode = passwordEncoder.encode(senha);
 
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         usuarioEntity.setNome(usuarioCreateDTO.getNome());
@@ -81,9 +87,12 @@ public class UsuarioService {
         usuarioEntity.setAtivo(Ativo.S);
         usuarioRepository.save(usuarioEntity);
 
-        UsuarioLogadoDTO usuarioLogadoDTO = objectMapper.convertValue(usuarioEntity, UsuarioLogadoDTO.class);
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO(usuarioEntity.getEmail(),usuarioEntity.getNome(), senha);
+        emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
 
-        return usuarioLogadoDTO;
+
+        return usuarioDTO;
     }
 
 //    public UsuarioLogadoDTO atualizarUsuarioLogado(MultipartFile imagem, UsuarioCreateDTO usuarioCreateDTO) throws  IOException {

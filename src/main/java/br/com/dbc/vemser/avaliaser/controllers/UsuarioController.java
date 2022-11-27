@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.controllers;
 
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
@@ -63,9 +64,9 @@ public class UsuarioController {
     }
 
     @PostMapping(value = "/cadastrar-usuario")
-    public ResponseEntity<UsuarioLogadoDTO> cadastrarUsuario(@RequestParam Cargo cargo,
+    public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestParam Cargo cargo,
                                                              @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws IOException{
-    UsuarioLogadoDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, cargo);
+    UsuarioDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, cargo);
         return new ResponseEntity<>(usuarioLogadoDTO,HttpStatus.OK);
 }
     @PutMapping(value = "/upload-imagem/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -86,7 +87,7 @@ public class UsuarioController {
                                                               @RequestParam String nome,
                                                               @RequestParam String email,
                                                               @PathVariable Integer idUsuario ) throws IOException {
-        UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO(email, null, nome);
+        UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO(email, nome);
         return new ResponseEntity<>(usuarioService.atualizarUsuario(file, usuarioCreateDTO, idUsuario), HttpStatus.OK);
     }
 

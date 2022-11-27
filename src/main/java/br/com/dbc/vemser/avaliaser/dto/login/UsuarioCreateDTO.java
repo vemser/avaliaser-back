@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UsuarioCreateDTO {
 
     private String email;
-    private String senha;
     private String nome;
 
 }
