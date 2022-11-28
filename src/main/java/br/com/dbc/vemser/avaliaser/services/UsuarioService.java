@@ -133,6 +133,7 @@ public class UsuarioService {
     private Integer getIdLoggedUser() {
         return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
     }
+    
 
 
     private UsuarioDTO converterUsuarioDTO(UsuarioEntity usuarioEntity) {
