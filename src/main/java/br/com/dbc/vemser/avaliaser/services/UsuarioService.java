@@ -112,7 +112,7 @@ public class UsuarioService {
 
     public void alterarSenhaPorRecuperacao(String senha) throws RegraDeNegocioException {
         Integer idUsuario = getUsuarioLogado().getIdUsuario();
-        converterUsuarioDTO(alterarSenha(senha, idUsuario));
+        alterarSenha(senha, idUsuario);
     }
 
 
@@ -121,7 +121,6 @@ public class UsuarioService {
         String token = tokenService.retornarTokenRecuperacaoSenha(usuarioEntity);
         UsuarioRecuperacaoDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioRecuperacaoDTO.class);
         emailService.sendEmailRecuperacao(usuarioDTO, TipoEmails.REC_SENHA, token);
-        usuarioRepository.save(usuarioEntity);
     }
 
     public UsuarioEntity alterarSenha(String senha, Integer idUsuario) throws RegraDeNegocioException {
@@ -136,10 +135,10 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("USUARIO_NAO_ENCONTRADO"));
     }
 
-    public UsuarioDTO alterarImagemUsuarioLogado(MultipartFile file) throws RegraDeNegocioException {
-        UsuarioLogadoDTO usuario = getUsuarioLogado();
-        return uploadImagem(file, usuario.getIdUsuario());
-    }
+//    public UsuarioDTO alterarImagemUsuarioLogado(MultipartFile file) throws RegraDeNegocioException {
+//        UsuarioLogadoDTO usuario = getUsuarioLogado();
+//        return uploadImagem(file, usuario.getIdUsuario());
+//    }
 
     public UsuarioDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id).get();

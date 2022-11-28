@@ -3,10 +3,12 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 
+import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
@@ -26,6 +28,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,8 +41,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -177,19 +181,89 @@ public class UsuarioServiceTest {
 
     }
 
-//    @Test
-//    public void deveTestarFindAllComSucesso(){
-//        List<UsuarioDTO> lista = new ArrayList<>();
-//        UsuarioDTO usuarioDTO= new UsuarioDTO();
-//        lista.add(usuarioDTO);
-//        List<UsuarioEntity> usuarioEntityList = new ArrayList<>();
-//        usuarioEntityList.add(UsuarioFactory.getUsuarioEntity());
-//        when(usuarioRepository.findAll()).thenReturn(usuarioEntityList);
-//
-//        List<UsuarioDTO> listaRetorno = usuarioService.findAll();
-//
-//        assertEquals(1,listaRetorno.size());
-//    }
+    @Test
+    public void DeveListarUsuarioPaginadoCorretamente() {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+
+        UsuarioEntity usuario = getUsuarioEntity();
+        PageImpl<UsuarioEntity> listaPaginada = new PageImpl<>(List.of(usuario), PageRequest.of(numeroPagina, tamanho), 0);
+
+        when(usuarioRepository.findAll(any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<UsuarioDTO> usuarioDTOPageDTO = usuarioService.listUsuarioPaginado(numeroPagina, tamanho);
+
+        assertNotNull(usuarioDTOPageDTO);
+        assertEquals(1, usuarioDTOPageDTO.getTotalElementos());
+        assertEquals(1, usuarioDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), usuarioDTOPageDTO.getPagina());
+    }
+
+
+    @Test
+    public void deveAlterarSenhaCorretamente() throws RegraDeNegocioException {
+        final String senhaNova = "1234admin";
+
+        UsuarioEntity usuario = getUsuarioEntity();
+
+        UsuarioEntity usuarioEsperado = getUsuarioEntity();
+        usuarioEsperado.setSenha(senhaNova);
+
+        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
+        when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
+        UsuarioEntity usuarioAtualizado = usuarioService.alterarSenha(senhaNova, usuario.getIdUsuario());
+
+        assertEquals(senhaNova, usuarioAtualizado.getSenha());
+    }
+
+    @Test
+    public void deveAlterarSenhaEmRecuperacaoCorretamente() throws RegraDeNegocioException {
+        final String senhaNova = "1234admin";
+
+        UsuarioEntity usuario = getUsuarioEntity();
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+
+        UsuarioEntity usuarioEsperado = getUsuarioEntity();
+        usuarioEsperado.setSenha(senhaNova);
+
+        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
+        when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
+
+        usuarioService.alterarSenhaPorRecuperacao(senhaNova);
+
+        assertEquals(senhaNova, usuarioEsperado.getSenha());
+    }
+
+    @Test
+    public void deveMudarSenhaCorretamenteUsuarioLogado() throws RegraDeNegocioException {
+
+        final String senhaAtinga = "admin";
+        final String senhaNova = "1234admin";
+
+        UsuarioEntity usuario = getUsuarioEntity();
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+        usuario.setSenha(senhaAtinga);
+        UsuarioEntity usuarioEsperado = getUsuarioEntity();
+        usuarioEsperado.setSenha(senhaNova);
+
+        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
+        when(passwordEncoder.matches(senhaAtinga, usuario.getSenha())).thenReturn(true);
+        when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
+        usuarioService.alterarSenhaUsuarioLogado(senhaAtinga, senhaNova);
+    }
+
+    @Test
+    public void deveRecuperaSenhaCorretamente() throws RegraDeNegocioException {
+        final String email = "test@demo.com.br";
+        UsuarioEntity usuario = getUsuarioEntity();
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(Optional.of(usuario));
+        usuarioService.recuperarSenha(email);
+        verify(tokenService).retornarTokenRecuperacaoSenha(any());
+        verify(emailService).sendEmailRecuperacao(any(), any(),any());
+    }
+
     @Test
     public void deveTestarAtualizarUsuarioComSucesso() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
@@ -220,4 +294,31 @@ public class UsuarioServiceTest {
                 null,
                 Collections.emptyList());
     }
+
+    private static UsuarioEntity getUsuarioEntity() {
+        final String email = "test@demo.com.br";
+        final String nome = "Teste Nome";
+        final String senha = "123";
+        final CargoEntity cargo = getCargo();
+
+        UsuarioEntity usuario = new UsuarioEntity();
+        usuario.setIdUsuario(1);
+        usuario.setNome(nome);
+        usuario.setEmail(email);
+        usuario.setCargo(cargo);
+        usuario.setAtivo(Ativo.S);
+        usuario.setSenha(senha);
+
+        return usuario;
+    }
+
+    private static CargoEntity getCargo() {
+
+        CargoEntity cargo = new CargoEntity();
+        cargo.setIdCargo(2);
+        cargo.setNome(Cargo.GESTOR.name());
+
+        return cargo;
+    }
 }
+
