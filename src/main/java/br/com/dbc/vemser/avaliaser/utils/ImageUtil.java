@@ -6,7 +6,7 @@ import java.util.zip.Inflater;
 
 public class ImageUtil {
 
-    public static byte[] compressImage(byte[] imageBytes){
+    public static byte[] compressImage(byte[] imageBytes) {
 
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
@@ -14,30 +14,30 @@ public class ImageUtil {
         deflater.finish();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(imageBytes.length);
-        byte[] tmp = new byte[10*1024];
-        while (!deflater.finished()){
+        byte[] tmp = new byte[10 * 1024];
+        while (!deflater.finished()) {
             int size = deflater.deflate(tmp);
             outputStream.write(tmp, 0, size);
         }
-        try{
+        try {
             outputStream.close();
-        }catch (Exception e){
+        } catch (Exception e) {
         }
         return outputStream.toByteArray();
     }
 
-    public static byte[] decompressImage(byte[] imageBytes){
+    public static byte[] decompressImage(byte[] imageBytes) {
         Inflater inflater = new Inflater();
         inflater.setInput(imageBytes);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(imageBytes.length);
-        byte[] tmp = new byte[10*1024];
-        try{
-            while (!inflater.finished()){
+        byte[] tmp = new byte[10 * 1024];
+        try {
+            while (!inflater.finished()) {
                 int count = inflater.inflate(tmp);
                 outputStream.write(tmp, 0, count);
             }
             outputStream.close();
-            }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return outputStream.toByteArray();

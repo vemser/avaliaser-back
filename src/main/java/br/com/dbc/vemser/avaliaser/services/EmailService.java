@@ -1,7 +1,6 @@
 package br.com.dbc.vemser.avaliaser.services;
 
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioRecuperacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.services.enums.TipoEmails;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -68,6 +67,33 @@ public class EmailService {
         }
     }
 
+    public void sendEmailRecuperacao(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails, String token) {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(usuarioDTO.getEmail());
+            mimeMessageHelper.setSubject(tipoEmails.getDescricao());
+            mimeMessageHelper.setText(geContentFromTemplateRecuperacao(usuarioDTO, tipoEmails, token), true);
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String geContentFromTemplateRecuperacao(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails, String token) throws IOException, TemplateException {
+        Map<String, Object> dados = new HashMap<>();
+        dados.put("nome", usuarioDTO.getNome());
+        dados.put("email", from);
+        dados.put("texto1", "Solicitação de recuperação de senha feita com sucesso!");
+        dados.put("texto2", "Seu token de recuperação é: " + token);
+        dados.put("texto3", "Após acessar o link acima, basta realizar o cadastro de sua nova senha!");
+
+        Template template = fmConfiguration.getTemplate("email-template.html");
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+        return html;
+    }
+
     public String geContentFromTemplate(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", usuarioDTO.getNome());
@@ -76,7 +102,7 @@ public class EmailService {
         if (tipoEmails.equals(TipoEmails.CREATE)) {
             dados.put("texto1", "Estamos felizes em ter você em nosso sistema!");
             dados.put("texto2", "Seu cadastro foi realizado com sucesso, seu Login é: " + usuarioDTO.getEmail() + "!");
-            dados.put("texto3", "Sua senha de acesso temporária é: " + usuarioDTO.getSenha() + "!");
+            dados.put("texto3", "Sua senha de acesso temporária é: " + usuarioDTO.getSenha());
 
         } else if (tipoEmails.equals(TipoEmails.UPDATE)) {
             dados.put("texto1", "Você atualizou seus dados com sucesso! ");

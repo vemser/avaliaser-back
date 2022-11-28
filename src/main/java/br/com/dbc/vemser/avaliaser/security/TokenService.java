@@ -31,7 +31,7 @@ public class TokenService {
     @Value("${jwt.expiration.recuperacao}")
     private Integer recuperacao;
 
-    public String getToken(UsuarioEntity usuario){
+    public String getToken(UsuarioEntity usuario) {
 
         Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         Date dataExpiracao = Date.from(LocalDateTime.now().plusDays(login).atZone(ZoneId.systemDefault()).toInstant());
@@ -52,7 +52,7 @@ public class TokenService {
         return token;
     }
 
-    public String retornarTokenRecuperacaoSenha(UsuarioEntity usuario){
+    public String retornarTokenRecuperacaoSenha(UsuarioEntity usuario) {
         Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
         Date dataExpiracao = Date.from(LocalDateTime.now().plusMinutes(recuperacao).atZone(ZoneId.systemDefault()).toInstant());
 
@@ -71,8 +71,9 @@ public class TokenService {
 
         return token;
     }
+
     public UsernamePasswordAuthenticationToken isValid(String token) {
-        if(token == null){
+        if (token == null) {
             return null;
         }
 

@@ -29,10 +29,18 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
                         //autorizações -> auth
-                        authz.antMatchers("/auth/login").permitAll()
-                                .antMatchers("/auth/usuario-logado").hasAnyRole("ADMIN","GESTOR","INSTRUTOR")
-                                .antMatchers(HttpMethod.PUT,"/**").hasRole("ADMIN")
+                        authz.antMatchers("/auth/login", "/auth/recuperar-senha").permitAll()
+
+                                .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-recuperacao").hasRole("RECUPERACAO")
+                                .antMatchers(HttpMethod.PUT, "/auth/usuario-logado").hasAnyRole("RECUPERACAO", "ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
+
+                                .antMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
+                                .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                                 .antMatchers("/**").hasRole("ADMIN")
+
                                 .anyRequest().authenticated()
                 );
 
