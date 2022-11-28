@@ -1,6 +1,8 @@
 package br.com.dbc.vemser.avaliaser.services;
 
-import br.com.dbc.vemser.avaliaser.dto.login.*;
+
+import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
@@ -30,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -49,9 +50,8 @@ public class UsuarioService {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAll(pageRequest);
         List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()
-                .map(cinemaEntity -> objectMapper.convertValue(cinemaEntity, UsuarioDTO.class))
+                .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
                 .toList();
-
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
                 pagina,
@@ -60,7 +60,7 @@ public class UsuarioService {
         );
     }
 
-    public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo){
+    public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}\\?";
         String senha = RandomStringUtils.random(8, characters);
 
@@ -81,10 +81,13 @@ public class UsuarioService {
 
         return usuarioDTO;
     }
-    public UsuarioDTO atualizarUsuarioLogado(String nome) throws RegraDeNegocioException{
-       UsuarioLogadoDTO usuarioLogado = getUsuarioLogado();
-       AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO(nome, usuarioLogado.getEmail());
-       return atualizarUsuarioPorId(atualizarUsuarioDTO, usuarioLogado.getIdUsuario());
+
+    public UsuarioDTO atualizarUsuarioLogado(String nome) throws RegraDeNegocioException {
+
+        UsuarioEntity usuarioLogado = getLoggedUser();
+
+        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO(nome, usuarioLogado.getEmail());
+        return atualizarUsuarioPorId(atualizarUsuarioDTO, usuarioLogado.getIdUsuario());
     }
 
     public UsuarioDTO atualizarUsuarioPorId(AtualizarUsuarioDTO atualizarUsuarioDTO, Integer id) throws RegraDeNegocioException {
@@ -96,23 +99,22 @@ public class UsuarioService {
         return usuarioLogadoDTO;
 
     }
+
     public void alterarSenhaUsuarioLogado(String senhaAntiga, String senhaNova) throws RegraDeNegocioException {
         UsuarioEntity usuario = getLoggedUser();
-        if(passwordEncoder.matches(senhaAntiga, usuario.getSenha())) {
+        if (passwordEncoder.matches(senhaAntiga, usuario.getSenha())) {
             alterarSenha(senhaNova, usuario.getIdUsuario());
         } else {
             throw new RegraDeNegocioException("Senha atual informada está incorreta! " +
                     "Não é possível alterar senha.");
         }
     }
-    public void alterarSenhaPorId(String senha, Integer idUsuario) throws RegraDeNegocioException {
-        converterUsuarioDTO(alterarSenha(senha, idUsuario));
-    }
 
     public void alterarSenhaPorRecuperacao(String senha) throws RegraDeNegocioException {
         Integer idUsuario = getUsuarioLogado().getIdUsuario();
         converterUsuarioDTO(alterarSenha(senha, idUsuario));
     }
+
 
     public void recuperarSenha(String emailDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = findByEmail(emailDTO);
@@ -134,7 +136,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("USUARIO_NAO_ENCONTRADO"));
     }
 
-    public UsuarioDTO alterarImagemUsuarioLogado(MultipartFile file) throws RegraDeNegocioException{
+    public UsuarioDTO alterarImagemUsuarioLogado(MultipartFile file) throws RegraDeNegocioException {
         UsuarioLogadoDTO usuario = getUsuarioLogado();
         return uploadImagem(file, usuario.getIdUsuario());
     }
@@ -167,10 +169,10 @@ public class UsuarioService {
         UsuarioLogadoDTO usuarioLogado = new UsuarioLogadoDTO();
         usuarioLogado.setIdUsuario(usuario.getIdUsuario());
         usuarioLogado.setNome(usuario.getNome());
-        usuarioLogado.setCargo(usuario.getCargo().getNome());
-        if(usuario.getImage() != null) {
+        if (usuario.getImage() != null) {
             usuarioLogado.setFoto(ImageUtil.decompressImage(usuario.getImage()));
         }
+        usuarioLogado.setCargo(usuario.getCargo().getNome());
         return usuarioLogado;
     }
 
@@ -179,6 +181,7 @@ public class UsuarioService {
         usuario.setAtivo(Ativo.N);
         usuarioRepository.save(usuario);
     }
+
     public UsuarioEntity getLoggedUser() throws RegraDeNegocioException {
         return findById(getIdLoggedUser());
     }
@@ -192,6 +195,7 @@ public class UsuarioService {
         UsuarioEntity usuario = findById(id);
         return converterUsuarioDTO(usuario);
     }
+
     private Integer getIdLoggedUser() {
         return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
     }

@@ -1,7 +1,11 @@
 package br.com.dbc.vemser.avaliaser.dto.recuperacao;
 
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -13,6 +17,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioRecuperacaoDTO {
+
     @NotNull
     @Email
     @Schema(example = "noah.bispo@dbccompany.com.br")

@@ -1,12 +1,11 @@
 package br.com.dbc.vemser.avaliaser.controllers.documentation;
 
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
 
 public interface OperationControllerAuth {
 
@@ -59,18 +55,13 @@ public interface OperationControllerAuth {
     })
     ResponseEntity<UsuarioDTO> uploadImagem(MultipartFile file, Integer idUsuario) throws RegraDeNegocioException;
 
-    @Operation(summary = "Alteração da foto de perfil do Usuario Logado", description = "Registra nova imagem para perfil do usuario logado, no Banco de Dados.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Upload da imagem realizado com sucesso!"),
-            @ApiResponse(responseCode = "415", description = "Tipo ou tamanho da imagem não permitidos, não são compatíveis com os padrões do sistema.")
-    })
-    ResponseEntity<UsuarioDTO> alterarImagemUsuarioLogado(MultipartFile file) throws RegraDeNegocioException;
     @Operation(summary = "Atualiza dados do Usuario Logado", description = "Realiza alteração de dados do usuario logado: nome.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
     ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam String nome) throws RegraDeNegocioException;
+
     @Operation(summary = "Atualiza dados de Usuario por ID", description = "Realiza a busca de usuario por ID, e realiza alteração de dados deste usuario: nome.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario cadastrado com sucesso!"),
@@ -103,13 +94,7 @@ public interface OperationControllerAuth {
     })
     ResponseEntity<Void> atualizarSenhaUsuarioLogado(String senhaAntiga, String senhaNova) throws RegraDeNegocioException;
 
-    @Operation(summary = "Atualização de senhas pelo Administrador", description = "Realiza a mudança de senha do Usuario localizado pelo email! " +
-            "Apenas administrador pode realizar esse tipo de alteração")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso."),
-            @ApiResponse(responseCode = "403", description = "Você não tem autorização para alteração de senha.")
-    })
-    ResponseEntity<Void> alterarSenhaPorId(Integer idUsuario, String senha) throws RegraDeNegocioException;
+
     @Operation(summary = "Desativação de Usuario", description = "Realiza a exclusão lógica do Usuario, atualizando seu status no Banco de Dados para Ativo = 'N'!")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario desativado com sucesso."),

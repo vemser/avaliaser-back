@@ -85,7 +85,7 @@ public class EmailService {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", usuarioDTO.getNome());
         dados.put("email", from);
-        dados.put("texto1", "Solicitação de recuperação de senha feita com sucesso!" );
+        dados.put("texto1", "Solicitação de recuperação de senha feita com sucesso!");
         dados.put("texto2", "Seu token de recuperação é: " + token);
         dados.put("texto3", "Após acessar o link acima, basta realizar o cadastro de sua nova senha!");
 

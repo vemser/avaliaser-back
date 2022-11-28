@@ -1,13 +1,13 @@
 package br.com.dbc.vemser.avaliaser.controllers;
 
+
 import br.com.dbc.vemser.avaliaser.controllers.documentation.OperationControllerAuth;
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
@@ -33,7 +33,7 @@ public class UsuarioController implements OperationControllerAuth {
     @GetMapping("/listar-usuarios")
     public ResponseEntity<PageDTO<UsuarioDTO>> listarUsuario(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina) {
         log.info("Retornando Usuário logado...");
-        PageDTO<UsuarioDTO> usuario = usuarioService.listUsuarioPaginado(paginaQueEuQuero,tamanhoDeRegistrosPorPagina);
+        PageDTO<UsuarioDTO> usuario = usuarioService.listUsuarioPaginado(paginaQueEuQuero, tamanhoDeRegistrosPorPagina);
         log.info("Retorno de usuário logado com sucesso.");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
@@ -62,7 +62,7 @@ public class UsuarioController implements OperationControllerAuth {
 
     @PostMapping(value = "/cadastrar-usuario")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestParam Cargo cargo,
-                                                       @RequestBody UsuarioCreateDTO usuarioCreateDTO){
+                                                       @RequestBody UsuarioCreateDTO usuarioCreateDTO) {
         UsuarioDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, cargo);
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
@@ -74,29 +74,26 @@ public class UsuarioController implements OperationControllerAuth {
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/upload-imagem-usuario-logado", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UsuarioDTO> alterarImagemUsuarioLogado(@RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
-        UsuarioDTO usuarioLogadoDTO = usuarioService.alterarImagemUsuarioLogado(file);
-        return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
-    }
 
     @PutMapping(value = "/atualizar-usuario-logado")
     public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam String nome) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(nome), HttpStatus.OK);
+
     }
+
     @PutMapping(value = "/atualizar-usuario/{idUsuario}")
     public ResponseEntity<UsuarioDTO> atualizarUsuarioPorId(@RequestBody AtualizarUsuarioDTO atualizarUsuarioDTO,
-                                                        @PathVariable Integer idUsuario) throws RegraDeNegocioException {
+                                                            @PathVariable Integer idUsuario) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO, idUsuario), HttpStatus.OK);
     }
-    @Override
+
     @PostMapping("/recuperar-senha")
     public ResponseEntity<Void> recuperarSenha(@RequestParam String email) throws RegraDeNegocioException {
         usuarioService.recuperarSenha(email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
+
     @PutMapping(value = "/alterar-senha-usuario-logado")
     public ResponseEntity<Void> atualizarSenhaUsuarioLogado(@RequestParam String senhaAntiga,
                                                             @RequestParam String senhaNova) throws RegraDeNegocioException {
@@ -104,17 +101,10 @@ public class UsuarioController implements OperationControllerAuth {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
-    @PutMapping(value = "/alterar-senha-usuario-por-email")
-    public ResponseEntity<Void> alterarSenhaPorId(@RequestParam Integer idUsuario,
-            @RequestParam String senha) throws RegraDeNegocioException {
-        usuarioService.alterarSenhaPorId(senha, idUsuario);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @PutMapping(value = "/alterar-senha-usuario-recuperacao")
     public ResponseEntity<Void> alterarSenhaRecuperada(@RequestParam String senha) throws RegraDeNegocioException {
-        usuarioService.alterarSenhaPorRecuperacao( senha);
+        usuarioService.alterarSenhaPorRecuperacao(senha);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

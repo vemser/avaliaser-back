@@ -1,10 +1,7 @@
 package br.com.dbc.vemser.avaliaser.dto.login;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class UsuarioLogadoDTO {

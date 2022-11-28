@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class UsuarioDTO {
+
     @Schema(example = "1")
     private Integer idUsuario;
     @Schema(example = "Noah Bispo")
