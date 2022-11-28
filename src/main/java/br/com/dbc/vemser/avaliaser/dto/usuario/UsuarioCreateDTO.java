@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.avaliaser.dto.login;
+package br.com.dbc.vemser.avaliaser.dto.usuario;
 
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import lombok.AllArgsConstructor;

@@ -7,6 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TipoEmails {
     CREATE("Cadastro realizado com sucesso!"),
+
+    REC_SENHA("Recupere sua senha!"),
     UPDATE("Alteração de Dados Cadastrais!"),
     DELETE("Acesso da conta encerrado!"),
     END_CREATE("Endereço Cadastrado com Sucesso!"),
