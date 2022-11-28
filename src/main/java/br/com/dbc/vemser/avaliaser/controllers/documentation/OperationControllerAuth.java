@@ -86,11 +86,17 @@ public interface OperationControllerAuth {
     })
     ResponseEntity<Void> recuperarSenha(String email) throws RegraDeNegocioException;
 
+    @Operation(summary = "Alteração de senha através de recuperação", description = "Realiza a mudança de senha do Usuario logado apos recuperação de Token por email.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso!"),
+            @ApiResponse(responseCode = "403", description = "Não foi identificado permissão para realizar esta recuperação.")
+    })
+    ResponseEntity<Void> alterarSenhaRecuperada(@RequestParam String senha) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualização de senha do Usuario Logado", description = "Realiza a mudança de senha do Usuario logado após validar senha antiga!")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso."),
-            @ApiResponse(responseCode = "403", description = "Você não tem autorização para alteração de senha.")
+            @ApiResponse(responseCode = "403", description = "Senha atualizada com sucesso.")
     })
     ResponseEntity<Void> atualizarSenhaUsuarioLogado(String senhaAntiga, String senhaNova) throws RegraDeNegocioException;
 

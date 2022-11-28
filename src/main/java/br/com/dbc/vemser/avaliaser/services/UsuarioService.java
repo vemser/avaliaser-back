@@ -78,7 +78,7 @@ public class UsuarioService {
         UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO(usuarioEntity.getEmail(), usuarioEntity.getNome(), senha);
         emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-
+        usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
         return usuarioDTO;
     }
 
@@ -168,6 +168,7 @@ public class UsuarioService {
         UsuarioLogadoDTO usuarioLogado = new UsuarioLogadoDTO();
         usuarioLogado.setIdUsuario(usuario.getIdUsuario());
         usuarioLogado.setNome(usuario.getNome());
+        usuarioLogado.setEmail(usuario.getEmail());
         if (usuario.getImage() != null) {
             usuarioLogado.setFoto(ImageUtil.decompressImage(usuario.getImage()));
         }
