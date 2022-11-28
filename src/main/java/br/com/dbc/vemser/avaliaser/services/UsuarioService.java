@@ -105,10 +105,8 @@ public class UsuarioService {
         UsuarioLogadoDTO usuarioLogado = new UsuarioLogadoDTO();
         usuarioLogado.setIdUsuario(usuario.getIdUsuario());
         usuarioLogado.setNome(usuario.getNome());
+        usuarioLogado.setFoto(ImageUtil.decompressImage(usuario.getImage()));
         usuarioLogado.setCargo(usuario.getCargo().getNome());
-        if(usuario.getImage() != null) {
-            usuarioLogado.setFoto(ImageUtil.decompressImage(usuario.getImage()));
-        }
         return usuarioLogado;
     }
 
