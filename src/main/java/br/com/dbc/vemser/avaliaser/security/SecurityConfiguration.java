@@ -29,10 +29,9 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
                         //autorizações -> auth
-                        authz.antMatchers("/auth/login", "/auth/recuperar-senha").permitAll()
-
+                        authz.antMatchers("/", "/auth/login", "/auth/recuperar-senha","/auth/usuario-logado").permitAll()
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-recuperacao").hasRole("RECUPERACAO")
-                                .antMatchers(HttpMethod.PUT, "/auth/usuario-logado").hasAnyRole("RECUPERACAO", "ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO", "ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
