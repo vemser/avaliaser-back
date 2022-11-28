@@ -1,19 +1,26 @@
-package br.com.dbc.vemser.avaliaser.dto.login;
+package br.com.dbc.vemser.avaliaser.dto.recuperacao;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Data
-public class LoginDTO {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UsuarioRecuperacaoDTO {
     @NotNull
     @Email
     @Schema(example = "noah.bispo@dbccompany.com.br")
     private String email;
+    @NotNull
+    @NotBlank
+    @Schema(example = "Noah Bispo")
+    private String nome;
     @NotNull
     @NotBlank
     @Size(max = 16, min = 8)

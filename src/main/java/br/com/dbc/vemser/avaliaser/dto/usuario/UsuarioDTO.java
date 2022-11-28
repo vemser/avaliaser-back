@@ -1,13 +1,10 @@
-package br.com.dbc.vemser.avaliaser.dto.login;
+package br.com.dbc.vemser.avaliaser.dto.usuario;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class UsuarioLogadoDTO {
+public class UsuarioDTO {
     @Schema(example = "1")
     private Integer idUsuario;
     @Schema(example = "Noah Bispo")
