@@ -48,7 +48,7 @@ public class UsuarioService {
 
     public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAll(pageRequest);
+        Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAllByAtivo(Ativo.S, pageRequest);
         List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()
                 .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
                 .toList();
@@ -60,7 +60,7 @@ public class UsuarioService {
         );
     }
 
-    public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo) {
+    public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo) throws RegraDeNegocioException {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}\\?";
         String senha = RandomStringUtils.random(8, characters);
 
@@ -73,10 +73,17 @@ public class UsuarioService {
         usuarioEntity.setSenha(senhaEncode);
         usuarioEntity.setCargo(cargoBanco);
         usuarioEntity.setAtivo(Ativo.S);
-        usuarioRepository.save(usuarioEntity);
 
         UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO(usuarioEntity.getEmail(), usuarioEntity.getNome(), senha);
-        emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
+        try {
+            emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
+        } catch (Exception e){
+            e.getMessage();
+            throw new RegraDeNegocioException("Email inválido!");
+        }
+
+        usuarioRepository.save(usuarioEntity);
+
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
         usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
         return usuarioDTO;
@@ -131,7 +138,7 @@ public class UsuarioService {
     }
 
     public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
-        return usuarioRepository.findByEmail(email)
+        return usuarioRepository.findByEmailAndAtivo(Ativo.S, email)
                 .orElseThrow(() -> new RegraDeNegocioException("USUARIO_NAO_ENCONTRADO"));
     }
 
@@ -187,7 +194,7 @@ public class UsuarioService {
     }
 
     public UsuarioEntity findById(Integer id) throws RegraDeNegocioException {
-        return usuarioRepository.findById(id)
+        return usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,id)
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado."));
     }
 
@@ -203,8 +210,7 @@ public class UsuarioService {
 
 
     private UsuarioDTO converterUsuarioDTO(UsuarioEntity usuarioEntity) {
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
-        return usuarioDTO;
+        return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
     }
 
     private static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {

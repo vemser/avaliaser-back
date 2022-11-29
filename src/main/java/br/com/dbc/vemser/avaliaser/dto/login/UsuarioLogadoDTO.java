@@ -14,5 +14,6 @@ public class UsuarioLogadoDTO {
     @Schema(example = " ", description = "Imagem de Perfil do Usuario")
     private byte[] foto;
     @Schema(example = "INSTRUTOR")
+
     private String cargo;
 }

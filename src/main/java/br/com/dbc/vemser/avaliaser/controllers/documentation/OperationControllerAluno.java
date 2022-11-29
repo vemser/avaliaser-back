@@ -50,7 +50,7 @@ public interface OperationControllerAluno {
             @ApiResponse(responseCode = "200", description = "Aluno cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<AlunoDTO> atualizarAlunoPorId(AlunoCreateDTO alunoCreateDTO, Integer idAluno) throws RegraDeNegocioException;
+    ResponseEntity<AlunoDTO> atualizarAlunoPorId(AlunoCreateDTO alunoCreateDTO,@RequestParam Stack stack, Integer idAluno) throws RegraDeNegocioException;
 
 
     @Operation(summary = "Cadastrar um aluno", description = "Realiza o cadastramento de dados do aluno: nome, email e stack.")

@@ -36,6 +36,9 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
 
+                                .antMatchers("/aluno/**").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers("/admininstrador/**").hasRole("ADMIN")
+                                .antMatchers("/auth/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                                 .antMatchers("/**").hasRole("ADMIN")

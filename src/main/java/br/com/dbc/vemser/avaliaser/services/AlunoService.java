@@ -25,13 +25,14 @@ import java.util.List;
 public class AlunoService {
 
     private final AlunoRepository alunoRepository;
+    private final CargoService cargoService;
     private final ObjectMapper objectMapper;
     private final UsuarioService usuarioService;
 
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAll(pageRequest);
+        Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByAtivo(Ativo.S, pageRequest);
         List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream()
                 .map(alunoEntity -> objectMapper.convertValue(alunoEntity, AlunoDTO.class))
                 .toList();
@@ -44,13 +45,13 @@ public class AlunoService {
         );
     }
 
-    public AlunoEntity findAlunoByEmail(String email) throws RegraDeNegocioException {
-        return alunoRepository.findByEmail(email)
-                .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado!"));
-    }
+//    public AlunoEntity findAlunoByEmail(String email) throws RegraDeNegocioException {
+//        return alunoRepository.findByEmailAndAtivo(Ativo.S, email)
+//                .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado!"));
+//    }
 
     public AlunoEntity findById(Integer id) throws RegraDeNegocioException {
-        return alunoRepository.findById(id)
+        return alunoRepository.findByAtivoAndIdAluno(Ativo.S,id)
                 .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado."));
     }
 
@@ -60,13 +61,14 @@ public class AlunoService {
     }
 
     public AlunoDTO cadastrarAluno(AlunoCreateDTO alunoCreateDTO, Stack stack) throws RegraDeNegocioException {
-
+        String cargoGestor = cargoService.findById(2).getNome();
+        String cargoInstrutor= cargoService.findById(3).getNome();
         String cargo = usuarioService.getUsuarioLogado().getCargo();
-        if (cargo.equals(Cargo.GESTOR.name())  || cargo.equals(Cargo.INSTRUTOR.name()) ) {
+        if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
             AlunoEntity alunoEntity = new AlunoEntity();
             alunoEntity.setNome(alunoCreateDTO.getNome());
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
-            alunoEntity.setStack(alunoCreateDTO.getStack());
+            alunoEntity.setStack(stack);
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
             alunoEntity.setAtivo(Ativo.S);
             alunoRepository.save(alunoEntity);
@@ -86,6 +88,10 @@ public class AlunoService {
     }
 
     public AlunoDTO atualizarUsuarioPorId(AlunoCreateDTO alunoAtualizado, Integer id) throws RegraDeNegocioException {
+        String cargoGestor = cargoService.findById(2).getNome();
+        String cargoInstrutor= cargoService.findById(3).getNome();
+        String cargo = usuarioService.getUsuarioLogado().getCargo();
+        if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
         AlunoEntity aluno = findById(id);
         aluno.setNome(alunoAtualizado.getNome());
         aluno.setEmail(alunoAtualizado.getEmail());
@@ -93,13 +99,23 @@ public class AlunoService {
         AlunoDTO alunoDTO =
                 objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
         return alunoDTO;
+        } else {
+            throw new RegraDeNegocioException("Você não tem permissão para alterar dados de Alunos!");
+        }
 
     }
 
     public void desativarAlunoById(Integer id) throws RegraDeNegocioException {
+        String cargoGestor = cargoService.findById(2).getNome();
+        String cargoInstrutor= cargoService.findById(3).getNome();
+        String cargo = usuarioService.getUsuarioLogado().getCargo();
+        if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
         AlunoEntity aluno = findById(id);
         aluno.setAtivo(Ativo.N);
         alunoRepository.save(aluno);
+        } else {
+            throw new RegraDeNegocioException("Você não tem permissão para excluir de Alunos!");
+        }
     }
 
     private AlunoDTO converterAlunoDTO(AlunoEntity aluno) {

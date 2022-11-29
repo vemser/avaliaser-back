@@ -1,9 +1,14 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public class UsuarioFactory {
     public static UsuarioEntity getUsuarioEntity(){
@@ -25,5 +30,18 @@ public class UsuarioFactory {
         usuarioCreateDTO.setNome("Paulo Sergio");
         usuarioCreateDTO.setEmail("paulo.sergio@dbccompany.com");
         return usuarioCreateDTO;
+    }
+
+    public static UsuarioLogadoDTO getUsuarioLogadoDTO() throws IOException {
+        byte[] imagemBytes = new byte[10*1024];
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+        CargoEntity cargo = new CargoEntity();
+        cargo.setIdCargo(1);
+        UsuarioLogadoDTO usuarioLogadoDTO = new UsuarioLogadoDTO();
+        usuarioLogadoDTO.setNome("Paulo Sergio");
+        usuarioLogadoDTO.setEmail("paulo.sergio@dbccompany.com");
+        usuarioLogadoDTO.setCargo(cargo.getNome());
+        usuarioLogadoDTO.setFoto(imagem.getBytes());
+        return usuarioLogadoDTO;
     }
 }

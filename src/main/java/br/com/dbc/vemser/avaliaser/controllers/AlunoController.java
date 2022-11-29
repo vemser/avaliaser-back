@@ -54,7 +54,9 @@ public class AlunoController implements OperationControllerAluno {
 
     @PutMapping(value = "/atualizar-aluno/{idAluno}")
     public ResponseEntity<AlunoDTO> atualizarAlunoPorId(@RequestBody AlunoCreateDTO alunoCreateDTO,
+                                                        @RequestParam Stack stack,
                                                             @PathVariable Integer idAluno) throws RegraDeNegocioException {
+        alunoCreateDTO.setStack(stack);
         return new ResponseEntity<>(alunoService.atualizarUsuarioPorId(alunoCreateDTO, idAluno), HttpStatus.OK);
     }
 

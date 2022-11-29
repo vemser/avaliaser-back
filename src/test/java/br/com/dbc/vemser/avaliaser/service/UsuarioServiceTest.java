@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
@@ -76,7 +77,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveTestarcadastroComSucesso(){
+    public void deveTestarcadastroComSucesso() throws RegraDeNegocioException {
         CargoEntity cargo = CargoFactory.getCargo();
         String senha = "123";
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
@@ -136,7 +137,7 @@ public class UsuarioServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarGetUsuarioLogadoComErro() throws RegraDeNegocioException {
         SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.empty());
         usuarioService.getUsuarioLogado();
 
     }
@@ -147,7 +148,7 @@ public class UsuarioServiceTest {
         byte[] imagemBytes = new byte[10*1024];
         usuario.setImage(imagemBytes);
         SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         usuarioService.getUsuarioLogado();
 
     }
@@ -156,7 +157,7 @@ public class UsuarioServiceTest {
     public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
         Integer idUsuario = 1;
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         UsuarioDTO usuarioRetorno = usuarioService.findByIdDTO(idUsuario);
 
         assertNotNull(usuarioRetorno);
@@ -166,7 +167,7 @@ public class UsuarioServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
         Integer idUsuario = 1;
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.empty());
         usuarioService.findById(idUsuario);
 
     }
@@ -174,7 +175,7 @@ public class UsuarioServiceTest {
     public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
         Integer idUsuario = 1;
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         UsuarioEntity usuarioRetorno = usuarioService.findById(idUsuario);
 
         assertNotNull(usuarioRetorno);
@@ -189,7 +190,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuario = getUsuarioEntity();
         PageImpl<UsuarioEntity> listaPaginada = new PageImpl<>(List.of(usuario), PageRequest.of(numeroPagina, tamanho), 0);
 
-        when(usuarioRepository.findAll(any(Pageable.class))).thenReturn(listaPaginada);
+        when(usuarioRepository.findAllByAtivo(any(),any(Pageable.class))).thenReturn(listaPaginada);
         PageDTO<UsuarioDTO> usuarioDTOPageDTO = usuarioService.listUsuarioPaginado(numeroPagina, tamanho);
 
         assertNotNull(usuarioDTOPageDTO);
@@ -208,7 +209,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
-        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
         UsuarioEntity usuarioAtualizado = usuarioService.alterarSenha(senhaNova, usuario.getIdUsuario());
@@ -226,7 +227,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
-        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
 
@@ -247,7 +248,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
-        when(usuarioRepository.findById(usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
         when(passwordEncoder.matches(senhaAtinga, usuario.getSenha())).thenReturn(true);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
@@ -258,7 +259,7 @@ public class UsuarioServiceTest {
     public void deveRecuperaSenhaCorretamente() throws RegraDeNegocioException {
         final String email = "test@demo.com.br";
         UsuarioEntity usuario = getUsuarioEntity();
-        when(usuarioRepository.findByEmail(anyString())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmailAndAtivo(any(),anyString())).thenReturn(Optional.of(usuario));
         usuarioService.recuperarSenha(email);
         verify(tokenService).retornarTokenRecuperacaoSenha(any());
         verify(emailService).sendEmailRecuperacao(any(), any(),any());
@@ -267,11 +268,11 @@ public class UsuarioServiceTest {
     @Test
     public void deveTestarAtualizarUsuarioComSucesso() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO();
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
-        UsuarioDTO usuarioDTO = usuarioService.atualizarUsuarioLogado("paulo");
+        UsuarioDTO usuarioDTO = usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO,1);
 
         assertNotNull(usuarioDTO);
     }
@@ -281,7 +282,7 @@ public class UsuarioServiceTest {
         Integer id = 1;
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
 
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
         usuarioService.desativarUsuarioById(id);
