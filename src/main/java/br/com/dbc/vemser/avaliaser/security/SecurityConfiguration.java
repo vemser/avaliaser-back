@@ -29,7 +29,7 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
                         //autorizações -> auth
-                        authz.antMatchers("/", "/auth/login", "/auth/recuperar-senha","/auth/usuario-logado").permitAll()
+                        authz.antMatchers("/","/teste/**", "/auth/login", "/auth/recuperar-senha","/auth/usuario-logado").permitAll()
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-recuperacao").hasRole("RECUPERACAO")
                                 .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO", "ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")

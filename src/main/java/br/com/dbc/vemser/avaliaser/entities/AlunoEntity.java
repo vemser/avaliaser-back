@@ -41,11 +41,11 @@ public class AlunoEntity {
     private Ativo ativo;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity", cascade = CascadeType.REMOVE)
     private Set<AvaliacaoEntity> avaliacoes;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity", cascade = CascadeType.REMOVE)
     private Set<FeedBackEntity> feedBack;
 
 
