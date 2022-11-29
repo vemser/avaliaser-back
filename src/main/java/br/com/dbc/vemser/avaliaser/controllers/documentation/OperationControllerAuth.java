@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.TrocarSenhaUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
@@ -53,13 +54,13 @@ public interface OperationControllerAuth {
             @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Não foi identificado permissão para realizar esta recuperação.")
     })
-    ResponseEntity<Void> alterarSenhaRecuperada(@RequestParam String senha) throws RegraDeNegocioException;
+    ResponseEntity<Void> alterarSenhaRecuperada(@RequestBody String senhaAntiga) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualização de senha do Usuario Logado", description = "Realiza a mudança de senha do Usuario logado após validar senha antiga!")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso."),
-            @ApiResponse(responseCode = "403", description = "Senha atualizada com sucesso.")
+            @ApiResponse(responseCode = "403", description = "Não foi identificado permissão para realizar esta operação.")
     })
-    ResponseEntity<Void> atualizarSenhaUsuarioLogado(String senhaAntiga, String senhaNova) throws RegraDeNegocioException;
+    ResponseEntity<Void> atualizarSenhaUsuarioLogado(@RequestBody @Valid TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException;
 
 }

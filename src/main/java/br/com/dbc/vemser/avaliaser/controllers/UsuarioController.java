@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.controllers.documentation.OperationController
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.TrocarSenhaUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
@@ -56,9 +57,8 @@ public class UsuarioController implements OperationControllerAuth {
     }
 
     @PutMapping(value = "/alterar-senha-usuario-logado")
-    public ResponseEntity<Void> atualizarSenhaUsuarioLogado(@RequestParam String senhaAntiga,
-                                                            @RequestParam String senhaNova) throws RegraDeNegocioException {
-        usuarioService.alterarSenhaUsuarioLogado(senhaAntiga, senhaNova);
+    public ResponseEntity<Void> atualizarSenhaUsuarioLogado(@RequestBody @Valid TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException {
+        usuarioService.alterarSenhaUsuarioLogado(senhas);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

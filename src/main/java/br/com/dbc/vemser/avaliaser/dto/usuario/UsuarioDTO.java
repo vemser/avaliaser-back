@@ -12,8 +12,8 @@ public class UsuarioDTO {
     private String nome;
     @Schema(example = "noah.bispo@dbccompany.com.br")
     private String email;
-    @Schema(example = " ", description = "Imagem de Perfil do Usuario")
-    private byte[] foto;
     @Schema(example = "INSTRUTOR")
     private String cargo;
+    @Schema(example = " ", description = "Imagem de Perfil do Usuario")
+    private byte[] foto;
 }

@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.TrocarSenhaUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
@@ -135,6 +136,20 @@ public class UsuarioServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarUploadImagemComErro() throws RegraDeNegocioException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        byte[] imagemBytes = null;
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+        Integer idUsuario = 1;
+
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+
+        usuarioService.uploadImagem(imagem, idUsuario);
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
     public void deveTestarGetUsuarioLogadoComErro() throws RegraDeNegocioException {
         SecurityContextHolder.getContext().setAuthentication(getAuthentication());
         when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.empty());
@@ -239,20 +254,22 @@ public class UsuarioServiceTest {
     @Test
     public void deveMudarSenhaCorretamenteUsuarioLogado() throws RegraDeNegocioException {
 
-        final String senhaAtinga = "admin";
+        final String senhaAntiga = "admin";
         final String senhaNova = "1234admin";
-
+        TrocarSenhaUsuarioLogadoDTO senhas = new TrocarSenhaUsuarioLogadoDTO();
+        senhas.setSenhaAntiga(senhaAntiga);
+        senhas.setSenhaNova(senhaNova);
         UsuarioEntity usuario = getUsuarioEntity();
         SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-        usuario.setSenha(senhaAtinga);
+        usuario.setSenha(senhaAntiga);
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
         when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
-        when(passwordEncoder.matches(senhaAtinga, usuario.getSenha())).thenReturn(true);
+        when(passwordEncoder.matches(senhaAntiga, usuario.getSenha())).thenReturn(true);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
-        usuarioService.alterarSenhaUsuarioLogado(senhaAtinga, senhaNova);
+        usuarioService.alterarSenhaUsuarioLogado(senhas);
     }
 
     @Test
