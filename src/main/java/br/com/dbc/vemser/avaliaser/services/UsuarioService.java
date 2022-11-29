@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
@@ -50,7 +51,7 @@ public class UsuarioService {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAllByAtivo(Ativo.S, pageRequest);
         List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()
-                .map(usuarioEntity -> objectMapper.convertValue(usuarioEntity, UsuarioDTO.class))
+                .map(usuarioEntity -> converterUsuarioDTO(usuarioEntity))
                 .toList();
         return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
                 paginaDoRepositorio.getTotalPages(),
@@ -89,11 +90,11 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO atualizarUsuarioLogado(String nome) throws RegraDeNegocioException {
+    public UsuarioDTO atualizarUsuarioLogado(AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
 
         UsuarioEntity usuarioLogado = getLoggedUser();
 
-        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO(nome, usuarioLogado.getEmail());
+        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO(nome.getNome(), usuarioLogado.getEmail());
         return atualizarUsuarioPorId(atualizarUsuarioDTO, usuarioLogado.getIdUsuario());
     }
 
@@ -102,7 +103,7 @@ public class UsuarioService {
         usuarioEntity.setNome(atualizarUsuarioDTO.getNome());
         usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
         UsuarioDTO usuarioLogadoDTO =
-                objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
+                converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
         return usuarioLogadoDTO;
 
     }
@@ -151,7 +152,7 @@ public class UsuarioService {
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id).get();
         usuarioEntity.setImage(transformarImagemEmBytes(imagem));
         UsuarioDTO usuarioLogadoDTO =
-                objectMapper.convertValue(usuarioRepository.save(usuarioEntity), UsuarioDTO.class);
+                converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
         return usuarioLogadoDTO;
     }
 
@@ -210,7 +211,15 @@ public class UsuarioService {
 
 
     private UsuarioDTO converterUsuarioDTO(UsuarioEntity usuarioEntity) {
-        return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setIdUsuario(usuarioEntity.getIdUsuario());
+        usuarioDTO.setNome(usuarioEntity.getNome());
+        usuarioDTO.setEmail(usuarioEntity.getEmail());
+        usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
+        if(usuarioEntity.getImage() != null){
+            usuarioDTO.setFoto(ImageUtil.decompressImage(usuarioEntity.getImage()));
+        }
+        return usuarioDTO;
     }
 
     private static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {

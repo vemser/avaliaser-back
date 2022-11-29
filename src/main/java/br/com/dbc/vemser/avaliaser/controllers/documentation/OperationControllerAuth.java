@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 public interface OperationControllerAuth {
     @Operation(summary = "Retorna usuário logado", description = "Retorna usuário que está logado no momento.")
@@ -36,7 +39,7 @@ public interface OperationControllerAuth {
             @ApiResponse(responseCode = "200", description = "Usuario cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam String nome) throws RegraDeNegocioException;
+    ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam @Valid AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException;
     @Operation(summary = "Esqueci minha Senha", description = "Caso seu email conste no nosso banco de dados de usuarios, " +
             "envia um email com link de acesso(e token de autenticação) para trocar a senha.")
     @ApiResponses(value = {

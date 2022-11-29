@@ -1,15 +1,15 @@
 package br.com.dbc.vemser.avaliaser.enums;
 
 public enum Ativo {
-    N('N'),
-    S('S');
+    N("N"),
+    S("S");
 
-    private final char descricao;
+    private final String descricao;
 
-    Ativo(char descricao) {
+    Ativo(String descricao) {
         this.descricao = descricao;
     }
-    public char getDescricao() {
+    public String getDescricao() {
         return this.descricao;
     }
 }

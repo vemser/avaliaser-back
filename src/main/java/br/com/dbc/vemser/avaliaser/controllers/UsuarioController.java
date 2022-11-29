@@ -4,6 +4,7 @@ package br.com.dbc.vemser.avaliaser.controllers;
 import br.com.dbc.vemser.avaliaser.controllers.documentation.OperationControllerAuth;
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @Validated
@@ -41,7 +44,7 @@ public class UsuarioController implements OperationControllerAuth {
     }
 
     @PutMapping(value = "/atualizar-usuario-logado")
-    public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam String nome) throws RegraDeNegocioException {
+    public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam @Valid AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(nome), HttpStatus.OK);
 
     }
