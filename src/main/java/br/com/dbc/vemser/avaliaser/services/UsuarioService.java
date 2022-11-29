@@ -7,6 +7,7 @@ import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.TrocarSenhaUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
@@ -85,7 +86,7 @@ public class UsuarioService {
 
         usuarioRepository.save(usuarioEntity);
 
-        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+        UsuarioDTO usuarioDTO = converterUsuarioDTO(usuarioEntity);
         usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
         return usuarioDTO;
     }
@@ -108,10 +109,10 @@ public class UsuarioService {
 
     }
 
-    public void alterarSenhaUsuarioLogado(String senhaAntiga, String senhaNova) throws RegraDeNegocioException {
+    public void alterarSenhaUsuarioLogado(TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException {
         UsuarioEntity usuario = getLoggedUser();
-        if (passwordEncoder.matches(senhaAntiga, usuario.getSenha())) {
-            alterarSenha(senhaNova, usuario.getIdUsuario());
+        if (passwordEncoder.matches(senhas.getSenhaAntiga(), usuario.getSenha())) {
+            alterarSenha(senhas.getSenhaNova(), usuario.getIdUsuario());
         } else {
             throw new RegraDeNegocioException("Senha atual informada está incorreta! " +
                     "Não é possível alterar senha.");
@@ -215,19 +216,19 @@ public class UsuarioService {
         usuarioDTO.setIdUsuario(usuarioEntity.getIdUsuario());
         usuarioDTO.setNome(usuarioEntity.getNome());
         usuarioDTO.setEmail(usuarioEntity.getEmail());
-        usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
+        usuarioDTO.setCargo(Cargo.valueOf(usuarioEntity.getCargo().getNome().replace("ROLE_", "")).getDescricao());
         if(usuarioEntity.getImage() != null){
             usuarioDTO.setFoto(ImageUtil.decompressImage(usuarioEntity.getImage()));
         }
         return usuarioDTO;
     }
 
-    private static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {
+    public static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {
         try {
             byte[] imagemBytes = imagem.getBytes();
             byte[] imagemRecebida = ImageUtil.compressImage(imagemBytes);
             return imagemRecebida;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RegraDeNegocioException("Erro ao converter imagem.");
         }
     }
