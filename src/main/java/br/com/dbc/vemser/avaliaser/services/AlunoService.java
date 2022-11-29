@@ -5,7 +5,6 @@ import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;

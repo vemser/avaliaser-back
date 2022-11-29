@@ -12,10 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface AcompanhamentoRepository extends JpaRepository<AcompanhamentoEntity, Integer> {
-    Optional<AcompanhamentoEntity> findByEmail(String email);
-    Optional<AcompanhamentoEntity> findByEmailAndAtivo(Ativo ativo, String email);
 
-    Optional<AcompanhamentoEntity> findByAtivoAndIdUsuario(Ativo ativo, Integer idUsuario);
-    Page<AcompanhamentoEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+    Page<AcompanhamentoEntity> findAll(Pageable pageable);
 
 }

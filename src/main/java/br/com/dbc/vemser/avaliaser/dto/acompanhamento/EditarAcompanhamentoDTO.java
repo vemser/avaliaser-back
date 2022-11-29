@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class EditarAcompanhamentoDTO {
+
+    private String titulo;
 }
