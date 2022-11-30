@@ -1,6 +1,5 @@
 package br.com.dbc.vemser.avaliaser.services;
 
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
@@ -32,26 +31,19 @@ public class AlunoService {
 
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) {
-        if(tamanho != 0){
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByAtivo(Ativo.S, pageRequest);
-        List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream()
-                .map(alunoEntity -> objectMapper.convertValue(alunoEntity, AlunoDTO.class))
-                .toList();
+        if (tamanho != 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByAtivo(Ativo.S, pageRequest);
+            List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream().map(alunoEntity -> objectMapper.convertValue(alunoEntity, AlunoDTO.class)).toList();
 
-        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                paginaDoRepositorio.getTotalPages(),
-                pagina,
-                tamanho,
-                alunoPaginas
-        );}
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, alunoPaginas);
+        }
         List<AlunoDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L,0,0,tamanho,  listaVazia);
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public AlunoEntity findById(Integer id) throws RegraDeNegocioException {
-        return alunoRepository.findByAtivoAndIdAluno(Ativo.S,id)
-                .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado."));
+        return alunoRepository.findByAtivoAndIdAluno(Ativo.S, id).orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado."));
     }
 
     public AlunoDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
@@ -60,47 +52,50 @@ public class AlunoService {
     }
 
     public AlunoDTO cadastrarAluno(AlunoCreateDTO alunoCreateDTO, Stack stack) throws RegraDeNegocioException {
-
+        try {
             AlunoEntity alunoEntity = new AlunoEntity();
             alunoEntity.setNome(alunoCreateDTO.getNome());
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
             alunoEntity.setStack(stack);
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
             alunoEntity.setAtivo(Ativo.S);
+
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
             AlunoDTO alunoDTO = objectMapper.convertValue(alunoSalvo, AlunoDTO.class);
             return alunoDTO;
-
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
+        }
     }
 
     public AlunoDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {
         AlunoEntity aluno = findById(id);
         aluno.setFoto(transformarImagemEmBytes(imagem));
-        AlunoDTO alunoDTO =
-                objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
+        AlunoDTO alunoDTO = objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
         return alunoDTO;
     }
 
     public AlunoDTO atualizarAlunoPorId(Integer id, AlunoCreateDTO alunoAtualizado, Stack stack) throws RegraDeNegocioException {
-
-        AlunoEntity aluno = findById(id);
-        aluno.setNome(alunoAtualizado.getNome());
-        aluno.setEmail(alunoAtualizado.getEmail());
-        aluno.setStack(stack);
-        AlunoDTO alunoDTO =
-                objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
-        return alunoDTO;
-
+        try {
+            AlunoEntity aluno = findById(id);
+            aluno.setNome(alunoAtualizado.getNome());
+            aluno.setEmail(alunoAtualizado.getEmail());
+            aluno.setStack(stack);
+            AlunoDTO alunoDTO = objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
+            return alunoDTO;
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
+        }
     }
 
     public void desativarAlunoById(Integer id) throws RegraDeNegocioException {
         String cargoGestor = cargoService.findById(2).getNome();
-        String cargoInstrutor= cargoService.findById(3).getNome();
+        String cargoInstrutor = cargoService.findById(3).getNome();
         String cargo = usuarioService.getUsuarioLogado().getCargo();
         if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
-        AlunoEntity aluno = findById(id);
-        aluno.setAtivo(Ativo.N);
-        alunoRepository.save(aluno);
+            AlunoEntity aluno = findById(id);
+            aluno.setAtivo(Ativo.N);
+            alunoRepository.save(aluno);
         } else {
             throw new RegraDeNegocioException("Você não tem permissão para excluir de Alunos!");
         }

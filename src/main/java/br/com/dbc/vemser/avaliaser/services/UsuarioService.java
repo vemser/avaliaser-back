@@ -32,7 +32,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class UsuarioService {
 
 
     public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) {
-        if(tamanho != 0){
+        if (tamanho != 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAllByAtivo(Ativo.S, pageRequest);
             List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()
@@ -64,36 +63,40 @@ public class UsuarioService {
             );
         }
         List<UsuarioDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L,0,0,tamanho,  listaVazia);
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo) throws RegraDeNegocioException {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}\\?";
-        String senha = RandomStringUtils.random(8, characters);
-
-        CargoEntity cargoBanco = cargoService.findById(cargo.getInteger());
-        String senhaEncode = passwordEncoder.encode(senha);
-
-        UsuarioEntity usuarioEntity = new UsuarioEntity();
-        usuarioEntity.setNome(usuarioCreateDTO.getNome());
-        usuarioEntity.setEmail(usuarioCreateDTO.getEmail());
-        usuarioEntity.setSenha(senhaEncode);
-        usuarioEntity.setCargo(cargoBanco);
-        usuarioEntity.setAtivo(Ativo.S);
-
-        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO(usuarioEntity.getEmail(), usuarioEntity.getNome(), senha);
         try {
-            emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
-        } catch (Exception e){
-            e.getMessage();
-            throw new RegraDeNegocioException("Email inválido!");
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}\\?";
+            String senha = RandomStringUtils.random(8, characters);
+
+            CargoEntity cargoBanco = cargoService.findById(cargo.getInteger());
+            String senhaEncode = passwordEncoder.encode(senha);
+
+            UsuarioEntity usuarioEntity = new UsuarioEntity();
+            usuarioEntity.setNome(usuarioCreateDTO.getNome());
+            usuarioEntity.setEmail(usuarioCreateDTO.getEmail());
+            usuarioEntity.setSenha(senhaEncode);
+            usuarioEntity.setCargo(cargoBanco);
+            usuarioEntity.setAtivo(Ativo.S);
+
+            UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO(usuarioEntity.getEmail(), usuarioEntity.getNome(), senha);
+            try {
+                emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
+            } catch (Exception e) {
+                e.getMessage();
+                throw new RegraDeNegocioException("Email inválido!");
+            }
+
+            UsuarioEntity usuario = usuarioRepository.save(usuarioEntity);
+
+            UsuarioDTO usuarioDTO = converterUsuarioDTO(usuario);
+
+            return usuarioDTO;
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
         }
-
-        UsuarioEntity usuario = usuarioRepository.save(usuarioEntity);
-
-        UsuarioDTO usuarioDTO = converterUsuarioDTO(usuario);
-        usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
-        return usuarioDTO;
     }
 
     public UsuarioDTO atualizarUsuarioLogado(AtualizarUsuarioLogadoDTO atualizarUsuarioLogadoDTO) throws RegraDeNegocioException {
@@ -105,13 +108,16 @@ public class UsuarioService {
     }
 
     public UsuarioDTO atualizarUsuarioPorId(AtualizarUsuarioDTO atualizarUsuarioDTO, Integer id) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEntity = findById(id);
-        usuarioEntity.setNome(atualizarUsuarioDTO.getNome());
-        usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
-        UsuarioDTO usuarioLogadoDTO =
-                converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
-        return usuarioLogadoDTO;
-
+        try {
+            UsuarioEntity usuarioEntity = findById(id);
+            usuarioEntity.setNome(atualizarUsuarioDTO.getNome());
+            usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
+            UsuarioDTO usuarioLogadoDTO =
+                    converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
+            return usuarioLogadoDTO;
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
+        }
     }
 
     public void alterarSenhaUsuarioLogado(TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException {
@@ -148,11 +154,6 @@ public class UsuarioService {
         return usuarioRepository.findByEmailAndAtivo(email, Ativo.S)
                 .orElseThrow(() -> new RegraDeNegocioException("USUARIO_NAO_ENCONTRADO"));
     }
-
-//    public UsuarioDTO alterarImagemUsuarioLogado(MultipartFile file) throws RegraDeNegocioException {
-//        UsuarioLogadoDTO usuario = getUsuarioLogado();
-//        return uploadImagem(file, usuario.getIdUsuario());
-//    }
 
     public UsuarioDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = findById(id);
@@ -206,7 +207,7 @@ public class UsuarioService {
     }
 
     public UsuarioEntity findById(Integer id) throws RegraDeNegocioException {
-        return usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,id)
+        return usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, id)
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado."));
     }
 
@@ -218,7 +219,6 @@ public class UsuarioService {
     private Integer getIdLoggedUser() {
         return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
     }
-    
 
 
     private UsuarioDTO converterUsuarioDTO(UsuarioEntity usuarioEntity) {
@@ -227,7 +227,7 @@ public class UsuarioService {
         usuarioDTO.setNome(usuarioEntity.getNome());
         usuarioDTO.setEmail(usuarioEntity.getEmail());
         usuarioDTO.setCargo(Cargo.valueOf(usuarioEntity.getCargo().getNome().replace("ROLE_", "")).getDescricao());
-        if(usuarioEntity.getImage() != null){
+        if (usuarioEntity.getImage() != null) {
             usuarioDTO.setFoto(ImageUtil.decompressImage(usuarioEntity.getImage()));
         }
         return usuarioDTO;
