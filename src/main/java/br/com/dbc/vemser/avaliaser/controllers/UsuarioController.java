@@ -45,7 +45,6 @@ public class UsuarioController implements OperationControllerAuth {
     }
 
     @PutMapping("/atualizar-usuario-logado")
-
     public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@Valid @RequestBody AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(nome), HttpStatus.OK);
     }

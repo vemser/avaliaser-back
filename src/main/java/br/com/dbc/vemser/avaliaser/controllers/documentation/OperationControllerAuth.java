@@ -28,7 +28,7 @@ public interface OperationControllerAuth {
             @ApiResponse(responseCode = "200", description = "Login realizado com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Email ou senha incorretos. Login não concluído.")
     })
-    ResponseEntity<String> loginUsuario(@RequestBody LoginDTO loginDTO) throws RegraDeNegocioException;
+    ResponseEntity<String> loginUsuario(@Valid @RequestBody LoginDTO loginDTO) throws RegraDeNegocioException;
     @Operation(summary = "Atualiza dados do Usuario Logado", description = "Realiza alteração de dados do usuario logado: nome.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario cadastrado com sucesso!"),
