@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -108,16 +109,14 @@ public class UsuarioService {
     }
 
     public UsuarioDTO atualizarUsuarioPorId(AtualizarUsuarioDTO atualizarUsuarioDTO, Integer id) throws RegraDeNegocioException {
-        try {
             UsuarioEntity usuarioEntity = findById(id);
             usuarioEntity.setNome(atualizarUsuarioDTO.getNome());
-            usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
-            UsuarioDTO usuarioLogadoDTO =
-                    converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
-            return usuarioLogadoDTO;
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
-        }
+            if (!usuarioEntity.getEmail().equals(atualizarUsuarioDTO.getEmail())) {
+                usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
+                }
+                UsuarioDTO usuarioLogadoDTO =
+                        converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
+                return usuarioLogadoDTO;
     }
 
     public void alterarSenhaUsuarioLogado(TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException {
