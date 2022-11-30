@@ -126,6 +126,8 @@ public class AlunoServiceTest {
         AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO,Stack.BACKEND);
 
         assertEquals(aluno.getNome(), alunoDTO.getNome());
+        assertEquals(aluno.getIdAluno(), alunoDTO.getIdAluno());
+        assertEquals(aluno.getStack(), alunoDTO.getStack());
         assertNotNull(alunoDTO);
     }
 
@@ -200,6 +202,7 @@ public class AlunoServiceTest {
         when(alunoRepository.save(any())).thenReturn(aluno);
 
         AlunoDTO alunoDTO = alunoService.atualizarUsuarioPorId(alunoCreateDTO,1);
+
 
         assertNotNull(alunoDTO);
     }

@@ -70,8 +70,8 @@ public class AlunoService {
             alunoEntity.setStack(stack);
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
             alunoEntity.setAtivo(Ativo.S);
-            alunoRepository.save(alunoEntity);
-            AlunoDTO alunoDTO = objectMapper.convertValue(alunoEntity, AlunoDTO.class);
+            AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
+            AlunoDTO alunoDTO = objectMapper.convertValue(alunoSalvo, AlunoDTO.class);
             return alunoDTO;
         } else {
             throw new RegraDeNegocioException("Você não tem permissão para cadastrar Alunos!");

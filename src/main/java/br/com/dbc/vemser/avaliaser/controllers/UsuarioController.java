@@ -44,8 +44,8 @@ public class UsuarioController implements OperationControllerAuth {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/atualizar-usuario-logado")
-    public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam @Valid AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
+    @PutMapping("/atualizar-usuario-logado")
+    public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestBody @Valid AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(nome), HttpStatus.OK);
 
     }
@@ -56,13 +56,13 @@ public class UsuarioController implements OperationControllerAuth {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/alterar-senha-usuario-logado")
+    @PutMapping("/alterar-senha-usuario-logado")
     public ResponseEntity<Void> atualizarSenhaUsuarioLogado(@RequestBody @Valid TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException {
         usuarioService.alterarSenhaUsuarioLogado(senhas);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/alterar-senha-usuario-recuperacao")
+    @PutMapping( "/alterar-senha-usuario-recuperacao")
     public ResponseEntity<Void> alterarSenhaRecuperada(@RequestParam String senha) throws RegraDeNegocioException {
         usuarioService.alterarSenhaPorRecuperacao(senha);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -48,9 +48,11 @@ public class AcompanhamentoService {
             acompanhamentoEntity.setTitulo(acompanhamentoCreateDTO.getTitulo());
             acompanhamentoEntity.setDataInicio(acompanhamentoCreateDTO.getDataInicio());
 
-            acompanhamentoRepository.save(acompanhamentoEntity);
-        AcompanhamentoDTO acompanhamentoDTO = objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoDTO.class);
-            return acompanhamentoDTO;
+            AcompanhamentoEntity acompanhamentoSalvo = acompanhamentoRepository.save(acompanhamentoEntity);
+
+        AcompanhamentoDTO acompanhamentoDTO = objectMapper.convertValue(acompanhamentoSalvo, AcompanhamentoDTO.class);
+        acompanhamentoDTO.setIdAcompanhamento(acompanhamentoSalvo.getIdAcompanhamento());
+        return acompanhamentoDTO;
     }
     public AcompanhamentoDTO editarAcompanhamento(EditarAcompanhamentoDTO editarAcompanhamentoDTO, Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);

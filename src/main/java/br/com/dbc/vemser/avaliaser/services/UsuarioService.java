@@ -84,9 +84,9 @@ public class UsuarioService {
             throw new RegraDeNegocioException("Email inválido!");
         }
 
-        usuarioRepository.save(usuarioEntity);
+        UsuarioEntity usuario = usuarioRepository.save(usuarioEntity);
 
-        UsuarioDTO usuarioDTO = converterUsuarioDTO(usuarioEntity);
+        UsuarioDTO usuarioDTO = converterUsuarioDTO(usuario);
         usuarioDTO.setCargo(usuarioEntity.getCargo().getNome());
         return usuarioDTO;
     }
@@ -150,7 +150,7 @@ public class UsuarioService {
 //    }
 
     public UsuarioDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(id).get();
+        UsuarioEntity usuarioEntity = findById(id);
         usuarioEntity.setImage(transformarImagemEmBytes(imagem));
         UsuarioDTO usuarioLogadoDTO =
                 converterUsuarioDTO(usuarioRepository.save(usuarioEntity));

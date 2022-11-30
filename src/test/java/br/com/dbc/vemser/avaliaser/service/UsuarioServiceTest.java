@@ -91,7 +91,10 @@ public class UsuarioServiceTest {
 
         UsuarioDTO usuarioRetorno = usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.ADMIN);
 
+        assertEquals(usuario.getIdUsuario(), usuarioRetorno.getIdUsuario());
         assertEquals(usuario.getNome(), usuarioRetorno.getNome());
+        assertEquals(usuario.getEmail(), usuarioRetorno.getEmail());
+        assertEquals(usuario.getCargo().getNome(), usuarioRetorno.getCargo());
         assertNotNull(usuarioRetorno);
     }
 
@@ -124,7 +127,7 @@ public class UsuarioServiceTest {
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         Integer idUsuario = 1;
 
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
         UsuarioDTO usuarioDTO = usuarioService.uploadImagem(imagem, idUsuario);
@@ -141,9 +144,6 @@ public class UsuarioServiceTest {
         byte[] imagemBytes = null;
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         Integer idUsuario = 1;
-
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuario));
-        when(usuarioRepository.save(any())).thenReturn(usuario);
 
         usuarioService.uploadImagem(imagem, idUsuario);
 
