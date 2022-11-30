@@ -276,7 +276,7 @@ public class UsuarioServiceTest {
     public void deveRecuperaSenhaCorretamente() throws RegraDeNegocioException {
         final String email = "test@demo.com.br";
         UsuarioEntity usuario = getUsuarioEntity();
-        when(usuarioRepository.findByEmailAndAtivo(any(),anyString())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmailAndAtivo(anyString(),any())).thenReturn(Optional.of(usuario));
         usuarioService.recuperarSenha(email);
         verify(tokenService).retornarTokenRecuperacaoSenha(any());
         verify(emailService).sendEmailRecuperacao(any(), any(),any());

@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
     Optional<UsuarioEntity> findByEmail(String email);
-    Optional<UsuarioEntity> findByEmailAndAtivo(Ativo ativo,String email);
+    Optional<UsuarioEntity> findByEmailAndAtivo(String email, Ativo ativo);
 
     Optional<UsuarioEntity> findByAtivoAndIdUsuario(Ativo ativo, Integer idUsuario);
 

@@ -12,11 +12,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class AcompanhamentoCreateDTO {
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Titulo não pode ser nulo.")
+    @NotBlank(message = "Titulo não pode ficar em branco.")
     private String titulo;
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Data de Início não pode ser nula.")
+    @NotBlank(message = "Data de Início não pode ficar em branco.")
     private LocalDate dataInicio;
 
 }

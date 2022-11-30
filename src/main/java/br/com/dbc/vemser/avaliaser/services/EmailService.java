@@ -26,32 +26,7 @@ public class EmailService {
     private final freemarker.template.Configuration fmConfiguration;
     @Value("${spring.mail.username}")
     private String from;
-    private static final String TO = "moises.noah@dbccompany.com.br";
     private final JavaMailSender emailSender;
-
-    public void sendSimpleMessage() {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(from);
-        message.setTo(TO);
-        message.setSubject("Assunto");
-        message.setText("Teste \n minha mensagem \n\nAtt,\nSistema.");
-        emailSender.send(message);
-    }
-
-    public void sendWithAttachment() throws MessagingException {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message,
-                true);
-        helper.setFrom(from);
-        helper.setTo(TO);
-        helper.setSubject("Subject");
-        helper.setText("Teste\n minha mensagem \n\nAtt,\nSistema.");
-        File file1 = new File("imagem.jpg");
-        FileSystemResource file
-                = new FileSystemResource(file1);
-        helper.addAttachment(file1.getName(), file);
-        emailSender.send(message);
-    }
 
     public void sendEmail(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails) {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -74,22 +49,20 @@ public class EmailService {
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(usuarioDTO.getEmail());
             mimeMessageHelper.setSubject(tipoEmails.getDescricao());
-            mimeMessageHelper.setText(geContentFromTemplateRecuperacao(usuarioDTO, tipoEmails, token), true);
+            mimeMessageHelper.setText(geContentFromTemplateRecuperacao(usuarioDTO, token), true);
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
         }
     }
 
-    public String geContentFromTemplateRecuperacao(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails, String token) throws IOException, TemplateException {
+    public String geContentFromTemplateRecuperacao(UsuarioRecuperacaoDTO usuarioDTO, String token) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", usuarioDTO.getNome());
         dados.put("email", from);
-        dados.put("texto1", "Solicitação de recuperação de senha feita com sucesso!");
-        dados.put("texto2", "Seu token de recuperação é: " + token);
-        dados.put("texto3", "Após acessar o link acima, basta realizar o cadastro de sua nova senha!");
+        dados.put("linkComToken", "https://avaliaser-front-flame.vercel.app/recuperar-senha?token="+token);
 
-        Template template = fmConfiguration.getTemplate("email-template.html");
+        Template template = fmConfiguration.getTemplate("index.html");
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
         return html;
     }

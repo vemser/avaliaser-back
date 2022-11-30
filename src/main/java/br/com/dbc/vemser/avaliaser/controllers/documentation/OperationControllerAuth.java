@@ -2,22 +2,16 @@ package br.com.dbc.vemser.avaliaser.controllers.documentation;
 
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.TrocarSenhaUsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -40,14 +34,14 @@ public interface OperationControllerAuth {
             @ApiResponse(responseCode = "200", description = "Usuario cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestParam @Valid AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException;
+    ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@Valid @RequestBody AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException;
     @Operation(summary = "Esqueci minha Senha", description = "Caso seu email conste no nosso banco de dados de usuarios, " +
             "envia um email com link de acesso(e token de autenticação) para trocar a senha.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Recuperação de senha realiza com sucesso."),
             @ApiResponse(responseCode = "403", description = "Email incorreto! Não será possivel continuar com a recuperação de senha!")
     })
-    ResponseEntity<Void> recuperarSenha(String email) throws RegraDeNegocioException;
+    ResponseEntity<Void> recuperarSenha(@RequestParam String email) throws RegraDeNegocioException;
 
     @Operation(summary = "Alteração de senha através de recuperação", description = "Realiza a mudança de senha do Usuario logado apos recuperação de Token por email.")
     @ApiResponses(value = {
@@ -59,6 +53,7 @@ public interface OperationControllerAuth {
     @Operation(summary = "Atualização de senha do Usuario Logado", description = "Realiza a mudança de senha do Usuario logado após validar senha antiga!")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Senha atualizada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Senha atual informada está incorreta! \nNão é possível alterar senha."),
             @ApiResponse(responseCode = "403", description = "Não foi identificado permissão para realizar esta operação.")
     })
     ResponseEntity<Void> atualizarSenhaUsuarioLogado(@RequestBody @Valid TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException;
