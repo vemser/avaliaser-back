@@ -26,6 +26,7 @@ public class UsuarioCreateDTO {
 
     @NotNull(message = "Nome não pode ser nulo.")
     @NotBlank(message = "Nome não pode ficar em branco.")
+    @Pattern(regexp = "[\\s[a-zA-Z]*]{0,}", message = "Não permitido números e caracteres especiais.")
     @Schema(example = "Noah Bispo")
     private String nome;
 
