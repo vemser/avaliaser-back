@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -49,17 +50,21 @@ public class UsuarioService {
 
 
     public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAllByAtivo(Ativo.S, pageRequest);
-        List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()
-                .map(usuarioEntity -> converterUsuarioDTO(usuarioEntity))
-                .toList();
-        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                paginaDoRepositorio.getTotalPages(),
-                pagina,
-                tamanho,
-                usuarioPaginas
-        );
+        if(tamanho != 0){
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAllByAtivo(Ativo.S, pageRequest);
+            List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()
+                    .map(usuarioEntity -> converterUsuarioDTO(usuarioEntity))
+                    .toList();
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    usuarioPaginas
+            );
+        }
+        List<UsuarioDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L,0,0,tamanho,  listaVazia);
     }
 
     public UsuarioDTO cadastrarUsuario(UsuarioCreateDTO usuarioCreateDTO, Cargo cargo) throws RegraDeNegocioException {
@@ -91,12 +96,12 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO atualizarUsuarioLogado(AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
+    public UsuarioDTO atualizarUsuarioLogado(AtualizarUsuarioLogadoDTO atualizarUsuarioLogadoDTO) throws RegraDeNegocioException {
 
-        UsuarioEntity usuarioLogado = getLoggedUser();
+        UsuarioEntity usuarioLogado = findById(getLoggedUser().getIdUsuario());
+        usuarioLogado.setNome(atualizarUsuarioLogadoDTO.getNome());
 
-        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO(nome.getNome(), usuarioLogado.getEmail());
-        return atualizarUsuarioPorId(atualizarUsuarioDTO, usuarioLogado.getIdUsuario());
+        return converterUsuarioDTO(usuarioRepository.save(usuarioLogado));
     }
 
     public UsuarioDTO atualizarUsuarioPorId(AtualizarUsuarioDTO atualizarUsuarioDTO, Integer id) throws RegraDeNegocioException {
@@ -140,7 +145,7 @@ public class UsuarioService {
     }
 
     public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
-        return usuarioRepository.findByEmailAndAtivo(Ativo.S, email)
+        return usuarioRepository.findByEmailAndAtivo(email, Ativo.S)
                 .orElseThrow(() -> new RegraDeNegocioException("USUARIO_NAO_ENCONTRADO"));
     }
 
@@ -181,7 +186,7 @@ public class UsuarioService {
         if (usuario.getImage() != null) {
             usuarioLogado.setFoto(ImageUtil.decompressImage(usuario.getImage()));
         }
-        usuarioLogado.setCargo(usuario.getCargo().getNome());
+        usuarioLogado.setCargo(Cargo.valueOf(usuario.getCargo().getNome().replace("ROLE_", "")).getDescricao());
         return usuarioLogado;
     }
 

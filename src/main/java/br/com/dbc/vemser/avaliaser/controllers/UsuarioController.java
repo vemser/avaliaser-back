@@ -37,7 +37,7 @@ public class UsuarioController implements OperationControllerAuth {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUsuario(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<String> loginUsuario(@Valid @RequestBody LoginDTO loginDTO) {
         log.info("Logando usuário...");
         String token = usuarioService.loginUsuario(loginDTO);
         log.info("Usuário logado com sucesso.");
@@ -45,9 +45,9 @@ public class UsuarioController implements OperationControllerAuth {
     }
 
     @PutMapping("/atualizar-usuario-logado")
-    public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@RequestBody @Valid AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
-        return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(nome), HttpStatus.OK);
 
+    public ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@Valid @RequestBody AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException {
+        return new ResponseEntity<>(usuarioService.atualizarUsuarioLogado(nome), HttpStatus.OK);
     }
 
     @PostMapping("/recuperar-senha")
@@ -62,7 +62,8 @@ public class UsuarioController implements OperationControllerAuth {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping( "/alterar-senha-usuario-recuperacao")
+
+    @PutMapping("/alterar-senha-usuario-recuperacao")
     public ResponseEntity<Void> alterarSenhaRecuperada(@RequestParam String senha) throws RegraDeNegocioException {
         usuarioService.alterarSenhaPorRecuperacao(senha);
         return new ResponseEntity<>(HttpStatus.OK);

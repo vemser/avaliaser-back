@@ -16,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @Slf4j
 @Validated
 @RestController
@@ -40,22 +42,22 @@ public class AlunoController implements OperationControllerAluno {
 
     @PostMapping(value = "/cadastrar-aluno")
     public ResponseEntity<AlunoDTO> cadastrarAluno(@RequestParam Stack stack,
-                                                       @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
+                                                       @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
         AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO, stack);
         return new ResponseEntity<>(alunoDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/upload-imagem/{idAluno}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<AlunoDTO> uploadImagem(@RequestPart(value = "file", required = false) MultipartFile file,
-                                                   @RequestParam(value = "idAluno") Integer idAluno) throws RegraDeNegocioException {
+    public ResponseEntity<AlunoDTO> uploadImagem(@PathVariable("idAluno") Integer idAluno,
+                                                 @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
         AlunoDTO alunoDTO = alunoService.uploadImagem(file, idAluno);
         return new ResponseEntity<>(alunoDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/atualizar-aluno/{idAluno}")
-    public ResponseEntity<AlunoDTO> atualizarAlunoPorId(@RequestBody AlunoCreateDTO alunoCreateDTO,
+    public ResponseEntity<AlunoDTO> atualizarAlunoPorId(@PathVariable("idAluno") Integer idAluno,
                                                         @RequestParam Stack stack,
-                                                            @PathVariable Integer idAluno) throws RegraDeNegocioException {
+                                                        @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
         alunoCreateDTO.setStack(stack);
         return new ResponseEntity<>(alunoService.atualizarUsuarioPorId(alunoCreateDTO, idAluno), HttpStatus.OK);
     }

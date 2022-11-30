@@ -21,6 +21,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @Slf4j
 @Validated
 @RestController
@@ -32,15 +34,15 @@ public class AdministradorController implements OperationControllerAdministrador
 
 
     @GetMapping("/listar-usuarios")
-    public ResponseEntity<PageDTO<UsuarioDTO>> listarUsuario(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina) {
+    public ResponseEntity<PageDTO<UsuarioDTO>> listarUsuario(@RequestParam Integer page, @RequestParam Integer size) {
         log.info("Retornando Usuário logado...");
-        PageDTO<UsuarioDTO> usuario = usuarioService.listUsuarioPaginado(paginaQueEuQuero, tamanhoDeRegistrosPorPagina);
+        PageDTO<UsuarioDTO> usuario = usuarioService.listUsuarioPaginado(page, size);
         log.info("Retorno de usuário logado com sucesso.");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
         UsuarioDTO usuario = usuarioService.findByIdDTO(idUsuario);
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
@@ -48,28 +50,28 @@ public class AdministradorController implements OperationControllerAdministrador
 
     @PostMapping(value = "/cadastrar-usuario")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestParam Cargo cargo,
-                                                       @RequestBody UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+                                                       @RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
         UsuarioDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, cargo);
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/upload-imagem/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UsuarioDTO> uploadImagem(@RequestPart(value = "file", required = false) MultipartFile file,
-                                                   @PathVariable(name = "idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<UsuarioDTO> uploadImagem(@PathVariable(name = "idUsuario") Integer idUsuario,
+                                                   @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
         UsuarioDTO usuarioLogadoDTO = usuarioService.uploadImagem(file, idUsuario);
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
 
     @PutMapping(value = "/atualizar-usuario/{idUsuario}")
-    public ResponseEntity<UsuarioDTO> atualizarUsuarioPorId(@RequestBody AtualizarUsuarioDTO atualizarUsuarioDTO,
-                                                            @PathVariable Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<UsuarioDTO> atualizarUsuarioPorId(@PathVariable("idUsuario") Integer idUsuario,
+                                                            @RequestBody @Valid AtualizarUsuarioDTO atualizarUsuarioDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO, idUsuario), HttpStatus.OK);
     }
 
 
     @DeleteMapping("/delete/{idUsuario}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Integer idUsuario) throws RegraDeNegocioException {
+    public ResponseEntity<Void> deletarUsuario(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
         usuarioService.desativarUsuarioById(idUsuario);
         return new ResponseEntity<>(HttpStatus.OK);
     }
