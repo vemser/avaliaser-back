@@ -28,9 +28,9 @@ public class AlunoController implements OperationControllerAluno {
     private final AlunoService alunoService;
 
     @GetMapping("/listar-alunos")
-    public ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina) {
+    public ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer page, Integer size) {
         log.info("Retornando Usuário logado...");
-        PageDTO<AlunoDTO> aluno = alunoService.listarAlunoPaginado(paginaQueEuQuero, tamanhoDeRegistrosPorPagina);
+        PageDTO<AlunoDTO> aluno = alunoService.listarAlunoPaginado(page, size);
         log.info("Retorno de usuário logado com sucesso.");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }
@@ -58,8 +58,7 @@ public class AlunoController implements OperationControllerAluno {
     public ResponseEntity<AlunoDTO> atualizarAlunoPorId(@PathVariable("idAluno") Integer idAluno,
                                                         @RequestParam Stack stack,
                                                         @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
-        alunoCreateDTO.setStack(stack);
-        return new ResponseEntity<>(alunoService.atualizarUsuarioPorId(alunoCreateDTO, idAluno), HttpStatus.OK);
+        return new ResponseEntity<>(alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO,stack), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{idAluno}")

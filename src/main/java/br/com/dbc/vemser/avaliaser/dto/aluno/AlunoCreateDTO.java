@@ -22,12 +22,6 @@ public class AlunoCreateDTO {
     @Schema(example = "Alexandre Bispo")
     private String nome;
 
-    @NotNull(message = "Stack não pode ser nula.")
-    @NotBlank(message = "Stack não pode ficar em branco.")
-    @JsonIgnore
-    @Schema(example = "BACKEND")
-    private Stack stack;
-
     @NotNull(message = "Email não pode ser nulo.")
     @Email(message = "Email inválido.", regexp = "^[A-Za-z0-9._%+-]+@dbccompany.com.br$")
     @Schema(example = "alexandre.bispo@dbccompany.com.br")

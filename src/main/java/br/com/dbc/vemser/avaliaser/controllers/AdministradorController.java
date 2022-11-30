@@ -55,7 +55,7 @@ public class AdministradorController implements OperationControllerAdministrador
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/upload-imagem/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(value = "/upload-imagem/{idUsuario}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UsuarioDTO> uploadImagem(@PathVariable(name = "idUsuario") Integer idUsuario,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
         UsuarioDTO usuarioLogadoDTO = usuarioService.uploadImagem(file, idUsuario);

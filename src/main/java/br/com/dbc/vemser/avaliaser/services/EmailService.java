@@ -73,7 +73,7 @@ public class EmailService {
         dados.put("email", from);
 
         if (tipoEmails.equals(TipoEmails.CREATE)) {
-            dados.put("texto1", "Estamos felizes em ter você em nosso sistema!");
+            dados.put("texto1", "A DBC TE DESEJA AS MAIS CALOROSAS BOAS VINDAS!");
             dados.put("texto2", "Seu cadastro foi realizado com sucesso, seu Login é: " + usuarioDTO.getEmail() + "!");
             dados.put("texto3", "Sua senha de acesso temporária é: " + usuarioDTO.getSenha());
 
@@ -83,18 +83,6 @@ public class EmailService {
 
         } else if (tipoEmails.equals(TipoEmails.DELETE)) {
             dados.put("texto1", "Você perdeu o acesso ao nosso sistema!!");
-            dados.put("texto2", "--------------------------------------");
-
-        } else if (tipoEmails.equals(TipoEmails.END_CREATE)) {
-            dados.put("texto1", "O cadastro do seu ENDEREÇO foi realizado com sucesso!");
-            dados.put("texto2", "Obrigado!");
-
-        } else if (tipoEmails.equals(TipoEmails.END_UPDATE)) {
-            dados.put("texto1", "Você atualizou os dados do seu ENDEREÇO com sucesso!!");
-            dados.put("texto2", "--------------------------------------");
-
-        } else if (tipoEmails.equals(TipoEmails.END_DELETE)) {
-            dados.put("texto1", "Seus dados de Endereço foram excluidos com sucesso!!");
             dados.put("texto2", "--------------------------------------");
 
         } else if (tipoEmails.equals(TipoEmails.AVALIACAO)) {

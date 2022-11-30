@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.services;
 
+import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +32,7 @@ public class AlunoService {
 
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) {
+        if(tamanho != 0){
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByAtivo(Ativo.S, pageRequest);
         List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream()
@@ -41,13 +44,10 @@ public class AlunoService {
                 pagina,
                 tamanho,
                 alunoPaginas
-        );
+        );}
+        List<AlunoDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L,0,0,tamanho,  listaVazia);
     }
-
-//    public AlunoEntity findAlunoByEmail(String email) throws RegraDeNegocioException {
-//        return alunoRepository.findByEmailAndAtivo(Ativo.S, email)
-//                .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado!"));
-//    }
 
     public AlunoEntity findById(Integer id) throws RegraDeNegocioException {
         return alunoRepository.findByAtivoAndIdAluno(Ativo.S,id)
@@ -60,10 +60,7 @@ public class AlunoService {
     }
 
     public AlunoDTO cadastrarAluno(AlunoCreateDTO alunoCreateDTO, Stack stack) throws RegraDeNegocioException {
-        String cargoGestor = cargoService.findById(2).getNome();
-        String cargoInstrutor= cargoService.findById(3).getNome();
-        String cargo = usuarioService.getUsuarioLogado().getCargo();
-        if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
+
             AlunoEntity alunoEntity = new AlunoEntity();
             alunoEntity.setNome(alunoCreateDTO.getNome());
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
@@ -73,9 +70,7 @@ public class AlunoService {
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
             AlunoDTO alunoDTO = objectMapper.convertValue(alunoSalvo, AlunoDTO.class);
             return alunoDTO;
-        } else {
-            throw new RegraDeNegocioException("Você não tem permissão para cadastrar Alunos!");
-        }
+
     }
 
     public AlunoDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {
@@ -86,21 +81,15 @@ public class AlunoService {
         return alunoDTO;
     }
 
-    public AlunoDTO atualizarUsuarioPorId(AlunoCreateDTO alunoAtualizado, Integer id) throws RegraDeNegocioException {
-        String cargoGestor = cargoService.findById(2).getNome();
-        String cargoInstrutor= cargoService.findById(3).getNome();
-        String cargo = usuarioService.getUsuarioLogado().getCargo();
-        if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
+    public AlunoDTO atualizarAlunoPorId(Integer id, AlunoCreateDTO alunoAtualizado, Stack stack) throws RegraDeNegocioException {
+
         AlunoEntity aluno = findById(id);
         aluno.setNome(alunoAtualizado.getNome());
         aluno.setEmail(alunoAtualizado.getEmail());
-        aluno.setStack(alunoAtualizado.getStack());
+        aluno.setStack(stack);
         AlunoDTO alunoDTO =
                 objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
         return alunoDTO;
-        } else {
-            throw new RegraDeNegocioException("Você não tem permissão para alterar dados de Alunos!");
-        }
 
     }
 

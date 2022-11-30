@@ -27,6 +27,9 @@ public class AcompanhamentoEntity {
     @Column(name = "titulo")
     private String titulo;
 
+    @Column(name = "descricao")
+    private String descricao;
+
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
 

@@ -107,20 +107,11 @@ public class AlunoServiceTest {
     }
     @Test
     public void deveTestarCadastroAlunoComSucesso() throws RegraDeNegocioException, IOException {
-        CargoEntity cargo = new CargoEntity();
-        cargo.setNome("ROLE_GESTOR");
-        cargo.setIdCargo(2);
-
-        UsuarioLogadoDTO usuarioLogadoDTO = UsuarioFactory.getUsuarioLogadoDTO();
-        usuarioLogadoDTO.setCargo(cargo.getNome());
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
 
         AlunoEntity aluno = getAlunoEntity();
         AlunoCreateDTO alunoCreateDTO = getAlunoCreateDTO();
         SecurityContextHolder.getContext().setAuthentication(SecurityContextHolder.getContext().getAuthentication());
 
-        when(usuarioService.getUsuarioLogado()).thenReturn(usuarioLogadoDTO);
-        when(cargoService.findById(anyInt())).thenReturn(cargo);
         when(alunoRepository.save(any())).thenReturn(aluno);
 
         AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO,Stack.BACKEND);
@@ -184,25 +175,14 @@ public class AlunoServiceTest {
 
     @Test
     public void deveTestarAtualizarAlunoComSucesso() throws RegraDeNegocioException, IOException {
-        CargoEntity cargo = new CargoEntity();
-        cargo.setNome("ROLE_GESTOR");
-        cargo.setIdCargo(2);
-
-        UsuarioLogadoDTO usuarioLogadoDTO = UsuarioFactory.getUsuarioLogadoDTO();
-        usuarioLogadoDTO.setCargo(cargo.getNome());
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-
 
         AlunoEntity aluno = getAlunoEntity();
         AlunoCreateDTO alunoCreateDTO = getAlunoCreateDTO();
 
-        when(usuarioService.getUsuarioLogado()).thenReturn(usuarioLogadoDTO);
-        when(cargoService.findById(anyInt())).thenReturn(cargo);
         when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
         when(alunoRepository.save(any())).thenReturn(aluno);
 
-        AlunoDTO alunoDTO = alunoService.atualizarUsuarioPorId(alunoCreateDTO,1);
-
+        AlunoDTO alunoDTO = alunoService.atualizarAlunoPorId(getAlunoEntity().getIdAluno(), alunoCreateDTO,aluno.getStack());
 
         assertNotNull(alunoDTO);
     }
@@ -253,7 +233,6 @@ public class AlunoServiceTest {
         AlunoCreateDTO alunoCreateDTO = new AlunoCreateDTO();
         alunoCreateDTO.setNome("Paulo Sergio");
         alunoCreateDTO.setEmail("paulo.sergio@dbccompany.com");
-        alunoCreateDTO.setStack(Stack.BACKEND);
         return alunoCreateDTO;
     }
 

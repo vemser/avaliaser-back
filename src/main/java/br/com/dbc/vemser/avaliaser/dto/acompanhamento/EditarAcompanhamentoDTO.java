@@ -14,4 +14,8 @@ public class EditarAcompanhamentoDTO {
     @NotNull(message = "Titulo não pode ser nulo.")
     @NotBlank(message = "Titulo não pode ficar em branco.")
     private String titulo;
+
+    @NotNull(message = "Descrição não pode ser nulo.")
+    @NotBlank(message = "Descrição não pode ficar em branco.")
+    private String descricao;
 }

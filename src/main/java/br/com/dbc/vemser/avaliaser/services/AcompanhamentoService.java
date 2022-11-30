@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +30,7 @@ public class AcompanhamentoService {
     private final ObjectMapper objectMapper;
 
     public PageDTO<AcompanhamentoDTO> listarAcompanhamentosPaginados(Integer pagina, Integer tamanho) {
+        if(tamanho != 0){
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAll(pageRequest);
         List<AcompanhamentoDTO> acompanhamentoPaginas = paginaDoRepositorio.getContent().stream()
@@ -39,7 +42,9 @@ public class AcompanhamentoService {
                 pagina,
                 tamanho,
                 acompanhamentoPaginas
-        );
+        );}
+        List<AcompanhamentoDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L,0,0,tamanho,  listaVazia);
     }
     public AcompanhamentoDTO cadastrarAcompanhamento(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
 
@@ -47,6 +52,7 @@ public class AcompanhamentoService {
 
             acompanhamentoEntity.setTitulo(acompanhamentoCreateDTO.getTitulo());
             acompanhamentoEntity.setDataInicio(acompanhamentoCreateDTO.getDataInicio());
+            acompanhamentoEntity.setDescricao(acompanhamentoCreateDTO.getDescricao());
 
             AcompanhamentoEntity acompanhamentoSalvo = acompanhamentoRepository.save(acompanhamentoEntity);
 
@@ -57,6 +63,7 @@ public class AcompanhamentoService {
     public AcompanhamentoDTO editarAcompanhamento(EditarAcompanhamentoDTO editarAcompanhamentoDTO, Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);
         acompanhamentoEntity.setTitulo(editarAcompanhamentoDTO.getTitulo());
+        acompanhamentoEntity.setDescricao(editarAcompanhamentoDTO.getDescricao());
         acompanhamentoRepository.save(acompanhamentoEntity);
         return objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoDTO.class);
     }

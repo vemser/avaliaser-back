@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 public interface OperationControllerAcompanhamento {
 
     @Operation(summary = "Listar acompanhamentos Cadastrados", description = "Realiza a listagem de todos os acompanhamentos já cadastrados no sistema.")
@@ -25,7 +27,7 @@ public interface OperationControllerAcompanhamento {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina);
+    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size);
 
     @Operation(summary = "Busca acompanhamentos por Id", description = "Realiza busca de acompanhamentos cadastrado por ID.")
     @ApiResponses(value = {
@@ -33,14 +35,15 @@ public interface OperationControllerAcompanhamento {
             @ApiResponse(responseCode = "400", description = "Acompanhamento não localizado, verifique se o ID inserido está correto."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(Integer id) throws RegraDeNegocioException;
+    ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@RequestParam("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualiza dados de acompanhamentos por ID", description = "Realiza a busca de acompanhamento por ID, e realiza alteração de dados deste acompanhamentos: titulo.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Acompanhamento cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(Integer id, EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException;
+    ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@RequestParam("idAcompanhamento") Integer idAcompanhamento,
+                                                           @Valid @RequestBody EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException;
 
 
     @Operation(summary = "Cadastrar um acompanhamento", description = "Realiza o cadastramento de dados do Acompanhamento: Titulo, Data.")
@@ -48,7 +51,7 @@ public interface OperationControllerAcompanhamento {
             @ApiResponse(responseCode = "200", description = "Acompanhamento cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<AcompanhamentoDTO> cadastrarAcompanhamento(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException;
+    ResponseEntity<AcompanhamentoDTO> cadastrarAcompanhamento( @Valid @RequestBody AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException;
 
 
 

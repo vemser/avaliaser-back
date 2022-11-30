@@ -29,8 +29,8 @@ public class AcompanhamentoController implements OperationControllerAcompanhamen
     private final AcompanhamentoService acompanhamentoService;
 
     @GetMapping("/listar-acompanhamento")
-    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina) {
-        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(paginaQueEuQuero, tamanhoDeRegistrosPorPagina);
+    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) {
+        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(page, size);
         return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
     }
 
@@ -40,14 +40,14 @@ public class AcompanhamentoController implements OperationControllerAcompanhamen
         return new ResponseEntity<>(acompanhamento, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/cadastrar-acompanhamento")
+    @PostMapping(value = "/cadastrar-acompanhamento")
     public ResponseEntity<AcompanhamentoDTO> cadastrarAcompanhamento(
             @Valid @RequestBody AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
         AcompanhamentoDTO usuarioLogadoDTO = acompanhamentoService.cadastrarAcompanhamento(acompanhamentoCreateDTO);
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/editar-acompanhamento/{idAcompanhamento}")
+    @PutMapping(value = "/editar-acompanhamento/{idAcompanhamento}")
     public ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@RequestParam("idAcompanhamento") Integer idAcompanhamento,
                                                                   @Valid @RequestBody EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException {
         AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO,idAcompanhamento);

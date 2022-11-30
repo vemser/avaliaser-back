@@ -30,13 +30,18 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) ->
                         //autorizações -> auth
                         authz.antMatchers("/","/auth/login","/teste/**","/auth/recuperar-senha","/auth/usuario-logado").permitAll()
+
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-recuperacao").hasRole("RECUPERACAO")
                                 .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO", "ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
 
-                                .antMatchers("/aluno/**").hasAnyRole("GESTOR")
+
+                                .antMatchers(HttpMethod.GET,"/acompanhamento/buscar-acompanhamento/{idAcompanhamento}").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET,"/acompanhamento/listar-acompanhamento").hasAnyRole("GESTOR","INSTRUTOR")
+
+                                .antMatchers("/aluno/**").hasAnyRole("GESTOR","INSTRUTOR")
                                 .antMatchers("/acompanhamento/**").hasRole("GESTOR")
                                 .antMatchers("/admininstrador/**").hasRole("ADMIN")
                                 .antMatchers("/auth/**").hasRole("ADMIN")
