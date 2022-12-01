@@ -46,7 +46,6 @@ public class UsuarioService {
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
-    private final ImageUtil imageUtil;
 
 
     public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) {
@@ -231,7 +230,7 @@ public class UsuarioService {
         usuarioDTO.setEmail(usuarioEntity.getEmail());
         usuarioDTO.setCargo(Cargo.valueOf(usuarioEntity.getCargo().getNome().replace("ROLE_", "")).getDescricao());
         if (usuarioEntity.getImage() != null) {
-            usuarioDTO.setFoto(imageUtil.decompressImage(usuarioEntity.getImage()));
+            usuarioDTO.setFoto(ImageUtil.decompressImage(usuarioEntity.getImage()));
         }
         return usuarioDTO;
     }
