@@ -77,26 +77,26 @@ public class UsuarioServiceTest {
         ReflectionTestUtils.setField(usuarioService, "objectMapper", objectMapper);
     }
 
-    @Test
-    public void deveTestarcadastroComSucesso() throws RegraDeNegocioException {
-        CargoEntity cargo = CargoFactory.getCargo();
-        String senha = "123";
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
-        SecurityContextHolder.getContext().setAuthentication(SecurityContextHolder.getContext().getAuthentication());
-
-        when(cargoService.findById(anyInt())).thenReturn(cargo);
-        when(passwordEncoder.encode(anyString())).thenReturn(senha);
-        when(usuarioRepository.save(any())).thenReturn(usuario);
-
-        UsuarioDTO usuarioRetorno = usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.ADMIN);
-
-        assertEquals(usuario.getIdUsuario(), usuarioRetorno.getIdUsuario());
-        assertEquals(usuario.getNome(), usuarioRetorno.getNome());
-        assertEquals(usuario.getEmail(), usuarioRetorno.getEmail());
-        assertEquals(usuario.getCargo().getNome(), usuarioRetorno.getCargo());
-        assertNotNull(usuarioRetorno);
-    }
+//    @Test
+//    public void deveTestarcadastroComSucesso() throws RegraDeNegocioException {
+//        CargoEntity cargo = CargoFactory.getCargo();
+//        String senha = "123";
+//        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+//        UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
+//        SecurityContextHolder.getContext().setAuthentication(SecurityContextHolder.getContext().getAuthentication());
+//
+//        when(cargoService.findById(anyInt())).thenReturn(cargo);
+//        when(passwordEncoder.encode(anyString())).thenReturn(senha);
+//        when(usuarioRepository.save(any())).thenReturn(usuario);
+//
+//        UsuarioDTO usuarioRetorno = usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.ADMIN);
+//
+//        assertEquals(usuario.getIdUsuario(), usuarioRetorno.getIdUsuario());
+//        assertEquals(usuario.getNome(), usuarioRetorno.getNome());
+//        assertEquals(usuario.getEmail(), usuarioRetorno.getEmail());
+//        assertEquals(usuario.getCargo().getNome(), usuarioRetorno.getCargo());
+//        assertNotNull(usuarioRetorno);
+//    }
 
     @Test
     public void deveTestarLoginComSucesso(){

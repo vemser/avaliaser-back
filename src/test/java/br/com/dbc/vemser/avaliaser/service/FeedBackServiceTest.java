@@ -113,7 +113,6 @@ public class FeedBackServiceTest {
         FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
         FeedBackCreateDTO feedBackCreateDTO = FeedBackFactory.getFeedBackCreateDTO();
 
-        when(alunoService.findById(anyInt())).thenReturn(aluno);
         when(usuarioService.getLoggedUser()).thenReturn(usuario);
         when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
 
