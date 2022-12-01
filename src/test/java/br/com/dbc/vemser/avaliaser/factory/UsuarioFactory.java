@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
@@ -20,7 +21,7 @@ public class UsuarioFactory {
         usuario.setIdUsuario(1);
         usuario.setNome("Paulo Sergio");
         usuario.setEmail("paulo.sergio@dbccompany.com");
-        usuario.setSenha("123");
+        usuario.setSenha("123456789");
         usuario.setCargo(cargo);
         usuario.setAtivo(Ativo.S);
         return usuario;
@@ -52,10 +53,18 @@ public class UsuarioFactory {
         CargoEntity cargo = new CargoEntity();
         cargo.setIdCargo(1);
         UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setIdUsuario(1);
         usuarioDTO.setNome("Paulo Sergio");
-        usuarioDTO.setEmail("paulo.sergio@dbccompany.com");
-        usuarioDTO.setCargo(cargo.getNome());
+        usuarioDTO.setCargo(usuarioDTO.getNome());
         usuarioDTO.setFoto(imagem.getBytes());
+        usuarioDTO.setEmail("paulo.sergio@dbccompany.com");
         return usuarioDTO;
+    }
+    public static UsuarioRecuperacaoDTO getUsuarioRecuperacao(){
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO();
+        usuarioRecuperacaoDTO.setEmail("paulo.sergio@dbccompany.com");
+        usuarioRecuperacaoDTO.setNome("Paulo Sergio");
+        usuarioRecuperacaoDTO.setSenha("123456789");
+        return usuarioRecuperacaoDTO;
     }
 }

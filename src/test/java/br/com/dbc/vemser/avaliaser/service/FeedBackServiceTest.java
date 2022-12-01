@@ -106,7 +106,7 @@ public class FeedBackServiceTest {
         assertEquals(listaPaginada.getPageable().getPageNumber(), feedBackDTOPageDTO.getPagina());
     }
     @Test
-    public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException {
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
         SecurityContextHolder.getContext().setAuthentication(getAuthentication());
