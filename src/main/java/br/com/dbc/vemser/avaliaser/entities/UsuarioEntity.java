@@ -48,6 +48,10 @@ public class UsuarioEntity implements UserDetails {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity", cascade = CascadeType.REMOVE)
+    private Set<FeedBackEntity> feedBack;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity", cascade = CascadeType.REMOVE)
     private Set<AvaliacaoEntity> avaliacoes;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

@@ -39,8 +39,9 @@ public interface OperationControllerAcompanhamento {
 
     @Operation(summary = "Atualiza dados de acompanhamentos por ID", description = "Realiza a busca de acompanhamento por ID, e realiza alteração de dados deste acompanhamentos: titulo.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Acompanhamento cadastrado com sucesso!"),
-            @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
+            @ApiResponse(responseCode = "200", description = "Acompanhamento editado com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta ou com id inválido, tente de novo."),
+            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
     ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@RequestParam("idAcompanhamento") Integer idAcompanhamento,
                                                            @Valid @RequestBody EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException;
@@ -49,7 +50,8 @@ public interface OperationControllerAcompanhamento {
     @Operation(summary = "Cadastrar um acompanhamento", description = "Realiza o cadastramento de dados do Acompanhamento: Titulo, Data.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Acompanhamento cadastrado com sucesso!"),
-            @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
+            @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta ou com id inválido, tente de novo."),
+            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
     ResponseEntity<AcompanhamentoDTO> cadastrarAcompanhamento( @Valid @RequestBody AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException;
 
