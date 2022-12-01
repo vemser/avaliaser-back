@@ -74,7 +74,7 @@ public class AcompanhamentoServiceTest {
 
 
     @Test
-    public void DeveListarAcompanhamentosPaginadoCorretamente() {
+    public void deveListarAcompanhamentosPaginadoCorretamente() {
         final int numeroPagina = 0;
         final int tamanho = 3;
 

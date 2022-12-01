@@ -41,12 +41,12 @@ public class AcompanhamentoFactory {
         return editarAcompanhamentoDTO;
     }
 
-    public static AcompanhamentoDTO getAcompanhamentoDTO() throws IOException {
+    public static AcompanhamentoDTO getAcompanhamentoDTO(){
 
         AcompanhamentoDTO acompanhamentoDTO = new AcompanhamentoDTO();
         acompanhamentoDTO.setIdAcompanhamento(1);
         acompanhamentoDTO.setTitulo("Paulo Sergio");
-        acompanhamentoDTO.setDataInicio(LocalDate.now());
+        acompanhamentoDTO.setDataInicio(LocalDate.of(2022,12,01));
         return acompanhamentoDTO;
     }
 }

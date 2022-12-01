@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.factory;
 
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
@@ -43,5 +44,18 @@ public class UsuarioFactory {
         usuarioLogadoDTO.setCargo(cargo.getNome());
         usuarioLogadoDTO.setFoto(imagem.getBytes());
         return usuarioLogadoDTO;
+    }
+
+    public static UsuarioDTO getUsuarioDTO() throws IOException {
+        byte[] imagemBytes = new byte[10*1024];
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+        CargoEntity cargo = new CargoEntity();
+        cargo.setIdCargo(1);
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setNome("Paulo Sergio");
+        usuarioDTO.setEmail("paulo.sergio@dbccompany.com");
+        usuarioDTO.setCargo(cargo.getNome());
+        usuarioDTO.setFoto(imagem.getBytes());
+        return usuarioDTO;
     }
 }
