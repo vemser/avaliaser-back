@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
@@ -46,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +90,17 @@ public class AcompanhamentoServiceTest {
         assertEquals(1, acompanhamentoDTOPageDTO.getTotalElementos());
         assertEquals(1, acompanhamentoDTOPageDTO.getQuantidadePaginas());
         assertEquals(listaPaginada.getPageable().getPageNumber(), acompanhamentoDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarAcompanhamentoPaginadoComListaVazia() {
+        final int numeroPagina = 0;
+        final int tamanho = 0;
+        List<AcompanhamentoDTO> listaVazia = new ArrayList<>();
+        PageDTO<AcompanhamentoDTO> acompanhamentoDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+        PageDTO<AcompanhamentoDTO> paginaRecebida = acompanhamentoService.listarAcompanhamentosPaginados(numeroPagina, tamanho);
+        assertEquals(paginaRecebida,acompanhamentoDTOPageDTO);
     }
     @Test
     public void deveTestarCadastroAcompanhamentosComSucesso() throws RegraDeNegocioException, IOException {

@@ -25,9 +25,7 @@ import java.util.List;
 public class AlunoService {
 
     private final AlunoRepository alunoRepository;
-    private final CargoService cargoService;
     private final ObjectMapper objectMapper;
-    private final UsuarioService usuarioService;
 
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) {

@@ -128,65 +128,37 @@ public class EmailServiceTest {
         assertNotNull(content);
     }
 
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void deveTestarSendEmailComIOException() throws IOException, RegraDeNegocioException {
-//
-//        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
-//
-//        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
-//        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
-//
-//        emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
-//    }
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void deveTestarSendEmailUpdateComIOException() throws IOException, RegraDeNegocioException {
-//
-//        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
-//
-//        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
-//        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
-//
-//        emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.UPDATE);
-//    }
-//
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void deveLancarExcecaoAoExecutarSendEmailRecuperacaoComIOException() throws IOException, RegraDeNegocioException {
-//
-//        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
-//
-//        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
-//        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
-//
-//        emailService.sendEmailRecuperacao(usuarioRecuperacaoDTO, TipoEmails.REC_SENHA, token);
-//    }
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void deveLancarExcecaoAoExecutarSendEmailRecuperacaoComIOExceptionQuandoNull() throws IOException, RegraDeNegocioException {
-//        TipoEmails tipoEmails = null;
-//        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
-//
-//        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
-//        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
-//
-//        emailService.sendEmailRecuperacao(usuarioRecuperacaoDTO, tipoEmails, token);
-//    }
-
-
     @Test(expected = RegraDeNegocioException.class)
-    public void deveLancarExcecaoAoExecutarGetContentFromTemplateRecupercaoComIOException() throws IOException, RegraDeNegocioException, TemplateException {
+    public void deveTestarSendEmailComIOException() throws IOException, RegraDeNegocioException {
 
-        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = UsuarioFactory.getUsuarioRecuperacao();
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
 
+        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
 
-        emailService.geContentFromTemplateRecuperacao(usuarioRecuperacaoDTO, token);
+        emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
     }
     @Test(expected = RegraDeNegocioException.class)
-    public void deveLancarExcecaoAoExecutarGetContentFromTemplateComIOException() throws IOException, RegraDeNegocioException, TemplateException {
+    public void deveTestarSendEmailUpdateComIOException() throws IOException, RegraDeNegocioException {
 
-        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = UsuarioFactory.getUsuarioRecuperacao();
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
+
+        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
 
-        emailService.geContentFromTemplate(usuarioRecuperacaoDTO, TipoEmails.CREATE);
+        emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.UPDATE);
     }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveLancarExcecaoAoExecutarSendEmailRecuperacaoComIOException() throws IOException, RegraDeNegocioException {
+
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
+
+        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
+        doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
+
+        emailService.sendEmailRecuperacao(usuarioRecuperacaoDTO, TipoEmails.REC_SENHA, token);
+    }
+
 
 }

@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                         authz.antMatchers("/","/auth/login","/teste/**","/auth/recuperar-senha","/auth/usuario-logado").permitAll()
 
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-recuperacao").hasRole("RECUPERACAO")
+                                .antMatchers(HttpMethod.DELETE,"/aluno").hasRole("GESTOR")
 
                                 .antMatchers(HttpMethod.GET,"/acompanhamento/buscar-acompanhamento/{idAcompanhamento}").hasAnyRole("GESTOR","INSTRUTOR")
                                 .antMatchers(HttpMethod.GET,"/acompanhamento/listar-acompanhamento").hasAnyRole("GESTOR","INSTRUTOR")
@@ -47,7 +48,6 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO",
                                         "ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.GET,"/avaliacao-acompanhamento/**").hasAnyRole("GESTOR","INSTRUTOR")
-
                                 .antMatchers("/aluno/**").hasAnyRole("GESTOR","INSTRUTOR")
                                 .antMatchers("/avaliacao-acompanhamento/**").hasRole("GESTOR")
                                 .antMatchers("/acompanhamento/**").hasRole("GESTOR")

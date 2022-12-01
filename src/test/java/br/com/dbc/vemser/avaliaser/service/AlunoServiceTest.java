@@ -2,36 +2,20 @@ package br.com.dbc.vemser.avaliaser.service;
 
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
-import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
-import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
-import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
 import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
-import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
-import br.com.dbc.vemser.avaliaser.security.TokenService;
 import br.com.dbc.vemser.avaliaser.services.AlunoService;
 import br.com.dbc.vemser.avaliaser.services.CargoService;
-import br.com.dbc.vemser.avaliaser.services.EmailService;
-import br.com.dbc.vemser.avaliaser.services.UsuarioService;
 import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,15 +26,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +38,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -67,19 +48,13 @@ public class AlunoServiceTest {
     @InjectMocks
     private AlunoService alunoService;
     @Mock
-    private ImageUtil imageUtil;
-    @Mock
     private AlunoRepository alunoRepository;
-
-    @Mock
-    private CargoService cargoService;
-
     @Mock
     private MultipartFile multipartFile;
 
 
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void init() {
@@ -223,7 +198,7 @@ public class AlunoServiceTest {
     }
 
     @Test
-    public void deveTestarDesativarAlunoByIdComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarDesativarAlunoByIdComSucesso() throws RegraDeNegocioException {
         Integer id = 1;
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
 
@@ -237,7 +212,7 @@ public class AlunoServiceTest {
 
 //    @Test(expected = RegraDeNegocioException.class)
 //    public void deveLancarExcecaoAoExecutartransformarImagemEmBytesComIOException() throws RegraDeNegocioException, IOException {
-//        byte[] imagemBytes = null;
+//        byte[] imagemBytes = new byte[10*1024];
 //        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
 //        doThrow(new IOException()).when(multipartFile).getBytes();
 //        alunoService.transformarImagemEmBytes(imagem);

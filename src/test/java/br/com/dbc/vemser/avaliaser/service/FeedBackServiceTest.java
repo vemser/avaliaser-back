@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
@@ -39,6 +40,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -89,6 +91,17 @@ public class FeedBackServiceTest {
     }
 
     @Test
+    public void DeveListarFeedBackPaginadoComListaVazia() {
+        final int numeroPagina = 0;
+        final int tamanho = 0;
+        List<FeedBackDTO> listaVazia = new ArrayList<>();
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+        PageDTO<FeedBackDTO> paginaRecebida = feedbackService.listarFeedBackPaginados(numeroPagina, tamanho);
+        assertEquals(paginaRecebida,feedBackDTOPageDTO);
+    }
+
+    @Test
     public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() {
         final int numeroPagina = 0;
         final int tamanho = 3;
@@ -105,6 +118,19 @@ public class FeedBackServiceTest {
         assertEquals(1, feedBackDTOPageDTO.getQuantidadePaginas());
         assertEquals(listaPaginada.getPageable().getPageNumber(), feedBackDTOPageDTO.getPagina());
     }
+
+    @Test
+    public void DeveListarFeedBackPaginadoPorIdAlunoComListaVazia() {
+        final int numeroPagina = 0;
+        final int tamanho = 0;
+        List<FeedBackDTO> listaVazia = new ArrayList<>();
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+        PageDTO<FeedBackDTO> paginaRecebida = feedbackService.listarFeedBackPorAlunoPaginados(1,numeroPagina, tamanho);
+        assertEquals(paginaRecebida,feedBackDTOPageDTO);
+    }
+
+
     @Test
     public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException {
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();

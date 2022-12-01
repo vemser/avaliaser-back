@@ -52,8 +52,7 @@ public class EmailService {
             throw new RegraDeNegocioException("Não foi possivel enviar o email!");
         }
     }
-    public String geContentFromTemplateRecuperacao(UsuarioRecuperacaoDTO usuarioDTO, String token) throws IOException, TemplateException, RegraDeNegocioException {
-        try {
+    public String geContentFromTemplateRecuperacao(UsuarioRecuperacaoDTO usuarioDTO, String token) throws IOException, TemplateException {
             Map<String, Object> dados = new HashMap<>();
             dados.put("nome", usuarioDTO.getNome());
             dados.put("email", from);
@@ -61,13 +60,9 @@ public class EmailService {
             Template template = fmConfiguration.getTemplate("index.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
             return html;
-        }catch (IOException | TemplateException e){
-            e.getMessage();
-            throw new RegraDeNegocioException("Não foi possivel enviar o email!");
-        }
     }
-    public String geContentFromTemplate(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails) throws IOException, TemplateException, RegraDeNegocioException {
-        try {
+    public String geContentFromTemplate(UsuarioRecuperacaoDTO usuarioDTO, TipoEmails tipoEmails) throws IOException, TemplateException {
+
             Map<String, Object> dados = new HashMap<>();
             dados.put("nome", usuarioDTO.getNome());
             dados.put("email", from);
@@ -81,9 +76,5 @@ public class EmailService {
             Template template = fmConfiguration.getTemplate("email-template.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
             return html;
-        }catch (IOException | TemplateException e){
-            e.getMessage();
-            throw new RegraDeNegocioException("Não foi possivel enviar o email!");
-        }
     }
 }
