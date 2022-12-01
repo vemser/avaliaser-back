@@ -17,7 +17,7 @@ import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
 import br.com.dbc.vemser.avaliaser.security.TokenService;
-import br.com.dbc.vemser.avaliaser.services.enums.TipoEmails;
+import br.com.dbc.vemser.avaliaser.enums.TipoEmails;
 import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
