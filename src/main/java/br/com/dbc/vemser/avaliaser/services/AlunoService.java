@@ -57,7 +57,6 @@ public class AlunoService {
             alunoEntity.setNome(alunoCreateDTO.getNome());
             alunoEntity.setEmail(alunoCreateDTO.getEmail());
             alunoEntity.setStack(stack);
-            alunoEntity.setEmail(alunoCreateDTO.getEmail());
             alunoEntity.setAtivo(Ativo.S);
 
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
