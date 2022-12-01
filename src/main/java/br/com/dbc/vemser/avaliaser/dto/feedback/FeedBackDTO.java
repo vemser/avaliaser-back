@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.avaliaser.dto.feedback;
 
+import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,13 +14,12 @@ import lombok.NoArgsConstructor;
 public class FeedBackDTO {
     @Schema(example = "1")
     private Integer idFeedBack;
-    @Schema(example = "1")
-    private Integer idUsuario;
-    @Schema(example = "1")
-    private Integer idAluno;
     @Schema(example = "Texto descritivo")
     private String descricao;
     @Schema(example = "POSITIVO")
     private Tipo tipo;
+    private UsuarioDTO usuarioDTO;
+    private AlunoDTO alunoDTO;
+
 
 }

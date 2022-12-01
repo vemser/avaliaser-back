@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
+import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -25,10 +26,12 @@ import br.com.dbc.vemser.avaliaser.services.AlunoService;
 import br.com.dbc.vemser.avaliaser.services.CargoService;
 import br.com.dbc.vemser.avaliaser.services.EmailService;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
+import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +50,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -62,22 +67,17 @@ public class AlunoServiceTest {
     @InjectMocks
     private AlunoService alunoService;
     @Mock
-    private UsuarioService usuarioService;
+    private ImageUtil imageUtil;
     @Mock
     private AlunoRepository alunoRepository;
 
     @Mock
-    private UsuarioRepository usuarioRepository;
-    @Mock
-    private AuthenticationManager authenticationManager;
-    @Mock
     private CargoService cargoService;
+
     @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private TokenService tokenService;
-    @Mock
-    private EmailService emailService;
+    private MultipartFile multipartFile;
+
+
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -105,6 +105,18 @@ public class AlunoServiceTest {
         assertEquals(1, alunoDTOPageDTO.getTotalElementos());
         assertEquals(1, alunoDTOPageDTO.getQuantidadePaginas());
         assertEquals(listaPaginada.getPageable().getPageNumber(), alunoDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarUsuarioPaginadoComListaVazia() {
+        final int numeroPagina = 0;
+        final int tamanho = 0;
+        List<AlunoDTO> listaVazia = new ArrayList<>();
+        PageDTO<AlunoDTO> alunoDTOPageDTOEsperado = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+        PageDTO<AlunoDTO> paginaRecebida = alunoService.listarAlunoPaginado(numeroPagina, tamanho);
+        assertEquals(paginaRecebida,alunoDTOPageDTOEsperado);
+
     }
     @Test
     public void deveTestarCadastroAlunoComSucesso() throws RegraDeNegocioException, IOException {
@@ -162,15 +174,38 @@ public class AlunoServiceTest {
         alunoService.findById(idAluno);
 
     }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestaCadastrarAlunoComErro() throws RegraDeNegocioException {
+        AlunoCreateDTO alunoCreateDTO = null;
+        alunoService.cadastrarAluno(alunoCreateDTO,Stack.BACKEND);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarUploadImagemComErro() throws RegraDeNegocioException {
+        byte[] imagemBytes = null;
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+        Integer idAluno = 1;
+
+        alunoService.uploadImagem(imagem, idAluno);
+
+    }
     @Test
     public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
-        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         Integer idAluno = 1;
-        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,aluno.getIdAluno())).thenReturn(Optional.of(aluno));
+        AlunoEntity alunoFactory = AlunoFactory.getAlunoEntity();
+        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,idAluno)).thenReturn(Optional.of(alunoFactory));
         AlunoEntity alunoEntity = alunoService.findById(idAluno);
-
+        assertEquals(alunoEntity,alunoFactory);
         assertNotNull(alunoEntity);
+    }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarAtualizarAlunoPorIdComErro() throws RegraDeNegocioException {
+
+        AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
+        Integer idAluno = 1;
+        alunoService.atualizarAlunoPorId(idAluno,alunoCreateDTO,Stack.BACKEND);
     }
 
     @Test
@@ -189,19 +224,9 @@ public class AlunoServiceTest {
 
     @Test
     public void deveTestarDesativarAlunoByIdComSucesso() throws RegraDeNegocioException, IOException {
-        CargoEntity cargo = new CargoEntity();
-        cargo.setNome("ROLE_GESTOR");
-        cargo.setIdCargo(2);
-
-        UsuarioLogadoDTO usuarioLogadoDTO = UsuarioFactory.getUsuarioLogadoDTO();
-        usuarioLogadoDTO.setCargo(cargo.getNome());
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-
         Integer id = 1;
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
 
-        when(usuarioService.getUsuarioLogado()).thenReturn(usuarioLogadoDTO);
-        when(cargoService.findById(anyInt())).thenReturn(cargo);
         when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,aluno.getIdAluno())).thenReturn(Optional.of(aluno));
         when(alunoRepository.save(any())).thenReturn(aluno);
 
@@ -209,6 +234,14 @@ public class AlunoServiceTest {
 
         verify(alunoRepository, times(1)).save(aluno);
     }
+
+//    @Test(expected = RegraDeNegocioException.class)
+//    public void deveLancarExcecaoAoExecutartransformarImagemEmBytesComIOException() throws RegraDeNegocioException, IOException {
+//        byte[] imagemBytes = null;
+//        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+//        doThrow(new IOException()).when(multipartFile).getBytes();
+//        alunoService.transformarImagemEmBytes(imagem);
+//    }
 
     private static UsernamePasswordAuthenticationToken getAuthentication() {
         return new UsernamePasswordAuthenticationToken(1,

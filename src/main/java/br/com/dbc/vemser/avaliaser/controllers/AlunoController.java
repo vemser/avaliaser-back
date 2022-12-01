@@ -29,28 +29,34 @@ public class AlunoController implements OperationControllerAluno {
 
     @GetMapping("/listar-alunos")
     public ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer page, Integer size) {
-        log.info("Retornando Usuário logado...");
+        log.info("Buscando dados de Alunos...");
         PageDTO<AlunoDTO> aluno = alunoService.listarAlunoPaginado(page, size);
-        log.info("Retorno de usuário logado com sucesso.");
+        log.info("Retorno de dados de Aluno em lista paginada, realizado com sucesso!");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }
     @GetMapping("/{idAluno}")
     public ResponseEntity<AlunoDTO> buscarAlunoPorId(@PathVariable Integer idAluno) throws RegraDeNegocioException {
+        log.info("Buscando dados de Alunos por ID...");
         AlunoDTO alunoDTO = alunoService.findByIdDTO(idAluno);
+        log.info("Retorno de dados de Aluno por ID realizado com sucesso!");
         return new ResponseEntity<>(alunoDTO, HttpStatus.OK);
     }
 
     @PostMapping(value = "/cadastrar-aluno")
     public ResponseEntity<AlunoDTO> cadastrarAluno(@RequestParam Stack stack,
                                                        @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
+        log.info("Salvando dados de cadastro do aluno...");
         AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO, stack);
+        log.info("Dados de cadastro salvos com sucesso!");
         return new ResponseEntity<>(alunoDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/upload-imagem/{idAluno}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<AlunoDTO> uploadImagem(@PathVariable("idAluno") Integer idAluno,
                                                  @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
+        log.info("Salvando foto de cadastro do aluno...");
         AlunoDTO alunoDTO = alunoService.uploadImagem(file, idAluno);
+        log.info("Imagem de cadastro salva com sucesso!");
         return new ResponseEntity<>(alunoDTO, HttpStatus.OK);
     }
 
@@ -58,12 +64,17 @@ public class AlunoController implements OperationControllerAluno {
     public ResponseEntity<AlunoDTO> atualizarAlunoPorId(@PathVariable("idAluno") Integer idAluno,
                                                         @RequestParam Stack stack,
                                                         @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
-        return new ResponseEntity<>(alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO,stack), HttpStatus.OK);
+        log.info("Salvando alterações de dados do aluno...");
+        AlunoDTO aluno = alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO,stack);
+        log.info("Alteração de dados salva com sucesso!");
+        return new ResponseEntity<>(aluno, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{idAluno}")
     public ResponseEntity<Void> desativarAluno(@PathVariable Integer idAluno) throws RegraDeNegocioException {
+        log.info("Realizando desativação do aluno...");
         alunoService.desativarAlunoById(idAluno);
+        log.info("Desativação do aluno realizada com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

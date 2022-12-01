@@ -30,27 +30,35 @@ public class AcompanhamentoController implements OperationControllerAcompanhamen
 
     @GetMapping("/listar-acompanhamento")
     public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) {
+        log.info("Realizando busca de dados em lista...");
         PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(page, size);
+        log.info("Retorno de dados em lista paginada realizado com sucesso!");
         return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
     }
 
     @GetMapping("/buscar-acompanhamento/{idAcompanhamento}")
-    public ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@RequestParam("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException {
+    public ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@PathVariable("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException {
+        log.info("Realizando busca de dados por id...");
         AcompanhamentoDTO acompanhamento = acompanhamentoService.findByIdDTO(idAcompanhamento);
+        log.info("Retorno de dados do usuario por id realizado com sucesso!");
         return new ResponseEntity<>(acompanhamento, HttpStatus.OK);
     }
 
     @PostMapping(value = "/cadastrar-acompanhamento")
     public ResponseEntity<AcompanhamentoDTO> cadastrarAcompanhamento(
             @Valid @RequestBody AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
+        log.info("Salvando cadastro do acompanhamento...");
         AcompanhamentoDTO usuarioLogadoDTO = acompanhamentoService.cadastrarAcompanhamento(acompanhamentoCreateDTO);
+        log.info("Acompanhamento cadastrado com sucesso!");
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/editar-acompanhamento/{idAcompanhamento}")
-    public ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@RequestParam("idAcompanhamento") Integer idAcompanhamento,
+    public ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@PathVariable("idAcompanhamento") Integer idAcompanhamento,
                                                                   @Valid @RequestBody EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException {
+        log.info("Salvando alteração de dados do acompanhamento...");
         AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO,idAcompanhamento);
+        log.info("Alterações de acompanhamento salvas com sucesso!");
         return new ResponseEntity<>(acompanhamentoDTO, HttpStatus.OK);
     }
 

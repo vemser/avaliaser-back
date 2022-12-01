@@ -35,7 +35,7 @@ public interface OperationControllerAluno {
     @Operation(summary = "Busca aluno por Id", description = "Realiza busca de aluno cadastrado por ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Aluno não localizado, verifique se o ID inserido está correto."),
+            @ApiResponse(responseCode = "404", description = "Aluno não localizado, verifique se o ID inserido está correto."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
     ResponseEntity<AlunoDTO> buscarAlunoPorId(@PathVariable Integer idAluno) throws RegraDeNegocioException;

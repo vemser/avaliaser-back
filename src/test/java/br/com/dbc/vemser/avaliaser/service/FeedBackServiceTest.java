@@ -114,6 +114,7 @@ public class FeedBackServiceTest {
         FeedBackCreateDTO feedBackCreateDTO = FeedBackFactory.getFeedBackCreateDTO();
 
         when(usuarioService.getLoggedUser()).thenReturn(usuario);
+        when(alunoService.findById(anyInt())).thenReturn(aluno);
         when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
 
         FeedBackDTO feedBackDTO = feedbackService.cadastrarFeedBack(feedBackCreateDTO);
@@ -121,8 +122,8 @@ public class FeedBackServiceTest {
         assertEquals(feedBackEntity.getIdFeedBack(), feedBackDTO.getIdFeedBack());
         assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
         assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
-        assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getIdAluno());
-        assertEquals(feedBackEntity.getIdUsuario(), feedBackDTO.getIdUsuario());
+        assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
+        assertEquals(feedBackEntity.getIdUsuario(), feedBackDTO.getUsuarioDTO().getIdUsuario());
         assertNotNull(feedBackEntity);
     }
 

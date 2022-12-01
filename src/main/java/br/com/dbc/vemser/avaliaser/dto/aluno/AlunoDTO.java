@@ -14,6 +14,8 @@ public class AlunoDTO {
     private Integer idAluno;
     @Schema(example = "Alexandre Bispo")
     private String nome;
+    @Schema(example = "alexandre.bispo@dbccompany.com.br")
+    private String email;
     @Schema(example = "BACKEND")
     private Stack stack;
     @Schema(example = " ", description = "Imagem de Perfil do Aluno")

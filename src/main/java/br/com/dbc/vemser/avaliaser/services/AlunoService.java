@@ -88,16 +88,9 @@ public class AlunoService {
     }
 
     public void desativarAlunoById(Integer id) throws RegraDeNegocioException {
-        String cargoGestor = cargoService.findById(2).getNome();
-        String cargoInstrutor = cargoService.findById(3).getNome();
-        String cargo = usuarioService.getUsuarioLogado().getCargo();
-        if (cargo.equals(cargoGestor) || cargo.equals(cargoInstrutor)) {
             AlunoEntity aluno = findById(id);
             aluno.setAtivo(Ativo.N);
             alunoRepository.save(aluno);
-        } else {
-            throw new RegraDeNegocioException("Você não tem permissão para excluir de Alunos!");
-        }
     }
 
     private AlunoDTO converterAlunoDTO(AlunoEntity aluno) {
@@ -105,7 +98,7 @@ public class AlunoService {
         return alunoDTO;
     }
 
-    private static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {
+    public static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {
         try {
             byte[] imagemBytes = imagem.getBytes();
             byte[] imagemRecebida = ImageUtil.compressImage(imagemBytes);

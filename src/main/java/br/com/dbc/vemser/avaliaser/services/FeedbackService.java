@@ -1,9 +1,11 @@
 package br.com.dbc.vemser.avaliaser.services;
 
+import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
@@ -21,7 +23,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FeedbackService {
-
     private final FeedBackRepository feedBackRepository;
     private final AlunoService alunoService;
     private final UsuarioService usuarioService;
@@ -67,7 +68,10 @@ public class FeedbackService {
 
         FeedBackEntity feedBackEntity = new FeedBackEntity();
         UsuarioEntity usuarioEntity = usuarioService.getLoggedUser();
-        AlunoEntity alunoEntity = alunoService.findById(feedBackEntity.getIdAluno());
+        AlunoEntity alunoEntity = alunoService.findById(feedBackCreateDTO.getIdAluno());
+
+        AlunoDTO alunoDTO = objectMapper.convertValue(alunoEntity, AlunoDTO.class);
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
 
         feedBackEntity.setTipo(feedBackCreateDTO.getTipo());
         feedBackEntity.setUsuarioEntity(usuarioEntity);
@@ -75,10 +79,27 @@ public class FeedbackService {
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
 
         FeedBackEntity feedBackSalvo = feedBackRepository.save(feedBackEntity);
-        FeedBackDTO acompanhamentoDTO = objectMapper.convertValue(feedBackSalvo, FeedBackDTO.class);
+        FeedBackDTO feedBackDTO = objectMapper.convertValue(feedBackSalvo, FeedBackDTO.class);
 
-        return acompanhamentoDTO;
+        feedBackDTO.setAlunoDTO(alunoDTO);
+        feedBackDTO.setUsuarioDTO(usuarioDTO);
+
+        return feedBackDTO;
     }
+
+//    public FeedBackDTO findAll() throws RegraDeNegocioException {
+//        List<FeedBackEntity> feedBackEntities = feedBackRepository.findAll();
+//        List<FeedBackDTO> feedBackDTOS = feedBackEntities.stream()
+//                .map(feedBackEntity -> objectMapper.convertValue(feedBackEntity,FeedBackDTO.class)).toList();
+//        feedBackDTOS.stream().map(feedBackDTO -> );
+//
+//    }
+//    public FeedBackDTO buscaObjetosDTO(){
+//        UsuarioEntity usuarioEntity = usuarioService.getLoggedUser();
+//        AlunoEntity alunoEntity = alunoService.findById(feedBackCreateDTO.getIdAluno());
+//        AlunoDTO alunoDTO = objectMapper.convertValue(alunoEntity, AlunoDTO.class);
+//        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+//    }
 
     public FeedBackDTO editarFeedBack(Integer id,EditarFeedBackDTO editarFeedBackDTO) throws RegraDeNegocioException {
         FeedBackEntity feedBackEntity = findById(id);

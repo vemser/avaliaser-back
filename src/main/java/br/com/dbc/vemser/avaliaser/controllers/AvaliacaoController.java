@@ -41,7 +41,7 @@ public class AvaliacaoController {
     }
 
     @PostMapping("/cadastrar-avaliacao")
-    public ResponseEntity<AvaliacaoDTO> cadastrarAvaliação(@RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<AvaliacaoDTO> cadastrarAvaliaccao(@RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
         log.info("Cadastranndo Avaliação de Acompanhamento...");
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.cadastrarAvaliacao(avaliacaoCreateDTO);
         log.info("Cadastro de Avaliação de Acompanhamento com sucesso.");
@@ -49,7 +49,7 @@ public class AvaliacaoController {
     }
 
     @PutMapping("/{idAvaliacao}")
-    public ResponseEntity<AvaliacaoDTO> editandoAvaliiacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
+    public ResponseEntity<AvaliacaoDTO> editandoAvaliacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
                                                            @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
         log.info("Editando Avaliação de Acompanhamento...");
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.editarAvaliacao(idAvaliacao, editarAvaliacaoDTO);

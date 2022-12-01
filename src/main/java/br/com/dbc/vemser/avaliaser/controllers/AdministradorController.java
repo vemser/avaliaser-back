@@ -43,36 +43,47 @@ public class AdministradorController implements OperationControllerAdministrador
 
     @GetMapping("/usuario/{idUsuario}")
     public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+        log.info("Retornando busca de usuario por id...");
         UsuarioDTO usuario = usuarioService.findByIdDTO(idUsuario);
+        log.info("Busca realizada com sucesso!");
         return new ResponseEntity<>(usuario, HttpStatus.OK);
+
     }
 
 
     @PostMapping(value = "/cadastrar-usuario")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestParam Cargo cargo,
                                                        @RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+        log.info("Salvando dados de cadastro...");
         UsuarioDTO usuarioLogadoDTO = usuarioService.cadastrarUsuario(usuarioCreateDTO, cargo);
+        log.info("Cadastro realizado com sucesso!");
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/upload-imagem/{idUsuario}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UsuarioDTO> uploadImagem(@PathVariable(name = "idUsuario") Integer idUsuario,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
+        log.info("Salvando foto de perfil do usuario...");
         UsuarioDTO usuarioLogadoDTO = usuarioService.uploadImagem(file, idUsuario);
+        log.info("Foto salva com sucesso!");
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
-
 
     @PutMapping(value = "/atualizar-usuario/{idUsuario}")
     public ResponseEntity<UsuarioDTO> atualizarUsuarioPorId(@PathVariable("idUsuario") Integer idUsuario,
                                                             @RequestBody @Valid AtualizarUsuarioDTO atualizarUsuarioDTO) throws RegraDeNegocioException {
-        return new ResponseEntity<>(usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO, idUsuario), HttpStatus.OK);
-    }
+        log.info("Salvando alteração de dados do usuario...");
+        UsuarioDTO usuario = usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO, idUsuario);
+        log.info("Alteração realizada com sucesso!");
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
 
+    }
 
     @DeleteMapping("/delete/{idUsuario}")
     public ResponseEntity<Void> deletarUsuario(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+        log.info("Desativando usuario...");
         usuarioService.desativarUsuarioById(idUsuario);
+        log.info("Usuario desativado com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

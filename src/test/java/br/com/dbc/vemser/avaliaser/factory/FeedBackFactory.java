@@ -43,8 +43,8 @@ public class FeedBackFactory {
 
         FeedBackDTO feedBackDTO = new FeedBackDTO();
         feedBackDTO.setIdFeedBack(1);
-        feedBackDTO.setIdUsuario(1);
-        feedBackDTO.setIdAluno(1);
+        feedBackDTO.setUsuarioDTO(UsuarioFactory.getUsuarioDTO());
+        feedBackDTO.setAlunoDTO(AlunoFactory.getAlunoDTO());
         feedBackDTO.setDescricao("Paulo Sergio");
         feedBackDTO.setTipo(Tipo.POSITIVO);
         return feedBackDTO;

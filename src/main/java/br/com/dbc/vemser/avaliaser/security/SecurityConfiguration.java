@@ -44,15 +44,20 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
 
-                                .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO", "ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO",
+                                        "ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.GET,"/avaliacao-acompanhamento/**").hasAnyRole("GESTOR","INSTRUTOR")
 
                                 .antMatchers("/aluno/**").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers("/avaliacao-acompanhamento/**").hasRole("GESTOR")
                                 .antMatchers("/acompanhamento/**").hasRole("GESTOR")
                                 .antMatchers("/feedback/**").hasRole("INSTRUTOR")
-                                .antMatchers("/admininstrador/**").hasRole("ADMIN")
-                                .antMatchers("/auth/**").hasRole("ADMIN")
+
+
                                 .antMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
                                 .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
+                                .antMatchers("/admininstrador/**").hasRole("ADMIN")
+                                .antMatchers("/auth/**").hasRole("ADMIN")
                                 .antMatchers("/**").hasRole("ADMIN")
 
                                 .anyRequest().authenticated()
