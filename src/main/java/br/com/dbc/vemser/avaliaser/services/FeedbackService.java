@@ -1,19 +1,14 @@
 package br.com.dbc.vemser.avaliaser.services;
 
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.FeedBackRepository;
-import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -97,7 +92,7 @@ public class FeedbackService {
 
     public FeedBackEntity findById(Integer id) throws RegraDeNegocioException {
         return feedBackRepository.findById(id).orElseThrow(
-                () -> new RegraDeNegocioException("Acompanhamento não encontrado."));
+                () -> new RegraDeNegocioException("FeedBack não encontrado."));
     }
 
     public FeedBackDTO findByIdDTO(Integer id) throws RegraDeNegocioException {

@@ -15,6 +15,7 @@ import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
 import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
 import br.com.dbc.vemser.avaliaser.repositories.AcompanhamentoRepository;
 import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
@@ -77,7 +78,7 @@ public class AcompanhamentoServiceTest {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
-        AcompanhamentoEntity acompanhamento = getAcompanhamento();
+        AcompanhamentoEntity acompanhamento = AcompanhamentoFactory.getAcompanhamento();
         PageImpl<AcompanhamentoEntity> listaPaginada = new PageImpl<>(List.of(acompanhamento), PageRequest.of(numeroPagina, tamanho), 0);
 
         when(acompanhamentoRepository.findAll(any(Pageable.class))).thenReturn(listaPaginada);
@@ -92,8 +93,8 @@ public class AcompanhamentoServiceTest {
     public void deveTestarCadastroAcompanhamentosComSucesso() throws RegraDeNegocioException, IOException {
 
 
-        AcompanhamentoEntity acompanhamentoEntity = getAcompanhamento();
-        AcompanhamentoCreateDTO acompanhamentoCreateDTO = getAcompanhamentoCreateDTO();
+        AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
+        AcompanhamentoCreateDTO acompanhamentoCreateDTO = AcompanhamentoFactory.getAcompanhamentoCreateDTO();
 
         when(acompanhamentoRepository.save(any())).thenReturn(acompanhamentoEntity);
 
@@ -107,7 +108,7 @@ public class AcompanhamentoServiceTest {
 
     @Test
     public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
-        AcompanhamentoEntity acompanhamentoEntity = getAcompanhamento();
+        AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
         Integer idAcompanhamento = 1;
 
         when(acompanhamentoRepository.findById(acompanhamentoEntity.getIdAcompanhamento())).thenReturn(Optional.of(acompanhamentoEntity));
@@ -125,7 +126,7 @@ public class AcompanhamentoServiceTest {
     }
     @Test
     public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
-        AcompanhamentoEntity acompanhamentoEntity = getAcompanhamento();
+        AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
         Integer idAcompanhamento = 1;
         when(acompanhamentoRepository.findById(idAcompanhamento)).thenReturn(Optional.of(acompanhamentoEntity));
         AcompanhamentoEntity acompanhamento  = acompanhamentoService.findById(idAcompanhamento);
@@ -135,8 +136,8 @@ public class AcompanhamentoServiceTest {
     @Test
     public void deveTestarAtualizarAcompanhamentoComSucesso() throws RegraDeNegocioException, IOException {
 
-        AcompanhamentoEntity acompanhamentoEntity = getAcompanhamento();
-        EditarAcompanhamentoDTO editarAcompanhamentoDTO = getEditarAcompanhamento();
+        AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
+        EditarAcompanhamentoDTO editarAcompanhamentoDTO = AcompanhamentoFactory.getEditarAcompanhamento();
 
 
         when(acompanhamentoRepository.findById(anyInt())).thenReturn(Optional.of(acompanhamentoEntity));
@@ -145,49 +146,6 @@ public class AcompanhamentoServiceTest {
         AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO,1);
 
         assertNotNull(acompanhamentoDTO);
-    }
-
-    private static AcompanhamentoEntity getAcompanhamento() {
-
-        AcompanhamentoEntity acompanhamento = new AcompanhamentoEntity();
-        acompanhamento.setIdAcompanhamento(1);
-        acompanhamento.setTitulo("Acompanhamento do aluno: Paulo Sergio - 1");
-        acompanhamento.setDataInicio(LocalDate.now());
-
-        return acompanhamento;
-    }
-
-    public static AcompanhamentoCreateDTO getAcompanhamentoCreateDTO(){
-        AcompanhamentoCreateDTO acompanhamentoCreateDTO = new AcompanhamentoCreateDTO();
-        acompanhamentoCreateDTO.setTitulo("Acompanhamento do aluno: Paulo Sergio - 1");
-        acompanhamentoCreateDTO.setDataInicio(LocalDate.now());
-
-        return acompanhamentoCreateDTO;
-    }
-
-    public static EditarAcompanhamentoDTO getEditarAcompanhamento(){
-        EditarAcompanhamentoDTO editarAcompanhamentoDTO = new EditarAcompanhamentoDTO();
-        editarAcompanhamentoDTO.setTitulo("Acompanhamento do aluno: Paulo Sergio - 1");
-
-        return editarAcompanhamentoDTO;
-    }
-
-    public static AcompanhamentoDTO getAcompanhamentoDTO() throws IOException {
-
-        AcompanhamentoDTO acompanhamentoDTO = new AcompanhamentoDTO();
-        acompanhamentoDTO.setIdAcompanhamento(1);
-        acompanhamentoDTO.setTitulo("Paulo Sergio");
-        acompanhamentoDTO.setDataInicio(LocalDate.now());
-        return acompanhamentoDTO;
-    }
-
-    private static CargoEntity getCargo() {
-
-        CargoEntity cargo = new CargoEntity();
-        cargo.setIdCargo(2);
-        cargo.setNome(Cargo.GESTOR.name());
-
-        return cargo;
     }
 
 }

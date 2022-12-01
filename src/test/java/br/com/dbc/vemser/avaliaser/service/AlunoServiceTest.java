@@ -15,6 +15,7 @@ import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
 import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
 import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
 import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
@@ -94,7 +95,7 @@ public class AlunoServiceTest {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
-        AlunoEntity aluno = getAlunoEntity();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
 
         when(alunoRepository.findAllByAtivo(any(),any(Pageable.class))).thenReturn(listaPaginada);
@@ -108,8 +109,8 @@ public class AlunoServiceTest {
     @Test
     public void deveTestarCadastroAlunoComSucesso() throws RegraDeNegocioException, IOException {
 
-        AlunoEntity aluno = getAlunoEntity();
-        AlunoCreateDTO alunoCreateDTO = getAlunoCreateDTO();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
         SecurityContextHolder.getContext().setAuthentication(SecurityContextHolder.getContext().getAuthentication());
 
         when(alunoRepository.save(any())).thenReturn(aluno);
@@ -126,7 +127,7 @@ public class AlunoServiceTest {
 
     @Test
     public void deveTestarUploadImagemComSucesso() throws RegraDeNegocioException {
-        AlunoEntity aluno = getAlunoEntity();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         byte[] imagemBytes = new byte[10*1024];
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         Integer idAluno = 1;
@@ -144,7 +145,7 @@ public class AlunoServiceTest {
 
     @Test
     public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
-        AlunoEntity aluno = getAlunoEntity();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         Integer idAluno = 1;
 
         when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,aluno.getIdAluno())).thenReturn(Optional.of(aluno));
@@ -163,7 +164,7 @@ public class AlunoServiceTest {
     }
     @Test
     public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
-        AlunoEntity aluno = getAlunoEntity();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         Integer idAluno = 1;
         when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,aluno.getIdAluno())).thenReturn(Optional.of(aluno));
         AlunoEntity alunoEntity = alunoService.findById(idAluno);
@@ -172,17 +173,16 @@ public class AlunoServiceTest {
 
     }
 
-
     @Test
     public void deveTestarAtualizarAlunoComSucesso() throws RegraDeNegocioException, IOException {
 
-        AlunoEntity aluno = getAlunoEntity();
-        AlunoCreateDTO alunoCreateDTO = getAlunoCreateDTO();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
 
         when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
         when(alunoRepository.save(any())).thenReturn(aluno);
 
-        AlunoDTO alunoDTO = alunoService.atualizarAlunoPorId(getAlunoEntity().getIdAluno(), alunoCreateDTO,aluno.getStack());
+        AlunoDTO alunoDTO = alunoService.atualizarAlunoPorId(aluno.getIdAluno(), alunoCreateDTO,aluno.getStack());
 
         assertNotNull(alunoDTO);
     }
@@ -198,7 +198,7 @@ public class AlunoServiceTest {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
 
         Integer id = 1;
-        AlunoEntity aluno = getAlunoEntity();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
 
         when(usuarioService.getUsuarioLogado()).thenReturn(usuarioLogadoDTO);
         when(cargoService.findById(anyInt())).thenReturn(cargo);
@@ -215,46 +215,5 @@ public class AlunoServiceTest {
                 null,
                 Collections.emptyList());
     }
-
-    private static AlunoEntity getAlunoEntity() {
-
-        AlunoEntity aluno = new AlunoEntity();
-        aluno.setIdAluno(1);
-        aluno.setNome("Paulo Sergio");
-        aluno.setEmail("paulo.sergio@dbccompany.com");
-        aluno.setStack(Stack.BACKEND);
-        aluno.setAtivo(Ativo.S);
-
-
-        return aluno;
-    }
-
-    public static AlunoCreateDTO getAlunoCreateDTO(){
-        AlunoCreateDTO alunoCreateDTO = new AlunoCreateDTO();
-        alunoCreateDTO.setNome("Paulo Sergio");
-        alunoCreateDTO.setEmail("paulo.sergio@dbccompany.com");
-        return alunoCreateDTO;
-    }
-
-    public static AlunoDTO getAlunoDTO() throws IOException {
-        byte[] imagemBytes = new byte[10*1024];
-        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
-        AlunoDTO alunoDTO = new AlunoDTO();
-        alunoDTO.setIdAluno(1);
-        alunoDTO.setNome("Paulo Sergio");
-        alunoDTO.setStack(Stack.BACKEND);
-        alunoDTO.setFoto(imagem.getBytes());
-        return alunoDTO;
-    }
-
-    private static CargoEntity getCargo() {
-
-        CargoEntity cargo = new CargoEntity();
-        cargo.setIdCargo(2);
-        cargo.setNome(Cargo.GESTOR.name());
-
-        return cargo;
-    }
-
 }
 
