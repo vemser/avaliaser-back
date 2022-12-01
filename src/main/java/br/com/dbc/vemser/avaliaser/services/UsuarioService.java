@@ -215,6 +215,10 @@ public class UsuarioService {
         return converterUsuarioDTO(usuario);
     }
 
+    public List<UsuarioDTO> findAllByCargoAndAtivo(Cargo cargo){
+        return usuarioRepository.findAllByCargoAndAtivo(cargo, Ativo.S);
+    }
+
     private Integer getIdLoggedUser() {
         return Integer.parseInt(String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
     }
