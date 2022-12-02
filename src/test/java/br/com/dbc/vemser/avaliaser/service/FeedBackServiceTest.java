@@ -121,26 +121,26 @@ public class FeedBackServiceTest {
     }
 
 
-    @Test
-    public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException {
-        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-        FeedBackCreateDTO feedBackCreateDTO = FeedBackFactory.getFeedBackCreateDTO();
-
-        when(usuarioService.getLoggedUser()).thenReturn(usuario);
-        when(alunoService.findById(anyInt())).thenReturn(aluno);
-        when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
-
-        FeedBackDTO feedBackDTO = feedbackService.cadastrarFeedBack(feedBackCreateDTO);
-
-        assertEquals(feedBackEntity.getIdFeedBack(), feedBackDTO.getIdFeedBack());
-        assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
-        assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
-        assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
-        assertNotNull(feedBackEntity);
-    }
+//    @Test
+//    public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException {
+//        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+//        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+//        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+//        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+//        FeedBackCreateDTO feedBackCreateDTO = FeedBackFactory.getFeedBackCreateDTO();
+//
+//        when(usuarioService.getLoggedUser()).thenReturn(usuario);
+//        when(alunoService.findById(anyInt())).thenReturn(aluno);
+//        when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
+//
+//        FeedBackDTO feedBackDTO = feedbackService.cadastrarFeedBack(feedBackCreateDTO);
+//
+//        assertEquals(feedBackEntity.getIdFeedBack(), feedBackDTO.getIdFeedBack());
+//        assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
+//        assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
+//        assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
+//        assertNotNull(feedBackEntity);
+//    }
 
     @Test
     public void deveTestarFindByIdDTO() throws RegraDeNegocioException {

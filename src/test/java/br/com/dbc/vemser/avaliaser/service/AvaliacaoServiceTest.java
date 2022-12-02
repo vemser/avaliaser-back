@@ -64,20 +64,20 @@ public class AvaliacaoServiceTest {
         ReflectionTestUtils.setField(avaliacaoService, "objectMapper", objectMapper);
     }
 
-    @Test
-    public void deveTestarCadastroAvaliacaoComSucesso() throws RegraDeNegocioException {
-        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
-        AvaliacaoCreateDTO avaliacaoDTO = AvaliacaoFactory.getAvaliacaoCreateDTOFactory();
-
-        when(alunoService.findById(anyInt())).thenReturn(AlunoFactory.getAlunoEntity());
-        when(acompanhamentoService.findById(anyInt())).thenReturn(AcompanhamentoFactory.getAcompanhamento());
-        when(avaliacaoRepository.save(any())).thenReturn(avaliacao);
-
-        AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.cadastrarAvaliacao(avaliacaoDTO);
-
-        assertNotNull(avaliacaoDTO1);
-        assertEquals("Descrição Bala",avaliacaoDTO1.getDescricao());
-    }
+//    @Test
+//    public void deveTestarCadastroAvaliacaoComSucesso() throws RegraDeNegocioException {
+//        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
+//        AvaliacaoCreateDTO avaliacaoDTO = AvaliacaoFactory.getAvaliacaoCreateDTOFactory();
+//
+//        when(alunoService.findById(anyInt())).thenReturn(AlunoFactory.getAlunoEntity());
+//        when(acompanhamentoService.findById(anyInt())).thenReturn(AcompanhamentoFactory.getAcompanhamento());
+//        when(avaliacaoRepository.save(any())).thenReturn(avaliacao);
+//
+//        AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.cadastrarAvaliacao(avaliacaoDTO);
+//
+//        assertNotNull(avaliacaoDTO1);
+//        assertEquals("Descrição Bala",avaliacaoDTO1.getDescricao());
+//    }
 
     @Test
     public void deveTestarEditarAvaliacao() throws RegraDeNegocioException {

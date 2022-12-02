@@ -93,7 +93,7 @@ public class AcompanhamentoServiceTest {
     }
 
     @Test
-    public void DeveListarAcompanhamentoPaginadoComListaVazia() {
+    public void DeveListarAcompanhamentoPaginadoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 0;
         List<AcompanhamentoDTO> listaVazia = new ArrayList<>();

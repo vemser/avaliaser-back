@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.factory;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioRetornoAvaliacaoFeedbackDTO;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 
@@ -40,10 +41,12 @@ public class FeedBackFactory {
     }
 
     public static FeedBackDTO getFeedBackDTO() throws IOException {
-
+        UsuarioRetornoAvaliacaoFeedbackDTO usuario = new UsuarioRetornoAvaliacaoFeedbackDTO();
+        usuario.setNome("Vanderlei");
+        usuario.setEmail("vanderlei@dbccompany.com.br");
         FeedBackDTO feedBackDTO = new FeedBackDTO();
         feedBackDTO.setIdFeedBack(1);
-        feedBackDTO.setUsuarioDTO(UsuarioFactory.getUsuarioDTO());
+        feedBackDTO.setUsuarioDTO(usuario);
         feedBackDTO.setAlunoDTO(AlunoFactory.getAlunoDTO());
         feedBackDTO.setDescricao("Paulo Sergio");
         feedBackDTO.setTipo(Tipo.POSITIVO);
