@@ -37,8 +37,9 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.GET,"/acompanhamento/buscar-acompanhamento/{idAcompanhamento}").hasAnyRole("GESTOR","INSTRUTOR")
                                 .antMatchers(HttpMethod.GET,"/acompanhamento/listar-acompanhamento").hasAnyRole("GESTOR","INSTRUTOR")
 
-                                .antMatchers(HttpMethod.GET,"/listar-feedback").hasAnyRole("GESTOR","INSTRUTOR")
-                                .antMatchers(HttpMethod.GET,"/listar-feedback-por-id/{idAluno}").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET,"/feedback/listar-feedback").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET,"/feedback/listar-feedback-por-id/{idAluno}").hasAnyRole("GESTOR","INSTRUTOR")
+
                                 .antMatchers(HttpMethod.GET,"/buscar-feedback/{idFeedBack}").hasAnyRole("GESTOR","INSTRUTOR")
 
                                 .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")

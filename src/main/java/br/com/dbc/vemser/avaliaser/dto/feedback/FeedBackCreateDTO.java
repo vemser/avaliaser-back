@@ -20,7 +20,6 @@ public class FeedBackCreateDTO {
     @Schema(example = "Texto descritivo")
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")
-    @NotBlank(message = "Tipo não pode ficar em branco.")
     @Schema(example = "POSITIVO")
     private Tipo tipo;
 }
