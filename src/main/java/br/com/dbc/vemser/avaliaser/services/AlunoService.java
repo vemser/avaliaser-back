@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -109,6 +110,11 @@ public class AlunoService {
         } catch (IOException e) {
             throw new RegraDeNegocioException("Erro ao converter imagem.");
         }
+    }
+
+    public void excluirAlunosTeste(Integer id) throws RegraDeNegocioException {
+        AlunoEntity aluno = findById(id);
+        alunoRepository.delete(aluno);
     }
 
 }
