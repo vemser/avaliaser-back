@@ -28,7 +28,7 @@ public class AlunoController implements OperationControllerAluno {
     private final AlunoService alunoService;
 
     @GetMapping("/listar-alunos")
-    public ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer page, Integer size) {
+    public ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer page, Integer size) throws RegraDeNegocioException {
         log.info("Buscando dados de Alunos...");
         PageDTO<AlunoDTO> aluno = alunoService.listarAlunoPaginado(page, size);
         log.info("Retorno de dados de Aluno em lista paginada, realizado com sucesso!");

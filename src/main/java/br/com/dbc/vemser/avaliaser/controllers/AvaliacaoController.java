@@ -11,10 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 @RequestMapping("/avaliacao-acompanhamento")
 public class AvaliacaoController {
@@ -23,7 +27,7 @@ public class AvaliacaoController {
 
     @GetMapping
     public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoesPaginados(@RequestParam Integer page,
-                                                                           @RequestParam Integer size){
+                                                                           @RequestParam Integer size) throws RegraDeNegocioException {
         log.info("Listando Avaliações...");
         PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoesPaginados(page, size);
         log.info("Listagem avaliações com sucesso.");
@@ -33,7 +37,7 @@ public class AvaliacaoController {
     @GetMapping("/{idAluno}")
     public ResponseEntity<PageDTO<AvaliacaoDTO>> listarPorAlunoPaginado(@PathVariable("idAluno") Integer idAluno,
                                                                         @RequestParam Integer page,
-                                                                        @RequestParam Integer size){
+                                                                        @RequestParam Integer size) throws RegraDeNegocioException {
         log.info("Listando Avaliações por Aluno...");
         PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoesPorAlunoPaginados(idAluno,page, size);
         log.info("Listagem avaliações por Aluno com sucesso.");
@@ -41,7 +45,7 @@ public class AvaliacaoController {
     }
 
     @PostMapping("/cadastrar-avaliacao")
-    public ResponseEntity<AvaliacaoDTO> cadastrarAvaliaccao(@RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<AvaliacaoDTO> cadastrarAvaliaccao(@Valid @RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
         log.info("Cadastranndo Avaliação de Acompanhamento...");
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.cadastrarAvaliacao(avaliacaoCreateDTO);
         log.info("Cadastro de Avaliação de Acompanhamento com sucesso.");
@@ -50,7 +54,7 @@ public class AvaliacaoController {
 
     @PutMapping("/{idAvaliacao}")
     public ResponseEntity<AvaliacaoDTO> editandoAvaliacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
-                                                           @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
+                                                           @Valid @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
         log.info("Editando Avaliação de Acompanhamento...");
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.editarAvaliacao(idAvaliacao, editarAvaliacaoDTO);
         log.info("Editando de Avaliação de Acompanhamento com sucesso.");

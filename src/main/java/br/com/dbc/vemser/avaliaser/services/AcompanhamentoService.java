@@ -23,8 +23,11 @@ public class AcompanhamentoService {
     private final AcompanhamentoRepository acompanhamentoRepository;
     private final ObjectMapper objectMapper;
 
-    public PageDTO<AcompanhamentoDTO> listarAcompanhamentosPaginados(Integer pagina, Integer tamanho) {
-        if(tamanho != 0){
+    public PageDTO<AcompanhamentoDTO> listarAcompanhamentosPaginados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if(tamanho < 0 || pagina < 0 ){
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if(tamanho > 0){
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAll(pageRequest);
         List<AcompanhamentoDTO> acompanhamentoPaginas = paginaDoRepositorio.getContent().stream()

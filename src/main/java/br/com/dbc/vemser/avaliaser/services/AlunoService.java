@@ -30,8 +30,11 @@ public class AlunoService {
     private final UsuarioService usuarioService;
 
 
-    public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) {
-        if (tamanho != 0) {
+    public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if(tamanho < 0 || pagina < 0 ){
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByAtivo(Ativo.S, pageRequest);
             List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream().map(alunoEntity -> objectMapper.convertValue(alunoEntity, AlunoDTO.class)).toList();
@@ -78,8 +81,10 @@ public class AlunoService {
         try {
             AlunoEntity aluno = findById(id);
             aluno.setNome(alunoAtualizado.getNome());
-            aluno.setEmail(alunoAtualizado.getEmail());
             aluno.setStack(stack);
+            if(!aluno.getEmail().equals(alunoAtualizado.getEmail())){
+                aluno.setEmail(alunoAtualizado.getEmail());
+            }
             AlunoDTO alunoDTO = objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
             return alunoDTO;
         } catch (Exception e) {

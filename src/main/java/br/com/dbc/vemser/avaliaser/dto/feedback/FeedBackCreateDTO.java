@@ -6,14 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class FeedBackCreateDTO {
     @Schema(example = "1")
     private Integer idAluno;
+    @NotNull(message = "Descriçao não pode ser nulo.")
+    @NotBlank(message = "Tipo não pode ficar em branco.")
     @Schema(example = "Texto descritivo")
     private String descricao;
+    @NotNull(message = "Tipo não pode ser nulo.")
+    @NotBlank(message = "Tipo não pode ficar em branco.")
     @Schema(example = "POSITIVO")
     private Tipo tipo;
 }

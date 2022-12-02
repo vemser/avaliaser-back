@@ -72,7 +72,7 @@ public class FeedBackServiceTest {
 
 
     @Test
-    public void DeveListarFeedBackPaginadoCorretamente() {
+    public void DeveListarFeedBackPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
@@ -89,7 +89,7 @@ public class FeedBackServiceTest {
     }
 
     @Test
-    public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() {
+    public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
@@ -123,7 +123,6 @@ public class FeedBackServiceTest {
         assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
         assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
         assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
-        assertEquals(feedBackEntity.getIdUsuario(), feedBackDTO.getUsuarioDTO().getIdUsuario());
         assertNotNull(feedBackEntity);
     }
 
