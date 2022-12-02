@@ -43,7 +43,7 @@ public interface OperationControllerAcompanhamento {
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta ou com id inválido, tente de novo."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@RequestParam("idAcompanhamento") Integer idAcompanhamento,
+    ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@PathVariable("idAcompanhamento") Integer idAcompanhamento,
                                                            @Valid @RequestBody EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException;
 
 
