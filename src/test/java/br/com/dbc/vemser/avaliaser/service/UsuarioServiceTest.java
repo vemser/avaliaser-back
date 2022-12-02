@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.TrocarSenhaUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +43,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -76,30 +79,36 @@ public class UsuarioServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(usuarioService, "objectMapper", objectMapper);
     }
+    @Test
+    public void DeveListarUsuarioPaginadoCorretamente() {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
 
-//    @Test
-//    public void deveTestarcadastroComSucesso() throws RegraDeNegocioException {
-//        CargoEntity cargo = CargoFactory.getCargo();
-//        String senha = "123";
-//        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-//        UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
-//        SecurityContextHolder.getContext().setAuthentication(SecurityContextHolder.getContext().getAuthentication());
-//
-//        when(cargoService.findById(anyInt())).thenReturn(cargo);
-//        when(passwordEncoder.encode(anyString())).thenReturn(senha);
-//        when(usuarioRepository.save(any())).thenReturn(usuario);
-//
-//        UsuarioDTO usuarioRetorno = usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.ADMIN);
-//
-//        assertEquals(usuario.getIdUsuario(), usuarioRetorno.getIdUsuario());
-//        assertEquals(usuario.getNome(), usuarioRetorno.getNome());
-//        assertEquals(usuario.getEmail(), usuarioRetorno.getEmail());
-//        assertEquals(usuario.getCargo().getNome(), usuarioRetorno.getCargo());
-//        assertNotNull(usuarioRetorno);
-//    }
+        UsuarioEntity usuario = getUsuarioEntity();
+        PageImpl<UsuarioEntity> listaPaginada = new PageImpl<>(List.of(usuario), PageRequest.of(numeroPagina, tamanho), 0);
+
+        when(usuarioRepository.findAllByAtivo(any(), any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<UsuarioDTO> usuarioDTOPageDTO = usuarioService.listUsuarioPaginado(numeroPagina, tamanho);
+
+        assertNotNull(usuarioDTOPageDTO);
+        assertEquals(1, usuarioDTOPageDTO.getTotalElementos());
+        assertEquals(1, usuarioDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), usuarioDTOPageDTO.getPagina());
+    }
 
     @Test
-    public void deveTestarLoginComSucesso(){
+    public void DeveListarUsuarioPaginadoComListaVazia() {
+        final int numeroPagina = 0;
+        final int tamanho = 0;
+        List<UsuarioDTO> listaVazia = new ArrayList<>();
+        PageDTO<UsuarioDTO> usuarioDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+        PageDTO<UsuarioDTO> paginaRecebida = usuarioService.listUsuarioPaginado(numeroPagina, tamanho);
+        assertEquals(paginaRecebida, usuarioDTOPageDTO);
+
+    }
+    @Test
+    public void deveTestarLoginComSucesso() {
         String senha = "123";
         String email = "test@test.com.br";
         String token = "token";
@@ -121,13 +130,71 @@ public class UsuarioServiceTest {
     }
 
     @Test
+    public void deveTestarGetUsuarioLogadoComSucesso() throws RegraDeNegocioException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        byte[] imagemBytes = new byte[10 * 1024];
+        usuario.setImage(imagemBytes);
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        usuarioService.getUsuarioLogado();
+
+    }
+
+    @Test
+    public void deveTestarCadastroComSucesso() throws RegraDeNegocioException {
+        CargoEntity cargo = CargoFactory.getCargo();
+        String senha = "123";
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
+        SecurityContextHolder.getContext().setAuthentication(SecurityContextHolder.getContext().getAuthentication());
+
+        when(cargoService.findById(anyInt())).thenReturn(cargo);
+        when(passwordEncoder.encode(anyString())).thenReturn(senha);
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+
+        UsuarioDTO usuarioRetorno = usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.ADMIN);
+
+        assertEquals(usuario.getIdUsuario(), usuarioRetorno.getIdUsuario());
+        assertEquals(usuario.getNome(), usuarioRetorno.getNome());
+        assertEquals(usuario.getEmail(), usuarioRetorno.getEmail());
+        assertNotNull(usuarioRetorno);
+    }
+
+    @Test
+    public void deveTestarAtualizarUsuarioComSucesso() throws RegraDeNegocioException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO();
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(), anyInt())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+
+        UsuarioDTO usuarioDTO = usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO, 1);
+
+        assertNotNull(usuarioDTO);
+    }
+
+    @Test
+    public void deveTestarAtualizarUsuarioLogadoComSucesso() throws RegraDeNegocioException, IOException {
+
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+
+        AtualizarUsuarioLogadoDTO atualizarUsuarioDTO = UsuarioFactory.getAtualizarUsuarioLogado();
+        UsernamePasswordAuthenticationToken dto
+                = new UsernamePasswordAuthenticationToken(1, Cargo.GESTOR, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(any())).thenReturn(usuario);
+        usuarioService.atualizarUsuarioLogado(atualizarUsuarioDTO);
+
+    }
+
+    @Test
     public void deveTestarUploadImagemComSucesso() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        byte[] imagemBytes = new byte[10*1024];
+        byte[] imagemBytes = new byte[10 * 1024];
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         Integer idUsuario = 1;
 
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
         UsuarioDTO usuarioDTO = usuarioService.uploadImagem(imagem, idUsuario);
@@ -138,83 +205,6 @@ public class UsuarioServiceTest {
 
     }
 
-    @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarUploadImagemComErro() throws RegraDeNegocioException {
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        byte[] imagemBytes = null;
-        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
-        Integer idUsuario = 1;
-
-        usuarioService.uploadImagem(imagem, idUsuario);
-
-    }
-
-    @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarGetUsuarioLogadoComErro() throws RegraDeNegocioException {
-        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.empty());
-        usuarioService.getUsuarioLogado();
-
-    }
-
-    @Test
-    public void deveTestarGetUsuarioLogadoComSucesso() throws RegraDeNegocioException {
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        byte[] imagemBytes = new byte[10*1024];
-        usuario.setImage(imagemBytes);
-        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
-        usuarioService.getUsuarioLogado();
-
-    }
-
-    @Test
-    public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        Integer idUsuario = 1;
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
-        UsuarioDTO usuarioRetorno = usuarioService.findByIdDTO(idUsuario);
-
-        assertNotNull(usuarioRetorno);
-
-    }
-
-    @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
-        Integer idUsuario = 1;
-        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.empty());
-        usuarioService.findById(idUsuario);
-
-    }
-    @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
-        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        Integer idUsuario = 1;
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
-        UsuarioEntity usuarioRetorno = usuarioService.findById(idUsuario);
-
-        assertNotNull(usuarioRetorno);
-
-    }
-
-    @Test
-    public void DeveListarUsuarioPaginadoCorretamente() {
-        final int numeroPagina = 0;
-        final int tamanho = 3;
-
-        UsuarioEntity usuario = getUsuarioEntity();
-        PageImpl<UsuarioEntity> listaPaginada = new PageImpl<>(List.of(usuario), PageRequest.of(numeroPagina, tamanho), 0);
-
-        when(usuarioRepository.findAllByAtivo(any(),any(Pageable.class))).thenReturn(listaPaginada);
-        PageDTO<UsuarioDTO> usuarioDTOPageDTO = usuarioService.listUsuarioPaginado(numeroPagina, tamanho);
-
-        assertNotNull(usuarioDTOPageDTO);
-        assertEquals(1, usuarioDTOPageDTO.getTotalElementos());
-        assertEquals(1, usuarioDTOPageDTO.getQuantidadePaginas());
-        assertEquals(listaPaginada.getPageable().getPageNumber(), usuarioDTOPageDTO.getPagina());
-    }
-
-
     @Test
     public void deveAlterarSenhaCorretamente() throws RegraDeNegocioException {
         final String senhaNova = "1234admin";
@@ -224,7 +214,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
         UsuarioEntity usuarioAtualizado = usuarioService.alterarSenha(senhaNova, usuario.getIdUsuario());
@@ -242,7 +232,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
 
@@ -252,7 +242,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveMudarSenhaCorretamenteUsuarioLogado() throws RegraDeNegocioException {
+    public void deveMudarSenhaCorretamenteDoUsuarioLogado() throws RegraDeNegocioException {
 
         final String senhaAntiga = "admin";
         final String senhaNova = "1234admin";
@@ -265,7 +255,7 @@ public class UsuarioServiceTest {
         UsuarioEntity usuarioEsperado = getUsuarioEntity();
         usuarioEsperado.setSenha(senhaNova);
 
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any(UsuarioEntity.class))).thenReturn(usuarioEsperado);
         when(passwordEncoder.matches(senhaAntiga, usuario.getSenha())).thenReturn(true);
         when(passwordEncoder.encode(senhaNova)).thenReturn(senhaNova);
@@ -273,25 +263,36 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void deveRecuperaSenhaCorretamente() throws RegraDeNegocioException {
+    public void deveEnviarRecuperacaoDeSenhaCorretamente() throws RegraDeNegocioException {
         final String email = "test@demo.com.br";
         UsuarioEntity usuario = getUsuarioEntity();
-        when(usuarioRepository.findByEmailAndAtivo(anyString(),any())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByEmailAndAtivo(anyString(), any())).thenReturn(Optional.of(usuario));
         usuarioService.recuperarSenha(email);
         verify(tokenService).retornarTokenRecuperacaoSenha(any());
-        verify(emailService).sendEmailRecuperacao(any(), any(),any());
+        verify(emailService).sendEmailRecuperacao(any(), any(), any());
     }
 
     @Test
-    public void deveTestarAtualizarUsuarioComSucesso() throws RegraDeNegocioException {
+    public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO();
-        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.of(usuario));
-        when(usuarioRepository.save(any())).thenReturn(usuario);
+        Integer idUsuario = 1;
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        UsuarioDTO usuarioRetorno = usuarioService.findByIdDTO(idUsuario);
 
-        UsuarioDTO usuarioDTO = usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO,1);
+        assertNotNull(usuarioRetorno);
 
-        assertNotNull(usuarioDTO);
+    }
+
+
+    @Test
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        Integer idUsuario = 1;
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        UsuarioEntity usuarioRetorno = usuarioService.findById(idUsuario);
+
+        assertNotNull(usuarioRetorno);
+
     }
 
     @Test
@@ -299,12 +300,70 @@ public class UsuarioServiceTest {
         Integer id = 1;
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
 
-        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S,usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
         usuarioService.desativarUsuarioById(id);
 
         verify(usuarioRepository, times(1)).save(usuario);
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveLancarExcecaoAoExecutarEnviarEmaildeCadastroInvalido() throws RegraDeNegocioException {
+        UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
+        usuarioCreateDTO.setEmail("");
+        usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.GESTOR);
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
+        Integer idUsuario = 1;
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(), anyInt())).thenReturn(Optional.empty());
+        usuarioService.findById(idUsuario);
+
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarUploadImagemComErro() throws RegraDeNegocioException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        byte[] imagemBytes = null;
+        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
+        Integer idUsuario = 1;
+
+        usuarioService.uploadImagem(imagem, idUsuario);
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarGetUsuarioLogadoComErro() throws RegraDeNegocioException {
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(), anyInt())).thenReturn(Optional.empty());
+        usuarioService.getUsuarioLogado();
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveLancarExcecaoAoExecutartransformarImagemEmBytesComIOException() throws RegraDeNegocioException, IOException {
+        final MultipartFile imagem = Mockito.mock(MultipartFile.class, Mockito.RETURNS_DEEP_STUBS);
+        when(imagem.getBytes()).thenThrow(new IOException("Teste"));
+        UsuarioService.transformarImagemEmBytes(imagem);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveLancarExcecaoAoVerificarSenhaAntigaComoInvalidaParaTrocarSenhaUsuarioLogado() throws RegraDeNegocioException {
+
+        final String senhaAntiga = "admin";
+        final String senhaNova = "1234admin";
+        TrocarSenhaUsuarioLogadoDTO senhas = new TrocarSenhaUsuarioLogadoDTO();
+        senhas.setSenhaAntiga(senhaAntiga);
+        senhas.setSenhaNova(senhaNova);
+        UsuarioEntity usuario = getUsuarioEntity();
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+        usuario.setSenha(senhaAntiga);
+        UsuarioEntity usuarioEsperado = getUsuarioEntity();
+        usuarioEsperado.setSenha(senhaNova);
+
+        when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
+        when(passwordEncoder.matches(senhaAntiga, usuario.getSenha())).thenReturn(false);
+
+        usuarioService.alterarSenhaUsuarioLogado(senhas);
     }
 
     private static UsernamePasswordAuthenticationToken getAuthentication() {

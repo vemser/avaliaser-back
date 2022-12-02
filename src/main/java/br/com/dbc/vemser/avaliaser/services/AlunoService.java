@@ -96,7 +96,7 @@ public class AlunoService {
         return alunoDTO;
     }
 
-    public static byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {
+    public byte[] transformarImagemEmBytes(MultipartFile imagem) throws RegraDeNegocioException {
         try {
             byte[] imagemBytes = imagem.getBytes();
             byte[] imagemRecebida = ImageUtil.compressImage(imagemBytes);

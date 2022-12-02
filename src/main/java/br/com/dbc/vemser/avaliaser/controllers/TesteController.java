@@ -22,9 +22,9 @@ public class TesteController {
     private final UsuarioService usuarioService;
 
 
-    @DeleteMapping("/delete/{idUsuario}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Integer idUsuario) throws RegraDeNegocioException {
-        usuarioService.excluirUsuariosTeste(idUsuario);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @DeleteMapping("/delete/{idUsuario}")
+//    public ResponseEntity<Void> deletarUsuario(@PathVariable Integer idUsuario) throws RegraDeNegocioException {
+//        usuarioService.excluirUsuariosTeste(idUsuario);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 }

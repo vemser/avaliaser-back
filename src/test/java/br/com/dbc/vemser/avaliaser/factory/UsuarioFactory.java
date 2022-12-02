@@ -1,7 +1,9 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
 import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
@@ -32,6 +34,19 @@ public class UsuarioFactory {
         usuarioCreateDTO.setNome("Paulo Sergio");
         usuarioCreateDTO.setEmail("paulo.sergio@dbccompany.com");
         return usuarioCreateDTO;
+    }
+
+    public static AtualizarUsuarioDTO getAtualizarUsuario(){
+        AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO();
+        atualizarUsuarioDTO.setNome("Paulo Sergio");
+        atualizarUsuarioDTO.setEmail("paulo.sergio@dbccompany.com");
+        return atualizarUsuarioDTO;
+    }
+
+    public static AtualizarUsuarioLogadoDTO getAtualizarUsuarioLogado(){
+        AtualizarUsuarioLogadoDTO atualizarUsuarioDTO = new AtualizarUsuarioLogadoDTO();
+        atualizarUsuarioDTO.setNome("Paulo Sergio");
+        return atualizarUsuarioDTO;
     }
 
     public static UsuarioLogadoDTO getUsuarioLogadoDTO() throws IOException {

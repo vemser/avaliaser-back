@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,8 +50,7 @@ public class AlunoServiceTest {
     private AlunoService alunoService;
     @Mock
     private AlunoRepository alunoRepository;
-    @Mock
-    private MultipartFile multipartFile;
+
 
 
 
@@ -210,13 +210,12 @@ public class AlunoServiceTest {
         verify(alunoRepository, times(1)).save(aluno);
     }
 
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void deveLancarExcecaoAoExecutartransformarImagemEmBytesComIOException() throws RegraDeNegocioException, IOException {
-//        byte[] imagemBytes = new byte[10*1024];
-//        MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
-//        doThrow(new IOException()).when(multipartFile).getBytes();
-//        alunoService.transformarImagemEmBytes(imagem);
-//    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveLancarExcecaoAoExecutartransformarImagemEmBytesComIOException() throws RegraDeNegocioException, IOException {
+        final MultipartFile imagem = Mockito.mock(MultipartFile.class, Mockito.RETURNS_DEEP_STUBS);
+        when(imagem.getBytes()).thenThrow(new IOException("Teste"));
+        alunoService.transformarImagemEmBytes(imagem);
+    }
 
     private static UsernamePasswordAuthenticationToken getAuthentication() {
         return new UsernamePasswordAuthenticationToken(1,
