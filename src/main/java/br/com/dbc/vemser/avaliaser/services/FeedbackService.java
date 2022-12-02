@@ -12,6 +12,7 @@ import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.FeedBackRepository;
+import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,10 +52,12 @@ public class FeedbackService {
     }
 
     public PageDTO<FeedBackDTO> listarFeedBackPorAlunoPaginados(Integer id,Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-            if(tamanho < 0 || pagina < 0 ){
-                throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+            if(alunoService.findById(id) != null) {
+                if (tamanho < 0 || pagina < 0) {
+                    throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+                }
             }
-            alunoService.findById(id);
+
             if (tamanho > 0) {
                 PageRequest pageRequest = PageRequest.of(pagina, tamanho);
                 Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findAllByIdAluno(id, pageRequest);
@@ -79,9 +82,6 @@ public class FeedbackService {
         FeedBackEntity feedBackEntity = new FeedBackEntity();
         UsuarioEntity usuarioEntity = usuarioService.getLoggedUser();
         AlunoEntity alunoEntity = alunoService.findById(feedBackCreateDTO.getIdAluno());
-
-        AlunoDTO alunoDTO = objectMapper.convertValue(alunoEntity, AlunoDTO.class);
-
 
         feedBackEntity.setTipo(feedBackCreateDTO.getTipo());
         feedBackEntity.setUsuarioEntity(usuarioEntity);
@@ -116,6 +116,9 @@ public class FeedbackService {
     private FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback){
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(objectMapper.convertValue(feedback.getAlunoEntity(), AlunoDTO.class));
+        if(feedback.getAlunoEntity().getFoto() != null) {
+            feedBackDTO.getAlunoDTO().setFoto(ImageUtil.decompressImage(feedback.getAlunoEntity().getFoto()));
+        }
         feedBackDTO.setUsuarioDTO(objectMapper.convertValue(feedback.getUsuarioEntity(), UsuarioRetornoAvaliacaoFeedbackDTO.class));
         return feedBackDTO;
     }

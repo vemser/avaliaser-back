@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 public class FeedBackCreateDTO {
     @Schema(example = "1")
     private Integer idAluno;
-    @NotNull(message = "Descriçao não pode ser nulo.")
-    @NotBlank(message = "Tipo não pode ficar em branco.")
+    @NotNull(message = "Descrição não pode ser nulo.")
+    @NotBlank(message = "Descrição não pode ficar em branco.")
     @Schema(example = "Texto descritivo")
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")

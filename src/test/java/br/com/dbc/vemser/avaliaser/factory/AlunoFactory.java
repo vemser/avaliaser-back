@@ -19,6 +19,7 @@ public class AlunoFactory {
         aluno.setEmail("paulo.sergio@dbccompany.com");
         aluno.setStack(Stack.BACKEND);
         aluno.setAtivo(Ativo.S);
+        aluno.setFoto(new byte[10*1024]);
 
 
         return aluno;

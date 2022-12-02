@@ -36,7 +36,7 @@ public class AlunoService {
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByAtivo(Ativo.S, pageRequest);
-            List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream().map(alunoEntity -> objectMapper.convertValue(alunoEntity, AlunoDTO.class)).toList();
+            List<AlunoDTO> alunoPaginas = paginaDoRepositorio.getContent().stream().map(this::converterAlunoDTO).toList();
 
             return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, alunoPaginas);
         }
@@ -62,8 +62,9 @@ public class AlunoService {
             alunoEntity.setAtivo(Ativo.S);
 
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
-            AlunoDTO alunoDTO = objectMapper.convertValue(alunoSalvo, AlunoDTO.class);
-            return alunoDTO;
+
+
+            return converterAlunoDTO(alunoSalvo);
         } catch (Exception e) {
             throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
         }
@@ -72,8 +73,9 @@ public class AlunoService {
     public AlunoDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {
         AlunoEntity aluno = findById(id);
         aluno.setFoto(transformarImagemEmBytes(imagem));
-        AlunoDTO alunoDTO = objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
-        return alunoDTO;
+        AlunoEntity alunoEntity = alunoRepository.save(aluno);
+
+        return converterAlunoDTO(alunoEntity);
     }
 
     public AlunoDTO atualizarAlunoPorId(Integer id, AlunoCreateDTO alunoAtualizado, Stack stack) throws RegraDeNegocioException {
@@ -84,8 +86,9 @@ public class AlunoService {
             if(!aluno.getEmail().equals(alunoAtualizado.getEmail())){
                 aluno.setEmail(alunoAtualizado.getEmail());
             }
-            AlunoDTO alunoDTO = objectMapper.convertValue(alunoRepository.save(aluno), AlunoDTO.class);
-            return alunoDTO;
+            AlunoEntity alunoEntity = alunoRepository.save(aluno);
+
+            return converterAlunoDTO(alunoEntity);
         } catch (Exception e) {
             throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
         }
@@ -99,6 +102,9 @@ public class AlunoService {
 
     private AlunoDTO converterAlunoDTO(AlunoEntity aluno) {
         AlunoDTO alunoDTO = objectMapper.convertValue(aluno, AlunoDTO.class);
+        if(aluno.getFoto() != null) {
+            alunoDTO.setFoto(ImageUtil.decompressImage(aluno.getFoto()));
+        }
         return alunoDTO;
     }
 

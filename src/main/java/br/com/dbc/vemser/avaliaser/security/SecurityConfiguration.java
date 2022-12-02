@@ -45,6 +45,7 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.PUT, "/auth//upload-imagem-usuario-logado/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
 
                                 .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO",
                                         "ADMIN", "GESTOR", "INSTRUTOR")
