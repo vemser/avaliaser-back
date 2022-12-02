@@ -76,7 +76,7 @@ public class AcompanhamentoServiceTest {
 
 
     @Test
-    public void deveListarAcompanhamentosPaginadoCorretamente() {
+    public void deveListarAcompanhamentosPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 3;
 

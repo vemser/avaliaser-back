@@ -27,7 +27,7 @@ public interface OperationControllerAcompanhamento {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size);
+    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Busca acompanhamentos por Id", description = "Realiza busca de acompanhamentos cadastrado por ID.")
     @ApiResponses(value = {

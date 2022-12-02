@@ -80,7 +80,7 @@ public class UsuarioServiceTest {
         ReflectionTestUtils.setField(usuarioService, "objectMapper", objectMapper);
     }
     @Test
-    public void DeveListarUsuarioPaginadoCorretamente() {
+    public void DeveListarUsuarioPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
@@ -97,7 +97,7 @@ public class UsuarioServiceTest {
     }
 
     @Test
-    public void DeveListarUsuarioPaginadoComListaVazia() {
+    public void DeveListarUsuarioPaginadoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 0;
         List<UsuarioDTO> listaVazia = new ArrayList<>();
@@ -398,4 +398,3 @@ public class UsuarioServiceTest {
         return cargo;
     }
 }
-

@@ -74,7 +74,7 @@ public class FeedBackServiceTest {
 
 
     @Test
-    public void DeveListarFeedBackPaginadoCorretamente() {
+    public void DeveListarFeedBackPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
@@ -91,18 +91,8 @@ public class FeedBackServiceTest {
     }
 
     @Test
-    public void DeveListarFeedBackPaginadoComListaVazia() {
-        final int numeroPagina = 0;
-        final int tamanho = 0;
-        List<FeedBackDTO> listaVazia = new ArrayList<>();
-        PageDTO<FeedBackDTO> feedBackDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() throws RegraDeNegocioException {
 
-        PageDTO<FeedBackDTO> paginaRecebida = feedbackService.listarFeedBackPaginados(numeroPagina, tamanho);
-        assertEquals(paginaRecebida,feedBackDTOPageDTO);
-    }
-
-    @Test
-    public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
@@ -120,7 +110,7 @@ public class FeedBackServiceTest {
     }
 
     @Test
-    public void DeveListarFeedBackPaginadoPorIdAlunoComListaVazia() {
+    public void DeveListarFeedBackPaginadoPorIdAlunoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 0;
         List<FeedBackDTO> listaVazia = new ArrayList<>();
@@ -149,7 +139,6 @@ public class FeedBackServiceTest {
         assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
         assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
         assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
-        assertEquals(feedBackEntity.getIdUsuario(), feedBackDTO.getUsuarioDTO().getIdUsuario());
         assertNotNull(feedBackEntity);
     }
 

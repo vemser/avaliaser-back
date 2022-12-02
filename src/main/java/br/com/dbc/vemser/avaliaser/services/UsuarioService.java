@@ -48,8 +48,11 @@ public class UsuarioService {
     private final EmailService emailService;
 
 
-    public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) {
-        if (tamanho != 0) {
+    public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if(tamanho < 0 || pagina < 0 ){
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<UsuarioEntity> paginaDoRepositorio = usuarioRepository.findAllByAtivo(Ativo.S, pageRequest);
             List<UsuarioDTO> usuarioPaginas = paginaDoRepositorio.getContent().stream()

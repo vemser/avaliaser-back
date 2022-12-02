@@ -34,7 +34,7 @@ public class AdministradorController implements OperationControllerAdministrador
 
 
     @GetMapping("/listar-usuarios")
-    public ResponseEntity<PageDTO<UsuarioDTO>> listarUsuario(@RequestParam Integer page, @RequestParam Integer size) {
+    public ResponseEntity<PageDTO<UsuarioDTO>> listarUsuario(@RequestParam Integer page, @RequestParam Integer size) throws RegraDeNegocioException {
         log.info("Retornando Usuário logado...");
         PageDTO<UsuarioDTO> usuario = usuarioService.listUsuarioPaginado(page, size);
         log.info("Retorno de usuário logado com sucesso.");

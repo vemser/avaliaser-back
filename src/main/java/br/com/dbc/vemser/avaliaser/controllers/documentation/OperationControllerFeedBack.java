@@ -25,7 +25,7 @@ public interface OperationControllerFeedBack {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(Integer page, Integer size);
+    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar feedbacks Cadastrados por Aluno", description = "Realiza a listagem de todos os feedbacks já cadastrados no sistema, filtrados por Aluno.")
     @ApiResponses(value = {
@@ -33,7 +33,7 @@ public interface OperationControllerFeedBack {
             @ApiResponse(responseCode = "400", description = "Feedbacks não localizados, verifique se o ID inserido está correto."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPorAlunoPaginado(@PathVariable(required = false, name = "idAluno")Integer idAluno, Integer page, Integer size);
+    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPorAlunoPaginado(@PathVariable(required = false, name = "idAluno")Integer idAluno, Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Busca feedbacks por Id", description = "Realiza busca de feedbacks cadastrados por ID.")
     @ApiResponses(value = {

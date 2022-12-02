@@ -97,7 +97,7 @@ public class AvaliacaoServiceTest {
     }
 
     @Test
-    public void deveListarAvaliacaoPaginadoComSucesso(){
+    public void deveListarAvaliacaoPaginadoComSucesso() throws RegraDeNegocioException {
          final int page = 0;
          final int size = 1;
 
@@ -111,7 +111,7 @@ public class AvaliacaoServiceTest {
     }
 
     @Test
-    public void deveListarAvaliacaoPaginadoComSizeZeradoComSucesso(){
+    public void deveListarAvaliacaoPaginadoComSizeZeradoComSucesso() throws RegraDeNegocioException {
         final int page = 0;
         final int size = 0;
 
@@ -129,7 +129,7 @@ public class AvaliacaoServiceTest {
     }
 
     @Test
-    public void deveListarAvaliacaoPorAlunoPaginadoComSucesso(){
+    public void deveListarAvaliacaoPorAlunoPaginadoComSucesso() throws RegraDeNegocioException {
         final int page = 0;
         final int size = 1;
 
@@ -143,7 +143,7 @@ public class AvaliacaoServiceTest {
     }
 
     @Test
-    public void deveListarAvaliacaoPorAlunoPaginadoComSizeZeradoComSucesso(){
+    public void deveListarAvaliacaoPorAlunoPaginadoComSizeZeradoComSucesso() throws RegraDeNegocioException {
         final int page = 0;
         final int size = 0;
 

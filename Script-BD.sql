@@ -122,6 +122,6 @@ INSERT INTO CARGO(ID_CARGO, NOME)
 
 
 INSERT INTO USUARIO(id_usuario, id_cargo, nome, email, senha, ativo)
-VALUES (seq_usuario.nextval, 1, 'Paulo Sergio Silva Junior', 'paulo.sergio@dbccompany.com.br', '$2a$10$8MDmeCJlZMcNJTzzXO7Xi.nHKJLlWajTJe6/8WKgVJbgOvIDXKGVa', 'S')
+VALUES (seq_usuario.nextval, 1, 'Paulo Sergio Silva Junior', 'paulo.sergio@dbccompany.com.br', '$2a$10$jzncNP/DZErfg8ymMoWCquxnjJ2pt2HXRLEHDE0cfE.RLXx5ZS6TS', 'S')
 
 

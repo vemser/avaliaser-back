@@ -30,7 +30,7 @@ public interface OperationControllerAluno {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina);
+    ResponseEntity<PageDTO<AlunoDTO>> listarAlunos(Integer paginaQueEuQuero, Integer tamanhoDeRegistrosPorPagina) throws RegraDeNegocioException;
 
     @Operation(summary = "Busca aluno por Id", description = "Realiza busca de aluno cadastrado por ID.")
     @ApiResponses(value = {

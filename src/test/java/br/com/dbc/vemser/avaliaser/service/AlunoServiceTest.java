@@ -66,7 +66,7 @@ public class AlunoServiceTest {
 
 
     @Test
-    public void DeveListarUsuarioPaginadoCorretamente() {
+    public void DeveListarUsuarioPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 3;
 
@@ -83,7 +83,7 @@ public class AlunoServiceTest {
     }
 
     @Test
-    public void DeveListarUsuarioPaginadoComListaVazia() {
+    public void DeveListarUsuarioPaginadoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 0;
         List<AlunoDTO> listaVazia = new ArrayList<>();
