@@ -1,7 +1,5 @@
 package br.com.dbc.vemser.avaliaser.controllers.documentation;
 
-import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
@@ -42,7 +40,6 @@ public interface OperationControllerAdministrador {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "500", description = "Não foi possivel verificar o Usuario logado. Verifique se realizou o login.")
     })
-
     ResponseEntity<UsuarioDTO> uploadImagem(@PathVariable(name = "idUsuario") Integer idUsuario,
                                             @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException;
 

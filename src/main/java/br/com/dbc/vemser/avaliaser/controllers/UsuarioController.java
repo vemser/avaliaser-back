@@ -29,7 +29,6 @@ public class UsuarioController implements OperationControllerAuth {
 
     private final UsuarioService usuarioService;
 
-
     @GetMapping("/usuario-logado")
     public ResponseEntity<UsuarioLogadoDTO> getUsuarioLogado() throws RegraDeNegocioException {
         log.info("Retornando Usuário logado...");
@@ -54,9 +53,9 @@ public class UsuarioController implements OperationControllerAuth {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/upload-imagem-usuario-logado/{idUsuario}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(value = "/upload-imagem-usuario-logado/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UsuarioDTO> uploadImagemUsuarioLogado(@PathVariable(name = "idUsuario") Integer idUsuario,
-                                                   @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
+                                                                @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
         log.info("Salvando foto de perfil do usuario...");
         UsuarioDTO usuarioLogadoDTO = usuarioService.uploadImagem(file, idUsuario);
         log.info("Foto salva com sucesso!");
@@ -78,7 +77,6 @@ public class UsuarioController implements OperationControllerAuth {
         log.info("Senha alterada com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @PutMapping("/alterar-senha-usuario-recuperacao")
     public ResponseEntity<Void> alterarSenhaRecuperada(@RequestParam String senha) throws RegraDeNegocioException {

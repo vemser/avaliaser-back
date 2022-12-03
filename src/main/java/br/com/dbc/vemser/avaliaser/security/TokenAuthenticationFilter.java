@@ -22,7 +22,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String token = request.getHeader("Authorization");
 
         UsernamePasswordAuthenticationToken userPassAuthToken = tokenService.isValid(token);
-        SecurityContextHolder.getContext().setAuthentication(userPassAuthToken); // logado com o principal de id = ? (1 por exemplo)
+        SecurityContextHolder.getContext().setAuthentication(userPassAuthToken);
 
         filterChain.doFilter(request, response);
     }

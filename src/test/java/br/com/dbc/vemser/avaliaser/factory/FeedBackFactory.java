@@ -23,7 +23,7 @@ public class FeedBackFactory {
         return feedBackEntity;
     }
 
-    public static FeedBackCreateDTO getFeedBackCreateDTO(){
+    public static FeedBackCreateDTO getFeedBackCreateDTO() {
         FeedBackCreateDTO feedBackCreateDTO = new FeedBackCreateDTO();
         feedBackCreateDTO.setDescricao("Texto para teste!");
         feedBackCreateDTO.setTipo(Tipo.POSITIVO);
@@ -32,7 +32,7 @@ public class FeedBackFactory {
         return feedBackCreateDTO;
     }
 
-    public static EditarFeedBackDTO getEditarFeedBack(){
+    public static EditarFeedBackDTO getEditarFeedBack() {
         EditarFeedBackDTO editarFeedBackDTO = new EditarFeedBackDTO();
         editarFeedBackDTO.setDescricao("Texto para teste!");
         editarFeedBackDTO.setTipo(Tipo.POSITIVO);

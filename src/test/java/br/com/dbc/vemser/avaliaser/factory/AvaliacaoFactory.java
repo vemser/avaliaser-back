@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class AvaliacaoFactory {
-    public static AvaliacaoEntity getAvaliacaoFactory(){
+    public static AvaliacaoEntity getAvaliacaoFactory() {
         AvaliacaoEntity avaliacao = new AvaliacaoEntity();
         avaliacao.setIdAvaliacao(1);
         avaliacao.setAcompanhamentoEntity(AcompanhamentoFactory.getAcompanhamento());
@@ -19,7 +19,7 @@ public class AvaliacaoFactory {
         avaliacao.setUsuarioEntity(UsuarioFactory.getUsuarioEntity());
         avaliacao.setDescricao("Descrição Bala");
         avaliacao.setTipo(Tipo.POSITIVO);
-        avaliacao.setDataCriacao(LocalDate.of(2022, 12,01));
+        avaliacao.setDataCriacao(LocalDate.of(2022, 12, 01));
         return avaliacao;
     }
 
@@ -34,21 +34,21 @@ public class AvaliacaoFactory {
         avaliacao.setResponsavel(usuario);
         avaliacao.setDescricao("Descrição Bala");
         avaliacao.setTipo(Tipo.POSITIVO);
-        avaliacao.setDataCriacao(LocalDate.of(2022, 12,01));
+        avaliacao.setDataCriacao(LocalDate.of(2022, 12, 01));
         return avaliacao;
     }
 
-    public static AvaliacaoCreateDTO getAvaliacaoCreateDTOFactory(){
+    public static AvaliacaoCreateDTO getAvaliacaoCreateDTOFactory() {
         AvaliacaoCreateDTO avaliacao = new AvaliacaoCreateDTO();
         avaliacao.setIdAcompanhamento(1);
         avaliacao.setIdAluno(1);
         avaliacao.setDescricao("Descrição Bala");
         avaliacao.setTipo(Tipo.POSITIVO);
-        avaliacao.setDataCriacao(LocalDate.of(2022, 12,01));
+        avaliacao.setDataCriacao(LocalDate.of(2022, 12, 01));
         return avaliacao;
     }
 
-    public static EditarAvaliacaoDTO getEditarAvaliacaoDTOFactory(){
+    public static EditarAvaliacaoDTO getEditarAvaliacaoDTOFactory() {
         EditarAvaliacaoDTO avaliacao = new EditarAvaliacaoDTO();
         avaliacao.setIdAcompanhamento(1);
         avaliacao.setIdAluno(1);

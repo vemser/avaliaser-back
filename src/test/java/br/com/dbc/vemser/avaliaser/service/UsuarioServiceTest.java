@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.service;
 
 import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
+import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
@@ -79,6 +80,7 @@ public class UsuarioServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(usuarioService, "objectMapper", objectMapper);
     }
+
     @Test
     public void DeveListarUsuarioPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
@@ -115,6 +117,7 @@ public class UsuarioServiceTest {
         assertEquals(paginaRecebida, usuarioDTOPageDTO);
 
     }
+
     @Test
     public void deveTestarLoginComSucesso() {
         String senha = "123";
@@ -144,7 +147,9 @@ public class UsuarioServiceTest {
         usuario.setImage(imagemBytes);
         SecurityContextHolder.getContext().setAuthentication(getAuthentication());
         when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
-        usuarioService.getUsuarioLogado();
+        UsuarioLogadoDTO usuarioDTO = usuarioService.getUsuarioLogado();
+
+        assertEquals("Paulo Sergio", usuario.getNome());
 
     }
 
@@ -172,16 +177,18 @@ public class UsuarioServiceTest {
     public void deveTestarAtualizarUsuarioComSucesso() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
         AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO();
+        atualizarUsuarioDTO.setNome("Moises Noah");
         when(usuarioRepository.findByAtivoAndIdUsuario(any(), anyInt())).thenReturn(Optional.of(usuario));
         when(usuarioRepository.save(any())).thenReturn(usuario);
 
         UsuarioDTO usuarioDTO = usuarioService.atualizarUsuarioPorId(atualizarUsuarioDTO, 1);
 
         assertNotNull(usuarioDTO);
+        assertEquals("Moises Noah", usuario.getNome());
     }
 
     @Test
-    public void deveTestarAtualizarUsuarioLogadoComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarAtualizarUsuarioLogadoComSucesso() throws RegraDeNegocioException {
 
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
 
@@ -247,6 +254,7 @@ public class UsuarioServiceTest {
         usuarioService.alterarSenhaPorRecuperacao(senhaNova);
 
         assertEquals(senhaNova, usuarioEsperado.getSenha());
+        verify(usuarioRepository, times(1)).save(usuario);
     }
 
     @Test
@@ -293,7 +301,7 @@ public class UsuarioServiceTest {
 
 
     @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
         Integer idUsuario = 1;
         when(usuarioRepository.findByAtivoAndIdUsuario(Ativo.S, usuario.getIdUsuario())).thenReturn(Optional.of(usuario));
@@ -315,12 +323,14 @@ public class UsuarioServiceTest {
 
         verify(usuarioRepository, times(1)).save(usuario);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveLancarExcecaoAoExecutarEnviarEmaildeCadastroInvalido() throws RegraDeNegocioException {
         UsuarioCreateDTO usuarioCreateDTO = UsuarioFactory.getUsuarioCreateDTO();
         usuarioCreateDTO.setEmail("");
         usuarioService.cadastrarUsuario(usuarioCreateDTO, Cargo.GESTOR);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
         Integer idUsuario = 1;
@@ -328,6 +338,7 @@ public class UsuarioServiceTest {
         usuarioService.findById(idUsuario);
 
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarUploadImagemComErro() throws RegraDeNegocioException {
         UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();

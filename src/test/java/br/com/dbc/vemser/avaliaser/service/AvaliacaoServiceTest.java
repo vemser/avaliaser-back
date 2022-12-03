@@ -3,12 +3,10 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
@@ -36,13 +34,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -89,7 +87,7 @@ public class AvaliacaoServiceTest {
         AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.cadastrarAvaliacao(avaliacaoDTO);
 
         assertNotNull(avaliacaoDTO1);
-        assertEquals("Descrição Bala",avaliacaoDTO1.getDescricao());
+        assertEquals("Descrição Bala", avaliacaoDTO1.getDescricao());
     }
 
     @Test
@@ -111,17 +109,18 @@ public class AvaliacaoServiceTest {
 
     @Test
     public void deveListarAvaliacaoPaginadoComSucesso() throws RegraDeNegocioException {
-         final int page = 0;
-         final int size = 1;
+        final int page = 0;
+        final int size = 1;
 
-         AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
-         PageImpl<AvaliacaoEntity> lista = new PageImpl<>(List.of(avaliacao), PageRequest.of(page, size), 0);
+        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
+        PageImpl<AvaliacaoEntity> lista = new PageImpl<>(List.of(avaliacao), PageRequest.of(page, size), 0);
 
 
-         when(avaliacaoRepository.findAll(any(PageRequest.class))).thenReturn(lista);
-         PageDTO<AvaliacaoDTO> avaliacaoDTOPageDTO = avaliacaoService.listarAvaliacoesPaginados(page, size);
-         assertNotNull(avaliacaoDTOPageDTO);
+        when(avaliacaoRepository.findAll(any(PageRequest.class))).thenReturn(lista);
+        PageDTO<AvaliacaoDTO> avaliacaoDTOPageDTO = avaliacaoService.listarAvaliacoesPaginados(page, size);
+        assertNotNull(avaliacaoDTOPageDTO);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void DeveListarAvaliacaoPaginadoPorIDAlunoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
         final int numeroPagina = -1;
@@ -157,16 +156,17 @@ public class AvaliacaoServiceTest {
         PageImpl<AvaliacaoEntity> lista = new PageImpl<>(List.of(avaliacao), PageRequest.of(page, size), 0);
 
 
-        when(avaliacaoRepository.findAllByIdAluno(anyInt(),any(PageRequest.class))).thenReturn(lista);
+        when(avaliacaoRepository.findAllByIdAluno(anyInt(), any(PageRequest.class))).thenReturn(lista);
         PageDTO<AvaliacaoDTO> avaliacaoDTOPageDTO = avaliacaoService.listarAvaliacoesPorAlunoPaginados(1, page, size);
         assertNotNull(avaliacaoDTOPageDTO);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void DeveListarAvaliacaoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
         final int numeroPagina = -1;
         final int tamanho = -1;
         final int idAluno = 1;
-        avaliacaoService.listarAvaliacoesPorAlunoPaginados(idAluno,numeroPagina, tamanho);
+        avaliacaoService.listarAvaliacoesPorAlunoPaginados(idAluno, numeroPagina, tamanho);
 
     }
 
@@ -198,6 +198,7 @@ public class AvaliacaoServiceTest {
         assertNotNull(avaliacaoDTO);
 
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveLancarRegradeNegocioExceptionAoNaoLocalizarAvaliacaoPorFindById() throws RegraDeNegocioException {
         when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.empty());

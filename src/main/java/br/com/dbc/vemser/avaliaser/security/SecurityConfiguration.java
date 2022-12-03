@@ -29,28 +29,30 @@ public class SecurityConfiguration {
                 .csrf().disable()
                 .authorizeHttpRequests((authz) ->
                         //autorizações -> auth
-                        authz.antMatchers("/","/auth/login","/teste/**","/auth/recuperar-senha","/auth/usuario-logado").permitAll()
+                        authz.antMatchers("/", "/auth/login", "/auth/recuperar-senha", "/auth/usuario-logado").permitAll()
+                                .antMatchers(HttpMethod.DELETE,"/teste/delete/aluno/{idAluno}").hasAnyRole("GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.DELETE,"/teste/delete/{idUsuario}").hasAnyRole("ADMIN")
 
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-recuperacao").hasRole("RECUPERACAO")
-                                .antMatchers(HttpMethod.DELETE,"/aluno").hasRole("GESTOR")
+                                .antMatchers(HttpMethod.DELETE, "/aluno").hasRole("GESTOR")
 
-                                .antMatchers(HttpMethod.GET,"/acompanhamento/buscar-acompanhamento/{idAcompanhamento}").hasAnyRole("GESTOR","INSTRUTOR")
-                                .antMatchers(HttpMethod.GET,"/acompanhamento/listar-acompanhamento").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/acompanhamento/buscar-acompanhamento/{idAcompanhamento}").hasAnyRole("GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/acompanhamento/listar-acompanhamento").hasAnyRole("GESTOR", "INSTRUTOR")
 
-                                .antMatchers(HttpMethod.GET,"/feedback/listar-feedback").hasAnyRole("GESTOR","INSTRUTOR")
-                                .antMatchers(HttpMethod.GET,"/feedback/listar-feedback-por-id/{idAluno}").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/feedback/listar-feedback").hasAnyRole("GESTOR", "INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/feedback/listar-feedback-por-id/{idAluno}").hasAnyRole("GESTOR", "INSTRUTOR")
 
-                                .antMatchers(HttpMethod.GET,"/buscar-feedback/{idFeedBack}").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/buscar-feedback/{idFeedBack}").hasAnyRole("GESTOR", "INSTRUTOR")
 
                                 .antMatchers(HttpMethod.PUT, "/auth/atualizar-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/alterar-senha-usuario-logado").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth/upload-imagem/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
                                 .antMatchers(HttpMethod.PUT, "/auth//upload-imagem-usuario-logado/{idUsuario}").hasAnyRole("ADMIN", "GESTOR", "INSTRUTOR")
 
-                                .antMatchers(HttpMethod.GET, "/auth/usuario-logado","/auth/recuperar-senha").hasAnyRole("RECUPERACAO",
+                                .antMatchers(HttpMethod.GET, "/auth/usuario-logado", "/auth/recuperar-senha").hasAnyRole("RECUPERACAO",
                                         "ADMIN", "GESTOR", "INSTRUTOR")
-                                .antMatchers(HttpMethod.GET,"/avaliacao-acompanhamento/**").hasAnyRole("GESTOR","INSTRUTOR")
-                                .antMatchers("/aluno/**").hasAnyRole("GESTOR","INSTRUTOR")
+                                .antMatchers(HttpMethod.GET, "/avaliacao-acompanhamento/**").hasAnyRole("GESTOR", "INSTRUTOR")
+                                .antMatchers("/aluno/**").hasAnyRole("GESTOR", "INSTRUTOR")
                                 .antMatchers("/avaliacao-acompanhamento/**").hasRole("GESTOR")
                                 .antMatchers("/acompanhamento/**").hasRole("GESTOR")
                                 .antMatchers("/feedback/**").hasRole("INSTRUTOR")
@@ -60,7 +62,7 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                                 .antMatchers("/admininstrador/**").hasRole("ADMIN")
                                 .antMatchers("/auth/**").hasRole("ADMIN")
-                                .antMatchers("/**").hasRole("ADMIN")
+
 
                                 .anyRequest().authenticated()
                 );

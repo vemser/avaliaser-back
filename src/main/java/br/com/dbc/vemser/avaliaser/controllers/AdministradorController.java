@@ -2,9 +2,6 @@ package br.com.dbc.vemser.avaliaser.controllers;
 
 
 import br.com.dbc.vemser.avaliaser.controllers.documentation.OperationControllerAdministrador;
-import br.com.dbc.vemser.avaliaser.controllers.documentation.OperationControllerAuth;
-import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
@@ -32,7 +29,6 @@ public class AdministradorController implements OperationControllerAdministrador
 
     private final UsuarioService usuarioService;
 
-
     @GetMapping("/listar-usuarios")
     public ResponseEntity<PageDTO<UsuarioDTO>> listarUsuario(@RequestParam Integer page, @RequestParam Integer size) throws RegraDeNegocioException {
         log.info("Retornando Usuário logado...");
@@ -50,7 +46,6 @@ public class AdministradorController implements OperationControllerAdministrador
 
     }
 
-
     @PostMapping(value = "/cadastrar-usuario")
     public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestParam Cargo cargo,
                                                        @RequestBody @Valid UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
@@ -60,7 +55,7 @@ public class AdministradorController implements OperationControllerAdministrador
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/upload-imagem/{idUsuario}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(value = "/upload-imagem/{idUsuario}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UsuarioDTO> uploadImagem(@PathVariable(name = "idUsuario") Integer idUsuario,
                                                    @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException {
         log.info("Salvando foto de perfil do usuario...");

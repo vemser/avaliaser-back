@@ -32,20 +32,21 @@ public interface OperationControllerAuth {
             @ApiResponse(responseCode = "403", description = "Email ou senha incorretos. Login não concluído.")
     })
     ResponseEntity<String> loginUsuario(@Valid @RequestBody LoginDTO loginDTO) throws RegraDeNegocioException;
+
     @Operation(summary = "Atualiza dados do Usuario Logado", description = "Realiza alteração de dados do usuario logado: nome.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario cadastrado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
     ResponseEntity<UsuarioDTO> atualizarUsuarioLogado(@Valid @RequestBody AtualizarUsuarioLogadoDTO nome) throws RegraDeNegocioException;
+
     @Operation(summary = "Retorna usuário logado", description = "Retorna usuário que está logado no momento.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "500", description = "Não foi possivel verificar o Usuario logado. Verifique se realizou o login.")
     })
-
     ResponseEntity<UsuarioDTO> uploadImagemUsuarioLogado(@PathVariable(name = "idUsuario") Integer idUsuario,
-                                            @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException;
+                                                         @RequestPart(value = "file", required = false) MultipartFile file) throws RegraDeNegocioException;
 
     @Operation(summary = "Esqueci minha Senha", description = "Caso seu email conste no nosso banco de dados de usuarios, " +
             "envia um email com link de acesso(e token de autenticação) para trocar a senha.")

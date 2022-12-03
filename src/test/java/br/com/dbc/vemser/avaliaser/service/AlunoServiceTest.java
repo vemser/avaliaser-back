@@ -10,8 +10,6 @@ import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
 import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
 import br.com.dbc.vemser.avaliaser.services.AlunoService;
-import br.com.dbc.vemser.avaliaser.services.CargoService;
-import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -51,9 +49,6 @@ public class AlunoServiceTest {
     @Mock
     private AlunoRepository alunoRepository;
 
-
-
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -64,7 +59,6 @@ public class AlunoServiceTest {
         ReflectionTestUtils.setField(alunoService, "objectMapper", objectMapper);
     }
 
-
     @Test
     public void DeveListarUsuarioPaginadoCorretamente() throws RegraDeNegocioException {
         final int numeroPagina = 0;
@@ -73,7 +67,7 @@ public class AlunoServiceTest {
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
 
-        when(alunoRepository.findAllByAtivo(any(),any(Pageable.class))).thenReturn(listaPaginada);
+        when(alunoRepository.findAllByAtivo(any(), any(Pageable.class))).thenReturn(listaPaginada);
         PageDTO<AlunoDTO> alunoDTOPageDTO = alunoService.listarAlunoPaginado(numeroPagina, tamanho);
 
         assertNotNull(alunoDTOPageDTO);
@@ -90,7 +84,7 @@ public class AlunoServiceTest {
         PageDTO<AlunoDTO> alunoDTOPageDTOEsperado = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
 
         PageDTO<AlunoDTO> paginaRecebida = alunoService.listarAlunoPaginado(numeroPagina, tamanho);
-        assertEquals(paginaRecebida,alunoDTOPageDTOEsperado);
+        assertEquals(paginaRecebida, alunoDTOPageDTOEsperado);
 
     }
 
@@ -101,8 +95,9 @@ public class AlunoServiceTest {
         alunoService.listarAlunoPaginado(numeroPagina, tamanho);
 
     }
+
     @Test
-    public void deveTestarCadastroAlunoComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarCadastroAlunoComSucesso() throws RegraDeNegocioException {
 
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
@@ -110,7 +105,7 @@ public class AlunoServiceTest {
 
         when(alunoRepository.save(any())).thenReturn(aluno);
 
-        AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO,Stack.BACKEND);
+        AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO, Stack.BACKEND);
 
         assertEquals(aluno.getNome(), alunoDTO.getNome());
         assertEquals(aluno.getIdAluno(), alunoDTO.getIdAluno());
@@ -119,15 +114,14 @@ public class AlunoServiceTest {
     }
 
 
-
     @Test
     public void deveTestarUploadImagemComSucesso() throws RegraDeNegocioException {
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
-        byte[] imagemBytes = new byte[10*1024];
+        byte[] imagemBytes = new byte[10 * 1024];
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         Integer idAluno = 1;
 
-        when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
+        when(alunoRepository.findByAtivoAndIdAluno(any(), anyInt())).thenReturn(Optional.of(aluno));
         when(alunoRepository.save(any())).thenReturn(aluno);
 
         AlunoDTO alunoDTO = alunoService.uploadImagem(imagem, idAluno);
@@ -143,7 +137,7 @@ public class AlunoServiceTest {
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         Integer idAluno = 1;
 
-        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,aluno.getIdAluno())).thenReturn(Optional.of(aluno));
+        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S, aluno.getIdAluno())).thenReturn(Optional.of(aluno));
         AlunoDTO alunoDTO = alunoService.findByIdDTO(idAluno);
 
         assertNotNull(alunoDTO);
@@ -153,7 +147,7 @@ public class AlunoServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
         Integer idAluno = 1;
-        when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.empty());
+        when(alunoRepository.findByAtivoAndIdAluno(any(), anyInt())).thenReturn(Optional.empty());
         alunoService.findById(idAluno);
 
     }
@@ -161,7 +155,7 @@ public class AlunoServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestaCadastrarAlunoComErro() throws RegraDeNegocioException {
         AlunoCreateDTO alunoCreateDTO = null;
-        alunoService.cadastrarAluno(alunoCreateDTO,Stack.BACKEND);
+        alunoService.cadastrarAluno(alunoCreateDTO, Stack.BACKEND);
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -173,13 +167,14 @@ public class AlunoServiceTest {
         alunoService.uploadImagem(imagem, idAluno);
 
     }
+
     @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
         Integer idAluno = 1;
         AlunoEntity alunoFactory = AlunoFactory.getAlunoEntity();
-        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,idAluno)).thenReturn(Optional.of(alunoFactory));
+        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S, idAluno)).thenReturn(Optional.of(alunoFactory));
         AlunoEntity alunoEntity = alunoService.findById(idAluno);
-        assertEquals(alunoEntity,alunoFactory);
+        assertEquals(alunoEntity, alunoFactory);
         assertNotNull(alunoEntity);
     }
 
@@ -188,7 +183,7 @@ public class AlunoServiceTest {
 
         AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
         Integer idAluno = 1;
-        alunoService.atualizarAlunoPorId(idAluno,alunoCreateDTO,Stack.BACKEND);
+        alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO, Stack.BACKEND);
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -199,7 +194,7 @@ public class AlunoServiceTest {
         alunoCreateDTO.setEmail("teste@gmail.com.br");
         Integer idAluno = 1;
         when(alunoService.findById(aluno.getIdAluno())).thenReturn(aluno);
-        alunoService.atualizarAlunoPorId(idAluno,alunoCreateDTO,Stack.BACKEND);
+        alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO, Stack.BACKEND);
     }
 
     @Test
@@ -210,11 +205,11 @@ public class AlunoServiceTest {
         AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
         alunoCreateDTO.setEmail("diferente@gmail.com.br");
 
-        when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
+        when(alunoRepository.findByAtivoAndIdAluno(any(), anyInt())).thenReturn(Optional.of(aluno));
 //        when(alunoService.findById(aluno.getIdAluno())).thenReturn(aluno);
         when(alunoRepository.save(any())).thenReturn(aluno);
 
-        AlunoDTO alunoDTO = alunoService.atualizarAlunoPorId(aluno.getIdAluno(), alunoCreateDTO,aluno.getStack());
+        AlunoDTO alunoDTO = alunoService.atualizarAlunoPorId(aluno.getIdAluno(), alunoCreateDTO, aluno.getStack());
 
         assertNotNull(alunoDTO);
     }
@@ -224,7 +219,7 @@ public class AlunoServiceTest {
         Integer id = 1;
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
 
-        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S,aluno.getIdAluno())).thenReturn(Optional.of(aluno));
+        when(alunoRepository.findByAtivoAndIdAluno(Ativo.S, aluno.getIdAluno())).thenReturn(Optional.of(aluno));
         when(alunoRepository.save(any())).thenReturn(aluno);
 
         alunoService.desativarAlunoById(id);

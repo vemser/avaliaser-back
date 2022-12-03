@@ -5,15 +5,12 @@ import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.EditarAvaliacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioRetornoAvaliacaoFeedbackDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.AvaliacaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +49,7 @@ public class AvaliacaoService {
         return converterParaAvaliacaoDTO(avaliacaoCriada);
     }
 
-    public AvaliacaoDTO editarAvaliacao(Integer id,EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
+    public AvaliacaoDTO editarAvaliacao(Integer id, EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
         AvaliacaoEntity avaliacao = findById(id);
         AlunoEntity aluno = alunoService.findById(editarAvaliacaoDTO.getIdAluno());
         AcompanhamentoEntity acompanhamento = acompanhamentoService.findById(editarAvaliacaoDTO.getIdAcompanhamento());
@@ -68,10 +65,10 @@ public class AvaliacaoService {
     }
 
     public PageDTO<AvaliacaoDTO> listarAvaliacoesPaginados(Integer page, Integer size) throws RegraDeNegocioException {
-        if(size < 0 || page < 0 ){
+        if (size < 0 || page < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
-        if(size > 0){
+        if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
             Page<AvaliacaoEntity> paginaDoRepositorio = avaliacaoRepository.findAll(pageRequest);
             List<AvaliacaoDTO> avaliacoesDTO = paginaDoRepositorio.getContent().stream()
@@ -83,19 +80,20 @@ public class AvaliacaoService {
                     page,
                     size,
                     avaliacoesDTO
-            );}
+            );
+        }
         List<AvaliacaoDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L,0,0,size,  listaVazia);
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
-    public PageDTO<AvaliacaoDTO> listarAvaliacoesPorAlunoPaginados(Integer idAluno,Integer page, Integer size) throws RegraDeNegocioException {
-        if(size < 0 || page < 0 ){
+    public PageDTO<AvaliacaoDTO> listarAvaliacoesPorAlunoPaginados(Integer idAluno, Integer page, Integer size) throws RegraDeNegocioException {
+        if (size < 0 || page < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         alunoService.findById(idAluno);
-        if(size > 0){
+        if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<AvaliacaoEntity> paginaDoRepositorio = avaliacaoRepository.findAllByIdAluno(idAluno,pageRequest);
+            Page<AvaliacaoEntity> paginaDoRepositorio = avaliacaoRepository.findAllByIdAluno(idAluno, pageRequest);
             List<AvaliacaoDTO> avaliacoesDTO = paginaDoRepositorio.getContent().stream()
                     .map(this::converterParaAvaliacaoDTO)
                     .toList();
@@ -105,19 +103,12 @@ public class AvaliacaoService {
                     page,
                     size,
                     avaliacoesDTO
-            );}
+            );
+        }
         List<AvaliacaoDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L,0,0,size,  listaVazia);
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
-    private AvaliacaoDTO converterParaAvaliacaoDTO(AvaliacaoEntity avaliacao){
 
-            AvaliacaoDTO avaliacaoDTO = objectMapper.convertValue(avaliacao, AvaliacaoDTO.class);
-            avaliacaoDTO.setAcompanhamento(objectMapper.convertValue(avaliacao.getAcompanhamentoEntity(), AcompanhamentoDTO.class));
-            avaliacaoDTO.setAluno(objectMapper.convertValue(avaliacao.getAlunoEntity(), AlunoDTO.class));
-            avaliacaoDTO.setResponsavel(objectMapper.convertValue(avaliacao.getUsuarioEntity(), UsuarioRetornoAvaliacaoFeedbackDTO.class));
-            return avaliacaoDTO;
-
-    }
     public AvaliacaoEntity findById(Integer id) throws RegraDeNegocioException {
         return avaliacaoRepository.findById(id).orElseThrow(
                 () -> new RegraDeNegocioException("Avaliação não encontrada."));
@@ -128,5 +119,14 @@ public class AvaliacaoService {
         AvaliacaoDTO avaliacaoDTO =
                 objectMapper.convertValue(avaliacaoEntity, AvaliacaoDTO.class);
         return avaliacaoDTO;
+    }
+    private AvaliacaoDTO converterParaAvaliacaoDTO(AvaliacaoEntity avaliacao) {
+
+        AvaliacaoDTO avaliacaoDTO = objectMapper.convertValue(avaliacao, AvaliacaoDTO.class);
+        avaliacaoDTO.setAcompanhamento(objectMapper.convertValue(avaliacao.getAcompanhamentoEntity(), AcompanhamentoDTO.class));
+        avaliacaoDTO.setAluno(objectMapper.convertValue(avaliacao.getAlunoEntity(), AlunoDTO.class));
+        avaliacaoDTO.setResponsavel(objectMapper.convertValue(avaliacao.getUsuarioEntity(), UsuarioRetornoAvaliacaoFeedbackDTO.class));
+        return avaliacaoDTO;
+
     }
 }

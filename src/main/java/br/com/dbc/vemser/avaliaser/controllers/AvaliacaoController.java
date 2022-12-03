@@ -8,7 +8,6 @@ import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.AvaliacaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,13 +38,13 @@ public class AvaliacaoController {
                                                                         @RequestParam Integer page,
                                                                         @RequestParam Integer size) throws RegraDeNegocioException {
         log.info("Listando Avaliações por Aluno...");
-        PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoesPorAlunoPaginados(idAluno,page, size);
+        PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoesPorAlunoPaginados(idAluno, page, size);
         log.info("Listagem avaliações por Aluno com sucesso.");
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
     @PostMapping("/cadastrar-avaliacao")
-    public ResponseEntity<AvaliacaoDTO> cadastrarAvaliaccao(@Valid @RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<AvaliacaoDTO> cadastrarAvaliacao(@Valid @RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
         log.info("Cadastranndo Avaliação de Acompanhamento...");
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.cadastrarAvaliacao(avaliacaoCreateDTO);
         log.info("Cadastro de Avaliação de Acompanhamento com sucesso.");
@@ -54,7 +53,7 @@ public class AvaliacaoController {
 
     @PutMapping("/{idAvaliacao}")
     public ResponseEntity<AvaliacaoDTO> editandoAvaliacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
-                                                           @Valid @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
+                                                          @Valid @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
         log.info("Editando Avaliação de Acompanhamento...");
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.editarAvaliacao(idAvaliacao, editarAvaliacaoDTO);
         log.info("Editando de Avaliação de Acompanhamento com sucesso.");

@@ -16,6 +16,9 @@ public enum Cargo {
     public Integer getInteger() {
         return this.id;
     }
-    public String getDescricao(){return this.descricao;}
+
+    public String getDescricao() {
+        return this.descricao;
+    }
 
 }

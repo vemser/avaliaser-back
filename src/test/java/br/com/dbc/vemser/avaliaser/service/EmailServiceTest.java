@@ -1,10 +1,10 @@
 package br.com.dbc.vemser.avaliaser.service;
 
 import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
+import br.com.dbc.vemser.avaliaser.enums.TipoEmails;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
 import br.com.dbc.vemser.avaliaser.services.EmailService;
-import br.com.dbc.vemser.avaliaser.enums.TipoEmails;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.junit.Before;
@@ -67,19 +67,19 @@ public class EmailServiceTest {
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         when(fmConfiguration.getTemplate(any())).thenReturn(template);
 
-        emailService.sendEmailRecuperacao(usuarioRecuperacaoDTO,TipoEmails.REC_SENHA, token);
+        emailService.sendEmailRecuperacao(usuarioRecuperacaoDTO, TipoEmails.REC_SENHA, token);
 
         verify(emailSender).send((MimeMessage) any());
     }
 
 
     @Test
-    public void deveTestarGetContentFromTemplate() throws IOException, TemplateException, RegraDeNegocioException {
+    public void deveTestarGetContentFromTemplate() throws IOException, TemplateException {
         Template template = new Template("template.html", Reader.nullReader());
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "nome");
         dados.put("email", from);
-        dados.put("texto1","nome");
+        dados.put("texto1", "nome");
         dados.put("texto2", "nome");
         dados.put("texto3", "nome");
 
@@ -87,18 +87,18 @@ public class EmailServiceTest {
 
         when(fmConfiguration.getTemplate(anyString())).thenReturn(template);
 
-        String content = emailService.geContentFromTemplate(usuarioRecuperacaoDTO,TipoEmails.CREATE);
+        String content = emailService.getContentFromTemplate(usuarioRecuperacaoDTO);
 
         assertNotNull(content);
     }
 
     @Test
-    public void deveTestarGetContentFromTemplateUpdate() throws IOException, TemplateException, RegraDeNegocioException {
+    public void deveTestarGetContentFromTemplateUpdate() throws IOException, TemplateException {
         Template template = new Template("template.html", Reader.nullReader());
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "nome");
         dados.put("email", from);
-        dados.put("texto1","nome");
+        dados.put("texto1", "nome");
         dados.put("texto2", "nome");
         dados.put("texto3", "nome");
 
@@ -106,24 +106,24 @@ public class EmailServiceTest {
 
         when(fmConfiguration.getTemplate(anyString())).thenReturn(template);
 
-        String content = emailService.geContentFromTemplate(usuarioRecuperacaoDTO,TipoEmails.UPDATE);
+        String content = emailService.getContentFromTemplate(usuarioRecuperacaoDTO);
 
         assertNotNull(content);
     }
 
     @Test
-    public void deveTestarGetContentFromTemplateRecuperacao() throws IOException, TemplateException, RegraDeNegocioException {
+    public void deveTestarGetContentFromTemplateRecuperacao() throws IOException, TemplateException {
         Template template = new Template("template.html", Reader.nullReader());
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "nome");
         dados.put("email", from);
-        dados.put("linkComToken",token);
+        dados.put("linkComToken", token);
 
         UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = UsuarioFactory.getUsuarioRecuperacao();
 
         when(fmConfiguration.getTemplate(anyString())).thenReturn(template);
 
-        String content = emailService.geContentFromTemplateRecuperacao(usuarioRecuperacaoDTO,token);
+        String content = emailService.getContentFromTemplateRecuperacao(usuarioRecuperacaoDTO, token);
 
         assertNotNull(content);
     }
@@ -131,17 +131,18 @@ public class EmailServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarSendEmailComIOException() throws IOException, RegraDeNegocioException {
 
-        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = UsuarioFactory.getUsuarioRecuperacao();
 
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
 
         emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarSendEmailUpdateComIOException() throws IOException, RegraDeNegocioException {
 
-        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = UsuarioFactory.getUsuarioRecuperacao();
 
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());
@@ -152,7 +153,7 @@ public class EmailServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveLancarExcecaoAoExecutarSendEmailRecuperacaoComIOException() throws IOException, RegraDeNegocioException {
 
-        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO =  UsuarioFactory.getUsuarioRecuperacao();
+        UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = UsuarioFactory.getUsuarioRecuperacao();
 
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         doThrow(new IOException()).when(fmConfiguration).getTemplate(anyString());

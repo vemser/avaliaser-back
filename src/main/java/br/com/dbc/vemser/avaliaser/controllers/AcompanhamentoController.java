@@ -4,11 +4,7 @@ import br.com.dbc.vemser.avaliaser.controllers.documentation.OperationController
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.AcompanhamentoService;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +53,7 @@ public class AcompanhamentoController implements OperationControllerAcompanhamen
     public ResponseEntity<AcompanhamentoDTO> editarAcompanhamento(@PathVariable("idAcompanhamento") Integer idAcompanhamento,
                                                                   @Valid @RequestBody EditarAcompanhamentoDTO editarAcompanhamentoDTO) throws RegraDeNegocioException {
         log.info("Salvando alteração de dados do acompanhamento...");
-        AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO,idAcompanhamento);
+        AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO, idAcompanhamento);
         log.info("Alterações de acompanhamento salvas com sucesso!");
         return new ResponseEntity<>(acompanhamentoDTO, HttpStatus.OK);
     }

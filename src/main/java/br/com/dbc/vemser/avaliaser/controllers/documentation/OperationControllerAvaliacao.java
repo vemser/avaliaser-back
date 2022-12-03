@@ -20,7 +20,7 @@ public interface OperationControllerAvaliacao {
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
     ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoesPaginados(@RequestParam Integer page,
-                                                                           @RequestParam Integer size);
+                                                                    @RequestParam Integer size);
 
     @Operation(summary = "Listagem de avaliações por aluno", description = "Realiza listagem de avaliações por aluno.")
     @ApiResponses(value = {
@@ -29,21 +29,21 @@ public interface OperationControllerAvaliacao {
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
     ResponseEntity<PageDTO<AvaliacaoDTO>> listarPorAlunoPaginado(@PathVariable("idAluno") Integer idAluno,
-                                                                        @RequestParam Integer page,
-                                                                        @RequestParam Integer size);
+                                                                 @RequestParam Integer page,
+                                                                 @RequestParam Integer size);
 
     @Operation(summary = "Atualiza dados de avaliação de acompanhamento por ID", description = "Realiza a busca de avaliação por ID, e realiza alteração de dados desta avaliação.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Avaliação editada com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<AvaliacaoDTO> cadastrarAvaliação(@RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException;
+    ResponseEntity<AvaliacaoDTO> cadastrarAvaliacao(@RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Cadastrar uma avaliação", description = "Realiza o cadastro de dados da avaliação.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Avaliação cadastrada com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
-    ResponseEntity<AvaliacaoDTO> editandoAvaliiacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
+    ResponseEntity<AvaliacaoDTO> editandoAvaliacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
                                                     @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException;
 }

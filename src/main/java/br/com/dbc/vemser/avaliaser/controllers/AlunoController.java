@@ -34,6 +34,7 @@ public class AlunoController implements OperationControllerAluno {
         log.info("Retorno de dados de Aluno em lista paginada, realizado com sucesso!");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }
+
     @GetMapping("/{idAluno}")
     public ResponseEntity<AlunoDTO> buscarAlunoPorId(@PathVariable Integer idAluno) throws RegraDeNegocioException {
         log.info("Buscando dados de Alunos por ID...");
@@ -44,7 +45,7 @@ public class AlunoController implements OperationControllerAluno {
 
     @PostMapping(value = "/cadastrar-aluno")
     public ResponseEntity<AlunoDTO> cadastrarAluno(@RequestParam Stack stack,
-                                                       @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
+                                                   @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
         log.info("Salvando dados de cadastro do aluno...");
         AlunoDTO alunoDTO = alunoService.cadastrarAluno(alunoCreateDTO, stack);
         log.info("Dados de cadastro salvos com sucesso!");
@@ -65,7 +66,7 @@ public class AlunoController implements OperationControllerAluno {
                                                         @RequestParam Stack stack,
                                                         @Valid @RequestBody AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
         log.info("Salvando alterações de dados do aluno...");
-        AlunoDTO aluno = alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO,stack);
+        AlunoDTO aluno = alunoService.atualizarAlunoPorId(idAluno, alunoCreateDTO, stack);
         log.info("Alteração de dados salva com sucesso!");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }

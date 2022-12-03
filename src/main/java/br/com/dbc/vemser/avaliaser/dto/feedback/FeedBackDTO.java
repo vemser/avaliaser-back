@@ -1,7 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.feedback;
 
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioRetornoAvaliacaoFeedbackDTO;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import io.swagger.v3.oas.annotations.media.Schema;

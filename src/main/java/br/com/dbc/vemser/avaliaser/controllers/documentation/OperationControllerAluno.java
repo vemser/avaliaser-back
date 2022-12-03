@@ -2,13 +2,7 @@ package br.com.dbc.vemser.avaliaser.controllers.documentation;
 
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.LoginDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;

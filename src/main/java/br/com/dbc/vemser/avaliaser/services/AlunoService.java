@@ -4,7 +4,6 @@ import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -30,7 +29,7 @@ public class AlunoService {
 
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        if(tamanho < 0 || pagina < 0 ){
+        if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (tamanho > 0) {
@@ -83,7 +82,7 @@ public class AlunoService {
             AlunoEntity aluno = findById(id);
             aluno.setNome(alunoAtualizado.getNome());
             aluno.setStack(stack);
-            if(!aluno.getEmail().equals(alunoAtualizado.getEmail())){
+            if (!aluno.getEmail().equals(alunoAtualizado.getEmail())) {
                 aluno.setEmail(alunoAtualizado.getEmail());
             }
             AlunoEntity alunoEntity = alunoRepository.save(aluno);
@@ -95,14 +94,14 @@ public class AlunoService {
     }
 
     public void desativarAlunoById(Integer id) throws RegraDeNegocioException {
-            AlunoEntity aluno = findById(id);
-            aluno.setAtivo(Ativo.N);
-            alunoRepository.save(aluno);
+        AlunoEntity aluno = findById(id);
+        aluno.setAtivo(Ativo.N);
+        alunoRepository.save(aluno);
     }
 
     private AlunoDTO converterAlunoDTO(AlunoEntity aluno) {
         AlunoDTO alunoDTO = objectMapper.convertValue(aluno, AlunoDTO.class);
-        if(aluno.getFoto() != null) {
+        if (aluno.getFoto() != null) {
             alunoDTO.setFoto(ImageUtil.decompressImage(aluno.getFoto()));
         }
         return alunoDTO;

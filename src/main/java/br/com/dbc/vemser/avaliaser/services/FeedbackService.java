@@ -5,7 +5,6 @@ import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioRetornoAvaliacaoFeedbackDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
@@ -31,10 +30,10 @@ public class FeedbackService {
     private final ObjectMapper objectMapper;
 
     public PageDTO<FeedBackDTO> listarFeedBackPaginados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        if(tamanho < 0 || pagina < 0 ){
+        if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
-        if(tamanho > 0){
+        if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findAll(pageRequest);
             List<FeedBackDTO> feedbackList = paginaDoRepositorio.getContent().stream()
@@ -46,33 +45,34 @@ public class FeedbackService {
                     pagina,
                     tamanho,
                     feedbackList
-            );}
+            );
+        }
         List<FeedBackDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L,0,0,tamanho,  listaVazia);
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
-    public PageDTO<FeedBackDTO> listarFeedBackPorAlunoPaginados(Integer id,Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-            alunoService.findById(id);
-                if (tamanho < 0 || pagina < 0) {
-                    throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
-                }
+    public PageDTO<FeedBackDTO> listarFeedBackPorAlunoPaginados(Integer id, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        alunoService.findById(id);
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
 
-            if (tamanho > 0) {
-                PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-                Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findAllByIdAluno(id, pageRequest);
-                List<FeedBackDTO> feedbackList = paginaDoRepositorio.getContent().stream()
-                        .map(this::converterParaFeedbackDTO)
-                        .toList();
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findAllByIdAluno(id, pageRequest);
+            List<FeedBackDTO> feedbackList = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterParaFeedbackDTO)
+                    .toList();
 
-                return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                        paginaDoRepositorio.getTotalPages(),
-                        pagina,
-                        tamanho,
-                        feedbackList
-                );
-            }
-            List<FeedBackDTO> listaVazia = new ArrayList<>();
-            return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    feedbackList
+            );
+        }
+        List<FeedBackDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
 
     }
 
@@ -94,7 +94,7 @@ public class FeedbackService {
     }
 
 
-    public FeedBackDTO editarFeedBack(Integer id,EditarFeedBackDTO editarFeedBackDTO) throws RegraDeNegocioException {
+    public FeedBackDTO editarFeedBack(Integer id, EditarFeedBackDTO editarFeedBackDTO) throws RegraDeNegocioException {
         FeedBackEntity feedBackEntity = findById(id);
         AlunoEntity alunoEntity = alunoService.findById(editarFeedBackDTO.getIdAluno());
         feedBackEntity.setAlunoEntity(alunoEntity);
@@ -113,10 +113,11 @@ public class FeedbackService {
         FeedBackEntity feedBackEntity = findById(id);
         return converterParaFeedbackDTO(feedBackEntity);
     }
-    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback){
+
+    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback) {
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(objectMapper.convertValue(feedback.getAlunoEntity(), AlunoDTO.class));
-        if(feedback.getAlunoEntity().getFoto() != null) {
+        if (feedback.getAlunoEntity().getFoto() != null) {
             feedBackDTO.getAlunoDTO().setFoto(ImageUtil.decompressImage(feedback.getAlunoEntity().getFoto()));
         }
         feedBackDTO.setUsuarioDTO(objectMapper.convertValue(feedback.getUsuarioEntity(), UsuarioRetornoAvaliacaoFeedbackDTO.class));

@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public class UsuarioFactory {
-    public static UsuarioEntity getUsuarioEntity(){
+    public static UsuarioEntity getUsuarioEntity() {
         UsuarioEntity usuario = new UsuarioEntity();
         CargoEntity cargo = new CargoEntity();
         cargo.setIdCargo(1);
@@ -29,28 +29,28 @@ public class UsuarioFactory {
         return usuario;
     }
 
-    public static UsuarioCreateDTO getUsuarioCreateDTO(){
+    public static UsuarioCreateDTO getUsuarioCreateDTO() {
         UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO();
         usuarioCreateDTO.setNome("Paulo Sergio");
         usuarioCreateDTO.setEmail("paulo.sergio@dbccompany.com");
         return usuarioCreateDTO;
     }
 
-    public static AtualizarUsuarioDTO getAtualizarUsuario(){
+    public static AtualizarUsuarioDTO getAtualizarUsuario() {
         AtualizarUsuarioDTO atualizarUsuarioDTO = new AtualizarUsuarioDTO();
         atualizarUsuarioDTO.setNome("Paulo Sergio");
         atualizarUsuarioDTO.setEmail("paulo.sergio@dbccompany.com");
         return atualizarUsuarioDTO;
     }
 
-    public static AtualizarUsuarioLogadoDTO getAtualizarUsuarioLogado(){
+    public static AtualizarUsuarioLogadoDTO getAtualizarUsuarioLogado() {
         AtualizarUsuarioLogadoDTO atualizarUsuarioDTO = new AtualizarUsuarioLogadoDTO();
         atualizarUsuarioDTO.setNome("Paulo Sergio");
         return atualizarUsuarioDTO;
     }
 
     public static UsuarioLogadoDTO getUsuarioLogadoDTO() throws IOException {
-        byte[] imagemBytes = new byte[10*1024];
+        byte[] imagemBytes = new byte[10 * 1024];
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         CargoEntity cargo = new CargoEntity();
         cargo.setIdCargo(1);
@@ -63,7 +63,7 @@ public class UsuarioFactory {
     }
 
     public static UsuarioDTO getUsuarioDTO() throws IOException {
-        byte[] imagemBytes = new byte[10*1024];
+        byte[] imagemBytes = new byte[10 * 1024];
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         CargoEntity cargo = new CargoEntity();
         cargo.setIdCargo(1);
@@ -75,7 +75,8 @@ public class UsuarioFactory {
         usuarioDTO.setEmail("paulo.sergio@dbccompany.com");
         return usuarioDTO;
     }
-    public static UsuarioRecuperacaoDTO getUsuarioRecuperacao(){
+
+    public static UsuarioRecuperacaoDTO getUsuarioRecuperacao() {
         UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO();
         usuarioRecuperacaoDTO.setEmail("paulo.sergio@dbccompany.com");
         usuarioRecuperacaoDTO.setNome("Paulo Sergio");

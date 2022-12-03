@@ -3,16 +3,8 @@ package br.com.dbc.vemser.avaliaser.factory;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
-import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Stack;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 public class AcompanhamentoFactory {
@@ -26,7 +18,7 @@ public class AcompanhamentoFactory {
         return acompanhamento;
     }
 
-    public static AcompanhamentoCreateDTO getAcompanhamentoCreateDTO(){
+    public static AcompanhamentoCreateDTO getAcompanhamentoCreateDTO() {
         AcompanhamentoCreateDTO acompanhamentoCreateDTO = new AcompanhamentoCreateDTO();
         acompanhamentoCreateDTO.setTitulo("Acompanhamento do aluno: Paulo Sergio - 1");
         acompanhamentoCreateDTO.setDataInicio(LocalDate.now());
@@ -34,19 +26,19 @@ public class AcompanhamentoFactory {
         return acompanhamentoCreateDTO;
     }
 
-    public static EditarAcompanhamentoDTO getEditarAcompanhamento(){
+    public static EditarAcompanhamentoDTO getEditarAcompanhamento() {
         EditarAcompanhamentoDTO editarAcompanhamentoDTO = new EditarAcompanhamentoDTO();
         editarAcompanhamentoDTO.setTitulo("Acompanhamento do aluno: Paulo Sergio - 1");
 
         return editarAcompanhamentoDTO;
     }
 
-    public static AcompanhamentoDTO getAcompanhamentoDTO(){
+    public static AcompanhamentoDTO getAcompanhamentoDTO() {
 
         AcompanhamentoDTO acompanhamentoDTO = new AcompanhamentoDTO();
         acompanhamentoDTO.setIdAcompanhamento(1);
         acompanhamentoDTO.setTitulo("Paulo Sergio");
-        acompanhamentoDTO.setDataInicio(LocalDate.of(2022,12,01));
+        acompanhamentoDTO.setDataInicio(LocalDate.of(2022, 12, 01));
         return acompanhamentoDTO;
     }
 }

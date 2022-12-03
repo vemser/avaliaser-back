@@ -3,26 +3,12 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
-import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
-import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
-import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
-import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
 import br.com.dbc.vemser.avaliaser.repositories.AcompanhamentoRepository;
-import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
-import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
-import br.com.dbc.vemser.avaliaser.security.TokenService;
-import br.com.dbc.vemser.avaliaser.services.*;
+import br.com.dbc.vemser.avaliaser.services.AcompanhamentoService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -36,26 +22,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AcompanhamentoServiceTest {
@@ -73,7 +50,6 @@ public class AcompanhamentoServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(acompanhamentoService, "objectMapper", objectMapper);
     }
-
 
     @Test
     public void deveListarAcompanhamentosPaginadoCorretamente() throws RegraDeNegocioException {
@@ -108,10 +84,11 @@ public class AcompanhamentoServiceTest {
         PageDTO<AcompanhamentoDTO> acompanhamentoDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
 
         PageDTO<AcompanhamentoDTO> paginaRecebida = acompanhamentoService.listarAcompanhamentosPaginados(numeroPagina, tamanho);
-        assertEquals(paginaRecebida,acompanhamentoDTOPageDTO);
+        assertEquals(paginaRecebida, acompanhamentoDTOPageDTO);
     }
+
     @Test
-    public void deveTestarCadastroAcompanhamentosComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarCadastroAcompanhamentosComSucesso() throws RegraDeNegocioException {
 
 
         AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
@@ -145,17 +122,19 @@ public class AcompanhamentoServiceTest {
         acompanhamentoService.findById(idAcompanhamento);
 
     }
+
     @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
         Integer idAcompanhamento = 1;
         when(acompanhamentoRepository.findById(idAcompanhamento)).thenReturn(Optional.of(acompanhamentoEntity));
-        AcompanhamentoEntity acompanhamento  = acompanhamentoService.findById(idAcompanhamento);
+        AcompanhamentoEntity acompanhamento = acompanhamentoService.findById(idAcompanhamento);
 
         assertNotNull(acompanhamento);
     }
+
     @Test
-    public void deveTestarAtualizarAcompanhamentoComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarAtualizarAcompanhamentoComSucesso() throws RegraDeNegocioException {
 
         AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
         EditarAcompanhamentoDTO editarAcompanhamentoDTO = AcompanhamentoFactory.getEditarAcompanhamento();
@@ -164,7 +143,7 @@ public class AcompanhamentoServiceTest {
         when(acompanhamentoRepository.findById(anyInt())).thenReturn(Optional.of(acompanhamentoEntity));
         when(acompanhamentoRepository.save(any())).thenReturn(acompanhamentoEntity);
 
-        AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO,1);
+        AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.editarAcompanhamento(editarAcompanhamentoDTO, 1);
 
         assertNotNull(acompanhamentoDTO);
     }

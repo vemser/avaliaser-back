@@ -1,26 +1,18 @@
 package br.com.dbc.vemser.avaliaser.service;
 
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.entities.*;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
-import br.com.dbc.vemser.avaliaser.enums.Tipo;
+import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
+import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
 import br.com.dbc.vemser.avaliaser.factory.FeedBackFactory;
 import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
-import br.com.dbc.vemser.avaliaser.repositories.AcompanhamentoRepository;
 import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
 import br.com.dbc.vemser.avaliaser.repositories.FeedBackRepository;
-import br.com.dbc.vemser.avaliaser.services.AcompanhamentoService;
 import br.com.dbc.vemser.avaliaser.services.AlunoService;
 import br.com.dbc.vemser.avaliaser.services.FeedbackService;
 import br.com.dbc.vemser.avaliaser.services.UsuarioService;
@@ -42,7 +34,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -106,8 +97,8 @@ public class FeedBackServiceTest {
         FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
         PageImpl<FeedBackEntity> listaPaginada = new PageImpl<>(List.of(feedBackEntity), PageRequest.of(numeroPagina, tamanho), 0);
 
-        when(feedBackRepository.findAllByIdAluno(anyInt(),any(Pageable.class))).thenReturn(listaPaginada);
-        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPorAlunoPaginados(alunoEntity.getIdAluno(),numeroPagina, tamanho);
+        when(feedBackRepository.findAllByIdAluno(anyInt(), any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPorAlunoPaginados(alunoEntity.getIdAluno(), numeroPagina, tamanho);
 
         assertNotNull(feedBackDTOPageDTO);
         assertEquals(1, feedBackDTOPageDTO.getTotalElementos());
@@ -130,15 +121,16 @@ public class FeedBackServiceTest {
         List<FeedBackDTO> listaVazia = new ArrayList<>();
         PageDTO<FeedBackDTO> feedBackDTOPageDTO = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
 
-        PageDTO<FeedBackDTO> paginaRecebida = feedbackService.listarFeedBackPorAlunoPaginados(1,numeroPagina, tamanho);
-        assertEquals(paginaRecebida,feedBackDTOPageDTO);
+        PageDTO<FeedBackDTO> paginaRecebida = feedbackService.listarFeedBackPorAlunoPaginados(1, numeroPagina, tamanho);
+        assertEquals(paginaRecebida, feedBackDTOPageDTO);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void DeveListarAvaliacaoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
         final int numeroPagina = -1;
         final int tamanho = -1;
         final int idAluno = 1;
-        feedbackService.listarFeedBackPorAlunoPaginados(1,numeroPagina, tamanho);
+        feedbackService.listarFeedBackPorAlunoPaginados(idAluno, numeroPagina, tamanho);
     }
 
     @Test
@@ -175,6 +167,7 @@ public class FeedBackServiceTest {
 
         PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(page, size);
         assertNotNull(feedBackDTOPageDTO);
+        assertEquals(0, feedBackDTOPageDTO.getElementos().size());
     }
 
 
@@ -202,7 +195,7 @@ public class FeedBackServiceTest {
 
     @Test
     public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
-        AlunoEntity aluno =AlunoFactory.getAlunoEntity();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
         FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
         feedBackEntity.setAlunoEntity(aluno);
         Integer idFeedback = 1;
@@ -220,33 +213,35 @@ public class FeedBackServiceTest {
         feedbackService.findById(idFeedback);
 
     }
+
     @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException{
         FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
         Integer idFeedback = 1;
         when(feedBackRepository.findById(idFeedback)).thenReturn(Optional.of(feedBackEntity));
-        FeedBackEntity feedBackEntityRetorno  = feedbackService.findById(idFeedback);
+        FeedBackEntity feedBackEntityRetorno = feedbackService.findById(idFeedback);
 
         assertNotNull(feedBackEntityRetorno);
     }
+
     @Test
     public void deveTestarEditarFeedBackComSucesso() throws RegraDeNegocioException, IOException {
 
-       FeedBackDTO feedBackDTO = FeedBackFactory.getFeedBackDTO();
-       AlunoEntity aluno = AlunoFactory.getAlunoEntity();
-       FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-       feedBackEntity.setAlunoEntity(aluno);
-       EditarFeedBackDTO editarFeedBackDTO = FeedBackFactory.getEditarFeedBack();
-       editarFeedBackDTO.setIdAluno(aluno.getIdAluno());
+        FeedBackDTO feedBackDTO = FeedBackFactory.getFeedBackDTO();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+        feedBackEntity.setAlunoEntity(aluno);
+        EditarFeedBackDTO editarFeedBackDTO = FeedBackFactory.getEditarFeedBack();
+        editarFeedBackDTO.setIdAluno(aluno.getIdAluno());
 
-       when(feedBackRepository.findById(editarFeedBackDTO.getIdAluno())).thenReturn(Optional.of(feedBackEntity));
-       when(alunoService.findById(anyInt())).thenReturn(aluno);
-       when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
+        when(feedBackRepository.findById(editarFeedBackDTO.getIdAluno())).thenReturn(Optional.of(feedBackEntity));
+        when(alunoService.findById(anyInt())).thenReturn(aluno);
+        when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
 
 
-       FeedBackDTO feedBackDTO1 = feedbackService.editarFeedBack(aluno.getIdAluno(), editarFeedBackDTO);
+        FeedBackDTO feedBackDTO1 = feedbackService.editarFeedBack(aluno.getIdAluno(), editarFeedBackDTO);
 
-       assertNotNull(feedBackDTO1);
+        assertNotNull(feedBackDTO1);
     }
 
     private static UsernamePasswordAuthenticationToken getAuthentication() {

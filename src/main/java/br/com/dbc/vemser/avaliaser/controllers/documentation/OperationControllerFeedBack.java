@@ -1,8 +1,5 @@
 package br.com.dbc.vemser.avaliaser.controllers.documentation;
 
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
@@ -14,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -33,7 +29,7 @@ public interface OperationControllerFeedBack {
             @ApiResponse(responseCode = "400", description = "Feedbacks não localizados, verifique se o ID inserido está correto."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPorAlunoPaginado(@PathVariable(required = false, name = "idAluno")Integer idAluno, Integer page, Integer size) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPorAlunoPaginado(@PathVariable(required = false, name = "idAluno") Integer idAluno, Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Busca feedbacks por Id", description = "Realiza busca de feedbacks cadastrados por ID.")
     @ApiResponses(value = {
@@ -59,9 +55,7 @@ public interface OperationControllerFeedBack {
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, ou com id inválido, tente de novo."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<FeedBackDTO> cadastrarFeedBack( @Valid @RequestBody FeedBackCreateDTO feedBackCreateDTO) throws RegraDeNegocioException;
-
-
+    ResponseEntity<FeedBackDTO> cadastrarFeedBack(@Valid @RequestBody FeedBackCreateDTO feedBackCreateDTO) throws RegraDeNegocioException;
 
 
 }

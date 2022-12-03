@@ -14,10 +14,10 @@ import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
+import br.com.dbc.vemser.avaliaser.enums.TipoEmails;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
 import br.com.dbc.vemser.avaliaser.security.TokenService;
-import br.com.dbc.vemser.avaliaser.enums.TipoEmails;
 import br.com.dbc.vemser.avaliaser.utils.ImageUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class UsuarioService {
 
 
     public PageDTO<UsuarioDTO> listUsuarioPaginado(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        if(tamanho < 0 || pagina < 0 ){
+        if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (tamanho > 0) {
@@ -85,7 +85,7 @@ public class UsuarioService {
             usuarioEntity.setAtivo(Ativo.S);
 
             UsuarioRecuperacaoDTO usuarioRecuperacaoDTO = new UsuarioRecuperacaoDTO(usuarioEntity.getEmail(), usuarioEntity.getNome(), senha);
-                emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
+            emailService.sendEmail(usuarioRecuperacaoDTO, TipoEmails.CREATE);
 
             UsuarioEntity usuario = usuarioRepository.save(usuarioEntity);
 
@@ -106,14 +106,14 @@ public class UsuarioService {
     }
 
     public UsuarioDTO atualizarUsuarioPorId(AtualizarUsuarioDTO atualizarUsuarioDTO, Integer id) throws RegraDeNegocioException {
-            UsuarioEntity usuarioEntity = findById(id);
-            usuarioEntity.setNome(atualizarUsuarioDTO.getNome());
-            if (!usuarioEntity.getEmail().equals(atualizarUsuarioDTO.getEmail())) {
-                usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
-                }
-                UsuarioDTO usuarioLogadoDTO =
-                        converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
-                return usuarioLogadoDTO;
+        UsuarioEntity usuarioEntity = findById(id);
+        usuarioEntity.setNome(atualizarUsuarioDTO.getNome());
+        if (!usuarioEntity.getEmail().equals(atualizarUsuarioDTO.getEmail())) {
+            usuarioEntity.setEmail(atualizarUsuarioDTO.getEmail());
+        }
+        UsuarioDTO usuarioLogadoDTO =
+                converterUsuarioDTO(usuarioRepository.save(usuarioEntity));
+        return usuarioLogadoDTO;
     }
 
     public void alterarSenhaUsuarioLogado(TrocarSenhaUsuarioLogadoDTO senhas) throws RegraDeNegocioException {
@@ -148,7 +148,7 @@ public class UsuarioService {
 
     public UsuarioEntity findByEmail(String email) throws RegraDeNegocioException {
         return usuarioRepository.findByEmailAndAtivo(email, Ativo.S)
-                .orElseThrow(() -> new RegraDeNegocioException("USUARIO_NAO_ENCONTRADO"));
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado."));
     }
 
     public UsuarioDTO uploadImagem(MultipartFile imagem, Integer id) throws RegraDeNegocioException {

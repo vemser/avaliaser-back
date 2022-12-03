@@ -19,13 +19,13 @@ public class AlunoFactory {
         aluno.setEmail("paulo.sergio@dbccompany.com");
         aluno.setStack(Stack.BACKEND);
         aluno.setAtivo(Ativo.S);
-        aluno.setFoto(new byte[10*1024]);
+        aluno.setFoto(new byte[10 * 1024]);
 
 
         return aluno;
     }
 
-    public static AlunoCreateDTO getAlunoCreateDTO(){
+    public static AlunoCreateDTO getAlunoCreateDTO() {
         AlunoCreateDTO alunoCreateDTO = new AlunoCreateDTO();
         alunoCreateDTO.setNome("Paulo Sergio");
         alunoCreateDTO.setEmail("paulo.sergio@dbccompany.com");
@@ -33,7 +33,7 @@ public class AlunoFactory {
     }
 
     public static AlunoDTO getAlunoDTO() throws IOException {
-        byte[] imagemBytes = new byte[10*1024];
+        byte[] imagemBytes = new byte[10 * 1024];
         MultipartFile imagem = new MockMultipartFile("imagem", imagemBytes);
         AlunoDTO alunoDTO = new AlunoDTO();
         alunoDTO.setIdAluno(1);

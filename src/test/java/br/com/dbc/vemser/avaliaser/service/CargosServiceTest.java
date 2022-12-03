@@ -1,23 +1,15 @@
 package br.com.dbc.vemser.avaliaser.service;
 
-import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
-import br.com.dbc.vemser.avaliaser.repositories.AcompanhamentoRepository;
 import br.com.dbc.vemser.avaliaser.repositories.CargoRepository;
 import br.com.dbc.vemser.avaliaser.services.CargoService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -33,9 +25,6 @@ public class CargosServiceTest {
     @Mock
     private CargoRepository cargoRepository;
 
-
-
-
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
         Integer idCargo = 1;
@@ -43,12 +32,13 @@ public class CargosServiceTest {
         cargoService.findById(idCargo);
 
     }
+
     @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
         CargoEntity cargo = CargoFactory.getCargo();
         Integer idCargo = 1;
         when(cargoRepository.findById(idCargo)).thenReturn(Optional.of(cargo));
-        CargoEntity cargoEntity  = cargoService.findById(idCargo);
+        CargoEntity cargoEntity = cargoService.findById(idCargo);
 
         assertNotNull(cargoEntity);
     }
