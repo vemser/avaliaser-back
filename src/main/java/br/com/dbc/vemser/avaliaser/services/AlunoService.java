@@ -118,9 +118,9 @@ public class AlunoService {
         }
     }
 
-//    public void excluirAlunosTeste(Integer id) throws RegraDeNegocioException {
-//        AlunoEntity aluno = findById(id);
-//        alunoRepository.delete(aluno);
-//    }
+    public void excluirAlunosTeste(Integer id) throws RegraDeNegocioException {
+        AlunoEntity aluno = findById(id);
+        alunoRepository.delete(aluno);
+    }
 
 }
