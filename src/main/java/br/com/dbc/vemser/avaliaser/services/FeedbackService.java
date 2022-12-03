@@ -52,11 +52,10 @@ public class FeedbackService {
     }
 
     public PageDTO<FeedBackDTO> listarFeedBackPorAlunoPaginados(Integer id,Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-            if(alunoService.findById(id) != null) {
+            alunoService.findById(id);
                 if (tamanho < 0 || pagina < 0) {
                     throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
                 }
-            }
 
             if (tamanho > 0) {
                 PageRequest pageRequest = PageRequest.of(pagina, tamanho);
@@ -89,8 +88,9 @@ public class FeedbackService {
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
 
         FeedBackEntity feedBackSalvo = feedBackRepository.save(feedBackEntity);
+        FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackSalvo);
 
-        return converterParaFeedbackDTO(feedBackSalvo);
+        return feedBackDTO;
     }
 
 
@@ -100,8 +100,8 @@ public class FeedbackService {
         feedBackEntity.setAlunoEntity(alunoEntity);
         feedBackEntity.setDescricao(editarFeedBackDTO.getDescricao());
         feedBackEntity.setTipo(editarFeedBackDTO.getTipo());
-        feedBackRepository.save(feedBackEntity);
-        return converterParaFeedbackDTO(feedBackEntity);
+        FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackRepository.save(feedBackEntity));
+        return feedBackDTO;
     }
 
     public FeedBackEntity findById(Integer id) throws RegraDeNegocioException {
@@ -113,7 +113,7 @@ public class FeedbackService {
         FeedBackEntity feedBackEntity = findById(id);
         return converterParaFeedbackDTO(feedBackEntity);
     }
-    private FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback){
+    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback){
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(objectMapper.convertValue(feedback.getAlunoEntity(), AlunoDTO.class));
         if(feedback.getAlunoEntity().getFoto() != null) {

@@ -24,15 +24,15 @@ public class TesteController {
     private final AlunoService alunoService;
 
 
-    @DeleteMapping("/delete/{idUsuario}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
-        usuarioService.excluirUsuariosTeste(idUsuario);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @DeleteMapping("/delete/{idUsuario}")
+//    public ResponseEntity<Void> deletarUsuario(@PathVariable("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+//        usuarioService.excluirUsuariosTeste(idUsuario);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
-    @DeleteMapping("/delete/aluno/{idAluno}")
-    public ResponseEntity<Void> deletarAluno(@PathVariable("idAluno") Integer idAluno) throws RegraDeNegocioException {
-        alunoService.excluirAlunosTeste(idAluno);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @DeleteMapping("/delete/aluno/{idAluno}")
+//    public ResponseEntity<Void> deletarAluno(@PathVariable("idAluno") Integer idAluno) throws RegraDeNegocioException {
+//        alunoService.excluirAlunosTeste(idAluno);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 }

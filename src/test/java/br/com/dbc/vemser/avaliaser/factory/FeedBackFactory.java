@@ -18,6 +18,7 @@ public class FeedBackFactory {
         feedBackEntity.setIdUsuario(1);
         feedBackEntity.setTipo(Tipo.POSITIVO);
         feedBackEntity.setDescricao("Texto para teste!");
+        feedBackEntity.setAlunoEntity(AlunoFactory.getAlunoEntity());
 
         return feedBackEntity;
     }

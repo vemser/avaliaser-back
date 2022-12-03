@@ -53,7 +53,7 @@ public class AvaliacaoService {
     }
 
     public AvaliacaoDTO editarAvaliacao(Integer id,EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException {
-        AvaliacaoEntity avaliacao = avaliacaoRepository.findById(id).get();
+        AvaliacaoEntity avaliacao = findById(id);
         AlunoEntity aluno = alunoService.findById(editarAvaliacaoDTO.getIdAluno());
         AcompanhamentoEntity acompanhamento = acompanhamentoService.findById(editarAvaliacaoDTO.getIdAcompanhamento());
 
@@ -117,5 +117,16 @@ public class AvaliacaoService {
             avaliacaoDTO.setResponsavel(objectMapper.convertValue(avaliacao.getUsuarioEntity(), UsuarioRetornoAvaliacaoFeedbackDTO.class));
             return avaliacaoDTO;
 
+    }
+    public AvaliacaoEntity findById(Integer id) throws RegraDeNegocioException {
+        return avaliacaoRepository.findById(id).orElseThrow(
+                () -> new RegraDeNegocioException("Avaliação não encontrada."));
+    }
+
+    public AvaliacaoDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
+        AvaliacaoEntity avaliacaoEntity = findById(id);
+        AvaliacaoDTO avaliacaoDTO =
+                objectMapper.convertValue(avaliacaoEntity, AvaliacaoDTO.class);
+        return avaliacaoDTO;
     }
 }

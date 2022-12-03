@@ -193,10 +193,10 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public void excluirUsuariosTeste(Integer id) throws RegraDeNegocioException {
-        UsuarioEntity usuario = findById(id);
-        usuarioRepository.delete(usuario);
-    }
+//    public void excluirUsuariosTeste(Integer id) throws RegraDeNegocioException {
+//        UsuarioEntity usuario = findById(id);
+//        usuarioRepository.delete(usuario);
+//    }
 
     public UsuarioEntity getLoggedUser() throws RegraDeNegocioException {
         return findById(getIdLoggedUser());

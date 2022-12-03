@@ -92,6 +92,14 @@ public class AcompanhamentoServiceTest {
         assertEquals(listaPaginada.getPageable().getPageNumber(), acompanhamentoDTOPageDTO.getPagina());
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarAlunoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        acompanhamentoService.listarAcompanhamentosPaginados(numeroPagina, tamanho);
+
+    }
+
     @Test
     public void DeveListarAcompanhamentoPaginadoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;

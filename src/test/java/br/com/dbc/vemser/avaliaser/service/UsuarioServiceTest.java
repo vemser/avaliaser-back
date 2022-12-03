@@ -96,6 +96,14 @@ public class UsuarioServiceTest {
         assertEquals(listaPaginada.getPageable().getPageNumber(), usuarioDTOPageDTO.getPagina());
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarUsuarioPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        usuarioService.listUsuarioPaginado(numeroPagina, tamanho);
+
+    }
+
     @Test
     public void DeveListarUsuarioPaginadoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;

@@ -83,7 +83,7 @@ public class AlunoServiceTest {
     }
 
     @Test
-    public void DeveListarUsuarioPaginadoComListaVazia() throws RegraDeNegocioException {
+    public void DeveListarAlunoPaginadoComListaVazia() throws RegraDeNegocioException {
         final int numeroPagina = 0;
         final int tamanho = 0;
         List<AlunoDTO> listaVazia = new ArrayList<>();
@@ -91,6 +91,14 @@ public class AlunoServiceTest {
 
         PageDTO<AlunoDTO> paginaRecebida = alunoService.listarAlunoPaginado(numeroPagina, tamanho);
         assertEquals(paginaRecebida,alunoDTOPageDTOEsperado);
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarAlunoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        alunoService.listarAlunoPaginado(numeroPagina, tamanho);
 
     }
     @Test
@@ -183,13 +191,27 @@ public class AlunoServiceTest {
         alunoService.atualizarAlunoPorId(idAluno,alunoCreateDTO,Stack.BACKEND);
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarAtualizarAlunoPorIdComErroDeEmailJaLocalizadoNoBanco() throws RegraDeNegocioException {
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        aluno.setEmail("teste@gmail.com.br");
+        AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
+        alunoCreateDTO.setEmail("teste@gmail.com.br");
+        Integer idAluno = 1;
+        when(alunoService.findById(aluno.getIdAluno())).thenReturn(aluno);
+        alunoService.atualizarAlunoPorId(idAluno,alunoCreateDTO,Stack.BACKEND);
+    }
+
     @Test
-    public void deveTestarAtualizarAlunoComSucesso() throws RegraDeNegocioException, IOException {
+    public void deveTestarAtualizarAlunoComSucesso() throws RegraDeNegocioException {
 
         AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        aluno.setEmail("teste@gmail.com.br");
         AlunoCreateDTO alunoCreateDTO = AlunoFactory.getAlunoCreateDTO();
+        alunoCreateDTO.setEmail("diferente@gmail.com.br");
 
         when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
+//        when(alunoService.findById(aluno.getIdAluno())).thenReturn(aluno);
         when(alunoRepository.save(any())).thenReturn(aluno);
 
         AlunoDTO alunoDTO = alunoService.atualizarAlunoPorId(aluno.getIdAluno(), alunoCreateDTO,aluno.getStack());

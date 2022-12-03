@@ -3,13 +3,18 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
+import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
 import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
 import br.com.dbc.vemser.avaliaser.factory.AvaliacaoFactory;
+import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
 import br.com.dbc.vemser.avaliaser.repositories.AvaliacaoRepository;
 import br.com.dbc.vemser.avaliaser.services.AcompanhamentoService;
 import br.com.dbc.vemser.avaliaser.services.AlunoService;
@@ -27,10 +32,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,20 +72,25 @@ public class AvaliacaoServiceTest {
         ReflectionTestUtils.setField(avaliacaoService, "objectMapper", objectMapper);
     }
 
-//    @Test
-//    public void deveTestarCadastroAvaliacaoComSucesso() throws RegraDeNegocioException {
-//        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
-//        AvaliacaoCreateDTO avaliacaoDTO = AvaliacaoFactory.getAvaliacaoCreateDTOFactory();
-//
-//        when(alunoService.findById(anyInt())).thenReturn(AlunoFactory.getAlunoEntity());
-//        when(acompanhamentoService.findById(anyInt())).thenReturn(AcompanhamentoFactory.getAcompanhamento());
-//        when(avaliacaoRepository.save(any())).thenReturn(avaliacao);
-//
-//        AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.cadastrarAvaliacao(avaliacaoDTO);
-//
-//        assertNotNull(avaliacaoDTO1);
-//        assertEquals("Descrição Bala",avaliacaoDTO1.getDescricao());
-//    }
+    @Test
+    public void deveTestarCadastroAvaliacaoComSucesso() throws RegraDeNegocioException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
+        AvaliacaoCreateDTO avaliacaoDTO = AvaliacaoFactory.getAvaliacaoCreateDTOFactory();
+        UsernamePasswordAuthenticationToken dto
+                = new UsernamePasswordAuthenticationToken(1, Cargo.GESTOR, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(dto);
+
+        when(alunoService.findById(anyInt())).thenReturn(AlunoFactory.getAlunoEntity());
+        when(usuarioService.getLoggedUser()).thenReturn(usuario);
+        when(acompanhamentoService.findById(anyInt())).thenReturn(AcompanhamentoFactory.getAcompanhamento());
+        when(avaliacaoRepository.save(any())).thenReturn(avaliacao);
+
+        AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.cadastrarAvaliacao(avaliacaoDTO);
+
+        assertNotNull(avaliacaoDTO1);
+        assertEquals("Descrição Bala",avaliacaoDTO1.getDescricao());
+    }
 
     @Test
     public void deveTestarEditarAvaliacao() throws RegraDeNegocioException {
@@ -108,6 +121,13 @@ public class AvaliacaoServiceTest {
          when(avaliacaoRepository.findAll(any(PageRequest.class))).thenReturn(lista);
          PageDTO<AvaliacaoDTO> avaliacaoDTOPageDTO = avaliacaoService.listarAvaliacoesPaginados(page, size);
          assertNotNull(avaliacaoDTOPageDTO);
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarAvaliacaoPaginadoPorIDAlunoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        avaliacaoService.listarAvaliacoesPaginados(numeroPagina, tamanho);
+
     }
 
     @Test
@@ -141,6 +161,14 @@ public class AvaliacaoServiceTest {
         PageDTO<AvaliacaoDTO> avaliacaoDTOPageDTO = avaliacaoService.listarAvaliacoesPorAlunoPaginados(1, page, size);
         assertNotNull(avaliacaoDTOPageDTO);
     }
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarAvaliacaoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        final int idAluno = 1;
+        avaliacaoService.listarAvaliacoesPorAlunoPaginados(idAluno,numeroPagina, tamanho);
+
+    }
 
     @Test
     public void deveListarAvaliacaoPorAlunoPaginadoComSizeZeradoComSucesso() throws RegraDeNegocioException {
@@ -158,5 +186,21 @@ public class AvaliacaoServiceTest {
 
         PageDTO<AvaliacaoDTO> avaliacaoDTOPageDTO = avaliacaoService.listarAvaliacoesPorAlunoPaginados(1, page, size);
         assertNotNull(avaliacaoDTOPageDTO);
+    }
+
+    @Test
+    public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
+        AvaliacaoEntity avaliacaoEntity = AvaliacaoFactory.getAvaliacaoFactory();
+        Integer idAvaliacao = 1;
+        when(avaliacaoRepository.findById(avaliacaoEntity.getIdAvaliacao())).thenReturn(Optional.of(avaliacaoEntity));
+        AvaliacaoDTO avaliacaoDTO = avaliacaoService.findByIdDTO(idAvaliacao);
+
+        assertNotNull(avaliacaoDTO);
+
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveLancarRegradeNegocioExceptionAoNaoLocalizarAvaliacaoPorFindById() throws RegraDeNegocioException {
+        when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.empty());
+        avaliacaoService.findById(1);
     }
 }

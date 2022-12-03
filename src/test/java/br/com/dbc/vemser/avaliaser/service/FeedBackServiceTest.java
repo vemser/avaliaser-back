@@ -4,11 +4,13 @@ import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.*;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Cargo;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -76,41 +78,50 @@ public class FeedBackServiceTest {
     }
 
 
-//    @Test
-//    public void DeveListarFeedBackPaginadoCorretamente() throws RegraDeNegocioException {
-//        final int numeroPagina = 0;
-//        final int tamanho = 3;
-//
-//        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-//        PageImpl<FeedBackEntity> listaPaginada = new PageImpl<>(List.of(feedBackEntity), PageRequest.of(numeroPagina, tamanho), 0);
-//
-//        when(feedBackRepository.findAll(any(Pageable.class))).thenReturn(listaPaginada);
-//        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(numeroPagina, tamanho);
-//
-//        assertNotNull(feedBackDTOPageDTO);
-//        assertEquals(1, feedBackDTOPageDTO.getTotalElementos());
-//        assertEquals(1, feedBackDTOPageDTO.getQuantidadePaginas());
-//        assertEquals(listaPaginada.getPageable().getPageNumber(), feedBackDTOPageDTO.getPagina());
-//    }
+    @Test
+    public void DeveListarFeedBackPaginadoCorretamente() throws RegraDeNegocioException {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+        AlunoEntity alunoEntity = AlunoFactory.getAlunoEntity();
+        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+        feedBackEntity.setAlunoEntity(alunoEntity);
+        PageImpl<FeedBackEntity> listaPaginada = new PageImpl<>(List.of(feedBackEntity), PageRequest.of(numeroPagina, tamanho), 0);
 
-//    @Test
-//    public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() throws RegraDeNegocioException {
-//
-//        final int numeroPagina = 0;
-//        final int tamanho = 3;
-//
-//        AlunoEntity alunoEntity = AlunoFactory.getAlunoEntity();
-//        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-//        PageImpl<FeedBackEntity> listaPaginada = new PageImpl<>(List.of(feedBackEntity), PageRequest.of(numeroPagina, tamanho), 0);
-//
-//        when(feedBackRepository.findAllByIdAluno(anyInt(),any(Pageable.class))).thenReturn(listaPaginada);
-//        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPorAlunoPaginados(alunoEntity.getIdAluno(),numeroPagina, tamanho);
-//
-//        assertNotNull(feedBackDTOPageDTO);
-//        assertEquals(1, feedBackDTOPageDTO.getTotalElementos());
-//        assertEquals(1, feedBackDTOPageDTO.getQuantidadePaginas());
-//        assertEquals(listaPaginada.getPageable().getPageNumber(), feedBackDTOPageDTO.getPagina());
-//    }
+        when(feedBackRepository.findAll(any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(numeroPagina, tamanho);
+
+        assertNotNull(feedBackDTOPageDTO);
+        assertEquals(1, feedBackDTOPageDTO.getTotalElementos());
+        assertEquals(1, feedBackDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), feedBackDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarFeedBackPorIDAlunoPaginadoCorretamente() throws RegraDeNegocioException {
+
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+
+        AlunoEntity alunoEntity = AlunoFactory.getAlunoEntity();
+        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+        PageImpl<FeedBackEntity> listaPaginada = new PageImpl<>(List.of(feedBackEntity), PageRequest.of(numeroPagina, tamanho), 0);
+
+        when(feedBackRepository.findAllByIdAluno(anyInt(),any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPorAlunoPaginados(alunoEntity.getIdAluno(),numeroPagina, tamanho);
+
+        assertNotNull(feedBackDTOPageDTO);
+        assertEquals(1, feedBackDTOPageDTO.getTotalElementos());
+        assertEquals(1, feedBackDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), feedBackDTOPageDTO.getPagina());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarFeedBackPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        feedbackService.listarFeedBackPaginados(numeroPagina, tamanho);
+
+    }
 
     @Test
     public void DeveListarFeedBackPaginadoPorIdAlunoComListaVazia() throws RegraDeNegocioException {
@@ -122,40 +133,86 @@ public class FeedBackServiceTest {
         PageDTO<FeedBackDTO> paginaRecebida = feedbackService.listarFeedBackPorAlunoPaginados(1,numeroPagina, tamanho);
         assertEquals(paginaRecebida,feedBackDTOPageDTO);
     }
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarAvaliacaoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        final int idAluno = 1;
+        feedbackService.listarFeedBackPorAlunoPaginados(1,numeroPagina, tamanho);
+    }
+
+    @Test
+    public void deveListarFeedBackPorAlunoPaginadoComSizeEpageZeradoComSucesso() throws RegraDeNegocioException {
+        final int page = 0;
+        final int size = 0;
+
+        List<FeedBackEntity> listaVazia = new ArrayList<>();
+        PageDTO lista = new PageDTO<>();
+        lista.setTotalElementos(0L);
+        lista.setQuantidadePaginas(0);
+        lista.setPagina(0);
+        lista.setTamanho(size);
+        lista.setElementos(listaVazia);
 
 
-//    @Test
-//    public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException {
-//        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
-//        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-//        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
-//        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-//        FeedBackCreateDTO feedBackCreateDTO = FeedBackFactory.getFeedBackCreateDTO();
-//
-//        when(usuarioService.getLoggedUser()).thenReturn(usuario);
-//        when(alunoService.findById(anyInt())).thenReturn(aluno);
-//        when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
-//
-//        FeedBackDTO feedBackDTO = feedbackService.cadastrarFeedBack(feedBackCreateDTO);
-//
-//        assertEquals(feedBackEntity.getIdFeedBack(), feedBackDTO.getIdFeedBack());
-//        assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
-//        assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
-//        assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
-//        assertNotNull(feedBackEntity);
-//    }
+        PageDTO<FeedBackDTO> avaliacaoDTOPageDTO = feedbackService.listarFeedBackPorAlunoPaginados(1, page, size);
+        assertNotNull(avaliacaoDTOPageDTO);
+    }
 
-//    @Test
-//    public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
-//        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-//        Integer idFeedback = 1;
-//
-//        when(feedBackRepository.findById(feedBackEntity.getIdFeedBack())).thenReturn(Optional.of(feedBackEntity));
-//        FeedBackDTO feedBackDTO = feedbackService.findByIdDTO(idFeedback);
-//
-//        assertNotNull(feedBackDTO);
-//    }
-//
+    @Test
+    public void deveListarFeedBackPorPaginadoComSizeEpageZeradoComSucesso() throws RegraDeNegocioException {
+        final int page = 0;
+        final int size = 0;
+
+        List<FeedBackEntity> listaVazia = new ArrayList<>();
+        PageDTO lista = new PageDTO<>();
+        lista.setTotalElementos(0L);
+        lista.setQuantidadePaginas(0);
+        lista.setPagina(0);
+        lista.setTamanho(size);
+        lista.setElementos(listaVazia);
+
+
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(page, size);
+        assertNotNull(feedBackDTOPageDTO);
+    }
+
+
+    @Test
+    public void deveTestarCadastroFeedBacksComSucesso() throws RegraDeNegocioException {
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+        feedBackEntity.setAlunoEntity(aluno);
+        FeedBackCreateDTO feedBackCreateDTO = FeedBackFactory.getFeedBackCreateDTO();
+
+        when(usuarioService.getLoggedUser()).thenReturn(usuario);
+        when(alunoService.findById(anyInt())).thenReturn(aluno);
+        when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
+
+        FeedBackDTO feedBackDTO = feedbackService.cadastrarFeedBack(feedBackCreateDTO);
+
+        assertEquals(feedBackEntity.getIdFeedBack(), feedBackDTO.getIdFeedBack());
+        assertEquals(feedBackEntity.getTipo(), feedBackDTO.getTipo());
+        assertEquals(feedBackEntity.getDescricao(), feedBackDTO.getDescricao());
+        assertEquals(feedBackEntity.getIdAluno(), feedBackDTO.getAlunoDTO().getIdAluno());
+        assertNotNull(feedBackEntity);
+    }
+
+    @Test
+    public void deveTestarFindByIdDTO() throws RegraDeNegocioException {
+        AlunoEntity aluno =AlunoFactory.getAlunoEntity();
+        FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+        feedBackEntity.setAlunoEntity(aluno);
+        Integer idFeedback = 1;
+
+        when(feedBackRepository.findById(feedBackEntity.getIdFeedBack())).thenReturn(Optional.of(feedBackEntity));
+        FeedBackDTO feedBackDTO = feedbackService.findByIdDTO(idFeedback);
+
+        assertNotNull(feedBackDTO);
+    }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarFindByIdComErro() throws RegraDeNegocioException {
         Integer idFeedback = 1;
@@ -172,21 +229,25 @@ public class FeedBackServiceTest {
 
         assertNotNull(feedBackEntityRetorno);
     }
-//    @Test
-//    public void deveTestarEditarFeedBackComSucesso() throws RegraDeNegocioException {
-//
-//       FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
-//       EditarFeedBackDTO editarFeedBackDTO = FeedBackFactory.getEditarFeedBack();
-//        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
-//
-//       when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
-//       when(feedBackRepository.findById(anyInt())).thenReturn(Optional.of(feedBackEntity));
-//       when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
-//
-//       FeedBackDTO feedBackDTO = feedbackService.editarFeedBack(1, editarFeedBackDTO);
-//
-//       assertNotNull(feedBackDTO);
-//    }
+    @Test
+    public void deveTestarEditarFeedBackComSucesso() throws RegraDeNegocioException, IOException {
+
+       FeedBackDTO feedBackDTO = FeedBackFactory.getFeedBackDTO();
+       AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+       FeedBackEntity feedBackEntity = FeedBackFactory.getFeedBack();
+       feedBackEntity.setAlunoEntity(aluno);
+       EditarFeedBackDTO editarFeedBackDTO = FeedBackFactory.getEditarFeedBack();
+       editarFeedBackDTO.setIdAluno(aluno.getIdAluno());
+
+       when(feedBackRepository.findById(editarFeedBackDTO.getIdAluno())).thenReturn(Optional.of(feedBackEntity));
+       when(alunoService.findById(anyInt())).thenReturn(aluno);
+       when(feedBackRepository.save(any())).thenReturn(feedBackEntity);
+
+
+       FeedBackDTO feedBackDTO1 = feedbackService.editarFeedBack(aluno.getIdAluno(), editarFeedBackDTO);
+
+       assertNotNull(feedBackDTO1);
+    }
 
     private static UsernamePasswordAuthenticationToken getAuthentication() {
         return new UsernamePasswordAuthenticationToken(1,
