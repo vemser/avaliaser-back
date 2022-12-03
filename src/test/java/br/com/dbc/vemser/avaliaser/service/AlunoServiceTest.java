@@ -234,6 +234,15 @@ public class AlunoServiceTest {
         alunoService.transformarImagemEmBytes(imagem);
     }
 
+    @Test
+    public void deveTestarExcluirAlunoTesteComSucesso() throws RegraDeNegocioException {
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        when(alunoRepository.findByAtivoAndIdAluno(any(),anyInt())).thenReturn(Optional.of(aluno));
+
+        alunoService.excluirAlunosTeste(1);
+        verify(alunoRepository, times(1)).delete(aluno);
+    }
+
     private static UsernamePasswordAuthenticationToken getAuthentication() {
         return new UsernamePasswordAuthenticationToken(1,
                 null,

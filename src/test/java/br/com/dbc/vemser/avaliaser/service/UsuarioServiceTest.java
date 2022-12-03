@@ -385,6 +385,16 @@ public class UsuarioServiceTest {
         usuarioService.alterarSenhaUsuarioLogado(senhas);
     }
 
+    @Test
+    public void deveTestarExcluirUsuarioTesteComSucesso() throws RegraDeNegocioException {
+        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
+
+        when(usuarioRepository.findByAtivoAndIdUsuario(any(),anyInt())).thenReturn(Optional.of(usuario));
+        usuarioService.excluirUsuariosTeste(1);
+
+        verify(usuarioRepository, times(1)).delete(usuario);
+    }
+
     private static UsernamePasswordAuthenticationToken getAuthentication() {
         return new UsernamePasswordAuthenticationToken(1,
                 null,
