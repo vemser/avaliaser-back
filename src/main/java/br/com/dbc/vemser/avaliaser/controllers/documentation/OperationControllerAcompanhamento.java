@@ -30,7 +30,7 @@ public interface OperationControllerAcompanhamento {
             @ApiResponse(responseCode = "400", description = "Acompanhamento não localizado, verifique se o ID inserido está correto."),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@RequestParam("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException;
+    ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@PathVariable("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualiza dados de acompanhamentos por ID", description = "Realiza a busca de acompanhamento por ID, e realiza alteração de dados deste acompanhamentos: titulo.")
     @ApiResponses(value = {
