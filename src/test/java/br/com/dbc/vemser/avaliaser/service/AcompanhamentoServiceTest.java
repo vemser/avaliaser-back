@@ -69,7 +69,7 @@ public class AcompanhamentoServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
-    public void DeveListarAlunoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+    public void DeveListarAcompanhamentoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
         final int numeroPagina = -1;
         final int tamanho = -1;
         acompanhamentoService.listarAcompanhamentosPaginados(numeroPagina, tamanho);
