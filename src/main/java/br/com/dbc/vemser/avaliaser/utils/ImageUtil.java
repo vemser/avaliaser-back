@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-public class ImageUtil {
+public class ImageUtil { // FIXME construtor ??
 
     public static byte[] compressImage(byte[] imageBytes) {
 
@@ -21,7 +21,7 @@ public class ImageUtil {
         }
         try {
             outputStream.close();
-        } catch (Exception e) {
+        } catch (Exception e) {  // FIXME ???
         }
         return outputStream.toByteArray();
     }
@@ -37,7 +37,7 @@ public class ImageUtil {
                 outputStream.write(tmp, 0, count);
             }
             outputStream.close();
-        } catch (Exception e) {
+        } catch (Exception e) { // FIXME ???
 
         }
         return outputStream.toByteArray();

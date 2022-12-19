@@ -48,11 +48,12 @@ public class UsuarioEntity implements UserDetails {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity", cascade = CascadeType.REMOVE)
-    private Set<FeedBackEntity> feedBack;
+    private Set<FeedBackEntity> feedBack; // FIXME serializable
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEntity", cascade = CascadeType.REMOVE)
     private Set<AvaliacaoEntity> avaliacoes;
+    // FIXME serializable!
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cargo", referencedColumnName = "id_cargo")

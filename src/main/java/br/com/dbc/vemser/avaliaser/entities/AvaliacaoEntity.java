@@ -36,7 +36,7 @@ public class AvaliacaoEntity {
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "Data_Criacao")
+    @Column(name = "Data_Criacao") // FIXME está correto este nome?
     private LocalDate dataCriacao;
 
     @JsonIgnore
