@@ -10,88 +10,282 @@ GRANT CREATE TABLE TO AVALIASER;
 GRANT GLOBAL QUERY REWRITE TO AVALIASER;
 GRANT SELECT ANY TABLE TO AVALIASER;
 
-CREATE TABLE CARGO (
-  id_cargo NUMBER NOT NULL,
+CREATE TABLE PROGRAMA (
+  id_programa NUMBER,
   nome VARCHAR2(255) NOT NULL,
-  PRIMARY KEY (id_cargo)
+  descricao VARCHAR2(2000),
+  PRIMARY KEY (id_programa)
 );
 
-CREATE TABLE USUARIO (
-  id_usuario NUMBER NOT NULL,
-  id_cargo NUMBER NOT NULL,
-  nome VARCHAR2(100) NOT NULL,
-  email VARCHAR2(100) UNIQUE NOT NULL,
-  senha VARCHAR2(255) NOT NULL,
-  foto BLOB,
-  ativo CHAR(1) NOT NULL,
-  CONSTRAINT FK_USUARIO_CARGO
-    FOREIGN KEY (id_cargo)
-      REFERENCES CARGO(id_cargo),
-  PRIMARY KEY (id_usuario)
+CREATE TABLE TRILHA (
+  id_trilha NUMBER,
+  nome VARCHAR2(255) NOT NULL,
+  descricao VARCHAR2(255),
+  PRIMARY KEY (id_trilha)
+);
+
+CREATE TABLE TECNOLOGIA (
+  id_tecnologia NUMBER,
+  nome VARCHAR2(255) NOT NULL,
+  PRIMARY KEY (id_tecnologia)
 );
 
 CREATE TABLE ALUNOS (
-  id_aluno NUMBER NOT NULL,
+  id_aluno NUMBER,
   nome VARCHAR2(255) NOT NULL,
-  stack CHAR(1) NOT NULL,
+  telefone CHAR(14) NOT NULL,
+  cidade VARCHAR2(255) NOT NULL,
+  estado VARCHAR2(255) NOT NULL,
   email VARCHAR2(255) UNIQUE NOT NULL,
-  foto BLOB,
-  ativo CHAR(1) NOT NULL,
-  PRIMARY KEY (id_aluno)
+  situacao CHAR(1) NOT NULL,
+  descricao VARCHAR2(512),
+  pontuacao NUMBER,
+  id_trilha NUMBER NOT NULL,
+  id_programa NUMBER NOT NULL,
+  PRIMARY KEY (id_aluno),
+  CONSTRAINT FK_ALUNO_PROGRAMA
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
+  CONSTRAINT FK_ALUNO_TRILHA
+    FOREIGN KEY (id_trilha)
+      REFERENCES TRILHA(id_trilha)
+);
+
+CREATE TABLE ALUNO_TECNOLOGIA (
+  id_tecnologia NUMBER NOT NULL,
+  id_aluno NUMBER NOT NULL,
+  CONSTRAINT FK_ALUNO_TEC_ALUNO
+    FOREIGN KEY (id_aluno)
+      REFERENCES ALUNOS(id_aluno),
+  CONSTRAINT FK_ALUNO_TEC_TEC
+    FOREIGN KEY (id_tecnologia)
+      REFERENCES TECNOLOGIA(id_tecnologia)
 );
 
 CREATE TABLE FEEDBACK (
-  id_feedback NUMBER NOT NULL,
-  descricao VARCHAR(255) NOT NULL,
-  tipo CHAR(1) NOT NULL,
+  id_feedback NUMBER,
+  descricao VARCHAR2(2000)  NOT NULL,
+  nome_instrutor VARCHAR2(255) NOT NULL,
+  situacao CHAR(1) NOT NULL,
   id_aluno NUMBER NOT NULL,
+  id_programa NUMBER NOT NULL,
+  id_trilha NUMBER NOT NULL,
+  id_modulo NUMBER NOT NULL,
   PRIMARY KEY (id_feedback),
+  CONSTRAINT FK_FEEDBACK_PROGRAMA
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
   CONSTRAINT FK_FEEDBACK_ALUNO
     FOREIGN KEY (id_aluno)
-      REFERENCES ALUNOS(id_aluno)
+      REFERENCES ALUNOS(id_aluno),
+  CONSTRAINT FK_FEEDBACK_TRILHA
+    FOREIGN KEY (id_trilha)
+      REFERENCES TRILHA(id_trilha)
 );
 
 CREATE TABLE ACOMPANHAMENTO (
-  id_acompanhamento NUMBER NOT NULL,
-  titulo VARCHAR(255) NOT NULL,
-  descricao VARCHAR(255) NOT NULL,
+  id_acompanhamento NUMBER,
+  titulo VARCHAR2(255) NOT NULL,
+  descricao VARCHAR2(512) NOT NULL,
   data_inicio DATE NOT NULL,
-  PRIMARY KEY (id_acompanhamento)
+  id_programa NUMBER NOT NULL,
+  PRIMARY KEY (id_acompanhamento),
+  CONSTRAINT FK_ACOMP_PROGRAMA
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa)
 );
 
 CREATE TABLE AVALIACAO (
-  id_avaliacao NUMBER NOT NULL,
-  tipo CHAR(1) NOT NULL,
-  descricao VARCHAR2(255) NOT NULL,
+  id_avaliacao NUMBER,
+  situacao CHAR(1) NOT NULL,
+  descricao VARCHAR2(2000) NOT NULL,
   data_criacao DATE NOT NULL,
+  nome_gestao_pessoas VARCHAR2(255) NOT NULL,
   id_acompanhamento NUMBER NOT NULL,
-  id_usuario NUMBER NOT NULL,
   id_aluno NUMBER NOT NULL,
+  id_programa NUMBER NOT NULL,
+  id_trilha NUMBER NOT NULL,
   PRIMARY KEY (id_avaliacao),
-  CONSTRAINT FK_AVALIACAO_ALUNO
-    FOREIGN KEY (id_aluno)
-      REFERENCES ALUNOS(id_aluno),
-  CONSTRAINT FK_AVALIACAO_ACOMPANHAMENTO
+  CONSTRAINT FK_AVALIACAO_PROGRAMA
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
+  CONSTRAINT FK_AVAL_ACOMP
     FOREIGN KEY (id_acompanhamento)
       REFERENCES ACOMPANHAMENTO(id_acompanhamento),
-  CONSTRAINT FK_AVALIACAO_USUARIO
-    FOREIGN KEY (id_usuario)
-      REFERENCES USUARIO(id_usuario)
+  CONSTRAINT FK_AVAL_ALUNO
+    FOREIGN KEY (id_aluno)
+      REFERENCES ALUNOS(id_aluno),
+  CONSTRAINT FK_AVAL_TRILHA
+    FOREIGN KEY (id_trilha)
+      REFERENCES TRILHA(id_trilha)
 );
 
+CREATE TABLE MODULO (
+  id_modulo NUMBER,
+  nome VARCHAR2(255) NOT NULL,
+  id_trilha NUMBER NOT NULL,
+  id_programa NUMBER NOT NULL,
+  PRIMARY KEY (id_modulo)
+);
 
+CREATE TABLE ATIVIDADE (
+  id_atividade NUMBER,
+  titulo VARCHAR2(255) NOT NULL,
+  nome_instrutor VARCHAR2(255) NOT NULL,
+  descricao VARCHAR2(2000) NOT NULL,
+  peso_atividade NUMBER NOT NULL,
+  situacao CHAR(1) NOT NULL,
+  data_criacao DATE NOT NULL,
+  data_entrega DATE NOT NULL,
+  id_modulo NUMBER NOT NULL,
+  id_programa NUMBER NOT NULL,
+  PRIMARY KEY (id_atividade),
+  CONSTRAINT FK_ATIV_PROGRAMA
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
+  CONSTRAINT FK_ATIV_MODULO
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo)
+);
 
-CREATE SEQUENCE SEQ_USUARIO
+CREATE TABLE CLIENTE (
+  id_cliente NUMBER,
+  nome VARCHAR2(255) NOT NULL,
+  email VARCHAR2(255) UNIQUE NOT NULL,
+  telefone CHAR(14) NOT NULL,
+  situacao CHAR(1) NOT NULL,
+  PRIMARY KEY (id_cliente)
+);
+
+CREATE TABLE VAGA (
+  id_vaga NUMBER,
+  quantidade_vagas NUMBER NOT NULL,
+  quantidade_alocados NUMBER,
+  data_abertura DATE,
+  data_fechamento DATE,
+  data_criacao DATE NOT NULL,
+  situacao CHAR(1) NOT NULL,
+  id_cliente NUMBER NOT NULL,
+  PRIMARY KEY (id_vaga),
+  CONSTRAINT FK_VAGA_CLIENTE
+    FOREIGN KEY (id_cliente)
+      REFERENCES CLIENTE(id_cliente)
+);
+
+CREATE TABLE TRILHA_ATIVIDADE (
+  id_atividade NUMBER,
+  id_trilha NUMBER,
+  CONSTRAINT FK_TRILHA_ATIV_TRILHA
+    FOREIGN KEY (id_trilha)
+      REFERENCES TRILHA(id_trilha),
+  CONSTRAINT FK_TRILHA_ATIV_ATIV
+    FOREIGN KEY (id_atividade)
+      REFERENCES ATIVIDADE(id_atividade)
+);
+
+CREATE TABLE PROGRAMA_MODULO (
+  id_modulo NUMBER,
+  id_programa NUMBER,
+  CONSTRAINT FK_PROG_MOD_MOD
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo),
+  CONSTRAINT FK_PROG_MOD_PROG
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa)
+);
+
+CREATE TABLE VAGA_PROGRAMA (
+  id_programa NUMBER,
+  id_vaga NUMBER,
+  CONSTRAINT FK_VAGA_PROG_PROG
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
+  CONSTRAINT FK_VAGA_PROG_VAGA
+    FOREIGN KEY (id_vaga)
+      REFERENCES VAGA(id_vaga)
+);
+
+CREATE TABLE RESERVA_ALOCACAO (
+  id_reserva NUMBER,
+  descricao VARCHAR2(2000) NOT NULL,
+  data_reserva DATE,
+  data_alocacao DATE,
+  data_cancelamento DATE,
+  data_finalizacao DATE,
+  situacao CHAR(1) NOT NULL,
+  motivo VARCHAR2(2000),
+  id_aluno NUMBER NOT NULL,
+  id_vaga NUMBER NOT NULL,
+  PRIMARY KEY (id_reserva),
+  CONSTRAINT FK_RESERVA_ALOC_ALUNO
+    FOREIGN KEY (id_aluno)
+      REFERENCES ALUNOS(id_aluno),
+  CONSTRAINT FK_RESERVA_ALOC_VAGA
+    FOREIGN KEY (id_vaga)
+      REFERENCES VAGA(id_vaga)
+);
+
+CREATE TABLE COMENTARIO (
+  id_comentario NUMBER,
+  id_atividade NUMBER NOT NULL,
+  id_aluno NUMBER NOT NULL,
+  situacao CHAR(1) NOT NULL,
+  comentario VARCHAR2(2000) NOT NULL,
+  PRIMARY KEY (id_comentario),
+  CONSTRAINT FK_COMENTARIO_ATIV
+    FOREIGN KEY (id_atividade)
+      REFERENCES ATIVIDADE(id_atividade),
+  CONSTRAINT FK_COMENTARIO_ALUNO
+      FOREIGN KEY (id_aluno)
+        REFERENCES ALUNOS(id_aluno)
+);
+
+CREATE SEQUENCE SEQ_RESERVA_ALOCACAO
 START WITH 1
 INCREMENT BY 1
 NOCACHE NOCYCLE;
 
-CREATE SEQUENCE SEQ_CARGO
+CREATE SEQUENCE SEQ_CLIENTE
 START WITH 1
 INCREMENT BY 1
 NOCACHE NOCYCLE;
 
-CREATE SEQUENCE SEQ_ACP
+CREATE SEQUENCE SEQ_PROGRAMA
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_TECNOLOGIA
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_VAGA
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_COMENTARIO
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_TRILHA
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_ATIVIDADE
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_MODULO
+START WITH 1
+INCREMENT BY 1
+NOCACHE NOCYCLE;
+
+CREATE SEQUENCE SEQ_ACOMPANHAMENTO
 START WITH 1
 INCREMENT BY 1
 NOCACHE NOCYCLE;
@@ -110,18 +304,3 @@ CREATE SEQUENCE SEQ_ALUNOS
 START WITH 1
 INCREMENT BY 1
 NOCACHE NOCYCLE;
-
-INSERT INTO CARGO(ID_CARGO, NOME)
-   VALUES (seq_cargo.nextval, 'ROLE_ADMIN');
-
-   INSERT INTO CARGO(ID_CARGO, NOME)
-   VALUES (seq_cargo.nextval, 'ROLE_GESTOR');
-
-   INSERT INTO CARGO(ID_CARGO, NOME)
-   VALUES (seq_cargo.nextval, 'ROLE_INSTRUTOR');
-
-
-INSERT INTO USUARIO(id_usuario, id_cargo, nome, email, senha, ativo)
-VALUES (seq_usuario.nextval, 1, 'Paulo Sergio Silva Junior', 'paulo.sergio@dbccompany.com.br', '$2a$10$jzncNP/DZErfg8ymMoWCquxnjJ2pt2HXRLEHDE0cfE.RLXx5ZS6TS', 'S')
-
-
