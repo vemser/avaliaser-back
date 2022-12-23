@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.avaliaser.dto.vemrankser;
+package br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.avaliaser.dto.vemrankser;
+package br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividademuraldto;
 
 import br.com.vemrankser.ranqueamento.enums.AtividadeStatus;
 import lombok.AllArgsConstructor;

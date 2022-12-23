@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.avaliaser.dto.vemrankser;
+package br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
