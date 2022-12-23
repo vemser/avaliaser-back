@@ -1,6 +1,5 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.vemrankser.ranqueamento.enums.StatusModulo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,15 +25,6 @@ public class ModuloEntity {
 
     @Column(name = "nome")
     private String nome;
-
-    @Column(name = "data_inicio")
-    private LocalDateTime dataInicio;
-
-    @Column(name = "data_fim")
-    private LocalDateTime dataFim;
-
-    @Column(name = "status_modulo")
-    private StatusModulo statusModulo;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
