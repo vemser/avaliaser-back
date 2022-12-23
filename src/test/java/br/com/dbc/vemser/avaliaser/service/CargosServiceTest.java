@@ -3,15 +3,14 @@ package br.com.dbc.vemser.avaliaser.service;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
-import br.com.dbc.vemser.avaliaser.repositories.CargoRepository;
-import br.com.dbc.vemser.avaliaser.services.CargoService;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.CargoRepository;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.CargoService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

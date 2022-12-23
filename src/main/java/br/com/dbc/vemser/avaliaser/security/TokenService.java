@@ -54,7 +54,7 @@ public class TokenService {
 
     public String retornarTokenRecuperacaoSenha(UsuarioEntity usuario) {
         Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Date dataExpiracao = Date.from(LocalDateTime.now().plusMinutes(recuperacao).atZone(ZoneId.systemDefault()).toInstant());
+        Date dataExpiracao = Date.from(LocalDateTime.now().plusMinutes(login).atZone(ZoneId.systemDefault()).toInstant());
 
         List<String> cargoUsuario = new ArrayList<>();
         cargoUsuario.add("ROLE_RECUPERACAO");
@@ -63,6 +63,24 @@ public class TokenService {
         String token = Jwts.builder()
                 .setIssuer("avaliaser")
                 .claim(Claims.ID, usuario.getIdUsuario().toString())
+                .claim(CARGO, cargoUsuario)
+                .setIssuedAt(dataAtual)
+                .setExpiration(dataExpiracao)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+
+        return token;
+    }
+
+    public String retornarTokenVemRankSer() {
+        Date dataAtual = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        Date dataExpiracao = Date.from(LocalDateTime.now().plusMinutes(recuperacao).atZone(ZoneId.systemDefault()).toInstant());
+
+        List<String> cargoUsuario = new ArrayList<>();
+        cargoUsuario.add("ROLE_VEMRANKSER");
+
+        String token = Jwts.builder()
+                .setIssuer("avaliaser")
                 .claim(CARGO, cargoUsuario)
                 .setIssuedAt(dataAtual)
                 .setExpiration(dataExpiracao)

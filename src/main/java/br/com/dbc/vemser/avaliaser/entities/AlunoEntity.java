@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -40,6 +41,10 @@ public class AlunoEntity {
     @Column(name = "ativo")
     private Ativo ativo;
 
+    @Column(name = "status_aluno")
+    @Enumerated(EnumType.STRING)
+    private Situacao situacao;
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity", cascade = CascadeType.REMOVE)
     private Set<AvaliacaoEntity> avaliacoes;
@@ -47,6 +52,7 @@ public class AlunoEntity {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity", cascade = CascadeType.REMOVE)
     private Set<FeedBackEntity> feedBack;
+
 
 
 }

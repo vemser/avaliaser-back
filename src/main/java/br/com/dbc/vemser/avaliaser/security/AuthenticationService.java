@@ -2,7 +2,7 @@ package br.com.dbc.vemser.avaliaser.security;
 
 
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
-import br.com.dbc.vemser.avaliaser.repositories.UsuarioRepository;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

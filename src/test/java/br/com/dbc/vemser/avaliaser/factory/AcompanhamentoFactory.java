@@ -1,8 +1,8 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 
 import java.time.LocalDate;
