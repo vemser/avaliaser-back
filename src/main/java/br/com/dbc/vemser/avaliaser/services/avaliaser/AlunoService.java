@@ -1,10 +1,12 @@
 package br.com.dbc.vemser.avaliaser.services.avaliaser;
 
+import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AlunoRepository;
@@ -121,5 +123,40 @@ public class AlunoService {
         AlunoEntity aluno = findById(id);
         alunoRepository.delete(aluno);
     }
+
+
+
+    public AlunoEntity alterarStatusAluno(Integer idAluno,
+                                          ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+        AlunoEntity alunoEntity = findById(idAluno);
+        alunoEntity.setSituacao(reservaAlocacaoCreateDTO.getSituacao());
+        return alunoRepository.save(alunoEntity);
+    }
+
+    public void alterarStatusAlunoCancelado(Integer idAluno,
+                                            ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+        AlunoEntity alunoEntity = findById(idAluno);
+        if (reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.ALOCADO)
+                || reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.RESERVADO)
+                || reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.INATIVO))
+        { alunoEntity.setSituacao(Situacao.DISPONIVEL);
+        }
+        alunoRepository.save(alunoEntity);
+    }
+
+    public void verificarDisponibilidadeAluno(AlunoEntity alunoEntity,
+                                              ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+
+        if (alunoEntity.getSituacao().equals(Situacao.ALOCADO)) {
+            if (!reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.DISPONIVEL)) {
+                throw new RegraDeNegocioException("Aluno não está disponivel!");
+            }
+        } else if (alunoEntity.getSituacao().equals(Situacao.RESERVADO)) {
+            if (reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.RESERVADO)) {
+                throw new RegraDeNegocioException("Aluno não está disponivel!");
+            }
+        }
+    }
+
 
 }
