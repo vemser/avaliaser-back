@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.vemrankser.ranqueamento.enums.AtividadeStatus;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -33,25 +34,30 @@ public class AtividadeEntity {
     @Column(name = "titulo")
     private String titulo;
 
-    @Column(name = "instrucoes")
-    private String instrucoes;
-
-    @Column(name = "peso_Atividade")
+    @Column(name = "peso_atividade")
     private Integer pesoAtividade;
+
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
+
     @Column(name = "data_entrega")
     private LocalDateTime dataEntrega;
 
-    @Column(name = "pontuacao")
-    private Integer pontuacao;
-
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status_Atividade")
-    private AtividadeStatus statusAtividade;
+    private Tipo statusAtividade;
 
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;
+
+    @Column(name = "situacao")
+    private Situacao situacao;
+
+    @Column(name = "descricao")
+    private String descricao;
+
+    @Column(name = "id_programa", insertable = false, updatable = false)
+    private Integer idPrograma;
 
     @JsonIgnore
     @OneToMany(mappedBy = "atividade", fetch = FetchType.LAZY)
@@ -61,8 +67,7 @@ public class AtividadeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_modulo", referencedColumnName = "id_modulo")
     private ModuloEntity modulo;
-
-
+    
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
