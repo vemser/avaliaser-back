@@ -20,7 +20,7 @@ import java.util.Set;
 public class AcompanhamentoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACP_SEQUENCIA")
-    @SequenceGenerator(name = "ACP_SEQUENCIA", sequenceName = "SEQ_ACP", allocationSize = 1)
+    @SequenceGenerator(name = "ACP_SEQUENCIA", sequenceName = "SEQ_ACOMPANHAMENTO", allocationSize = 1)
     @Column(name = "id_acompanhamento")
     private Integer idAcompanhamento;
 
@@ -32,6 +32,9 @@ public class AcompanhamentoEntity {
 
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
+
+    @Column(name  = "id_programa", updatable = false, insertable = false)
+    private Integer idPrograma;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "acompanhamentoEntity")
