@@ -12,11 +12,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @Embeddable
-public class TrilhaUsuarioPK implements Serializable {
+public class TrilhaModuloPK implements Serializable {
 
-    @Column(name = "ID_TRILHA")
+    @Column(name = "id_trila")
     private Integer idTrilha;
-
-    @Column(name = "ID_USUARIO")
-    private Integer idUsuario;
+    @Column(name = "id_modulo")
+    private Integer idModulo;
 }
