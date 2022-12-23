@@ -10,11 +10,28 @@ GRANT CREATE TABLE TO AVALIASER;
 GRANT GLOBAL QUERY REWRITE TO AVALIASER;
 GRANT SELECT ANY TABLE TO AVALIASER;
 
-CREATE TABLE PROGRAMA (
-  id_programa NUMBER,
+CREATE TABLE CLIENTE (
+  id_cliente NUMBER,
   nome VARCHAR2(255) NOT NULL,
-  descricao VARCHAR2(2000),
-  PRIMARY KEY (id_programa)
+  email VARCHAR2(255) UNIQUE NOT NULL,
+  telefone CHAR(14) NOT NULL,
+  situacao CHAR(1) NOT NULL,
+  PRIMARY KEY (id_cliente)
+);
+
+CREATE TABLE VAGA (
+  id_vaga NUMBER,
+  id_cliente NUMBER NOT NULL,
+  quantidade_vagas NUMBER NOT NULL,
+  quantidade_alocados NUMBER,
+  data_abertura DATE,
+  data_fechamento DATE,
+  data_criacao DATE NOT NULL,
+  situacao CHAR(1) NOT NULL,
+  PRIMARY KEY (id_vaga),
+  CONSTRAINT FK_VAGA_CLIENTE
+    FOREIGN KEY (id_cliente)
+      REFERENCES CLIENTE(id_cliente)
 );
 
 CREATE TABLE TRILHA (
@@ -24,10 +41,11 @@ CREATE TABLE TRILHA (
   PRIMARY KEY (id_trilha)
 );
 
-CREATE TABLE TECNOLOGIA (
-  id_tecnologia NUMBER,
+CREATE TABLE PROGRAMA (
+  id_programa NUMBER,
   nome VARCHAR2(255) NOT NULL,
-  PRIMARY KEY (id_tecnologia)
+  descricao VARCHAR2(2000),
+  PRIMARY KEY (id_programa)
 );
 
 CREATE TABLE ALUNO (
@@ -43,13 +61,14 @@ CREATE TABLE ALUNO (
   id_trilha NUMBER NOT NULL,
   id_programa NUMBER NOT NULL,
   PRIMARY KEY (id_aluno),
-  CONSTRAINT FK_ALUNO_PROGRAMA
+  CONSTRAINT FK_ALUNO_PROG
     FOREIGN KEY (id_programa)
       REFERENCES PROGRAMA(id_programa),
   CONSTRAINT FK_ALUNO_TRILHA
     FOREIGN KEY (id_trilha)
       REFERENCES TRILHA(id_trilha)
 );
+
 
 CREATE TABLE ALUNO_TECNOLOGIA (
   id_tecnologia NUMBER NOT NULL,
@@ -60,39 +79,89 @@ CREATE TABLE ALUNO_TECNOLOGIA (
   CONSTRAINT FK_ALUNO_TEC_TEC
     FOREIGN KEY (id_tecnologia)
       REFERENCES TECNOLOGIA(id_tecnologia)
+
+CREATE TABLE MODULO (
+  id_modulo NUMBER,
+  nome VARCHAR2(255) NOT NULL,
+  PRIMARY KEY (id_modulo)
+
 );
 
 CREATE TABLE FEEDBACK (
   id_feedback NUMBER,
-  descricao VARCHAR2(2000)  NOT NULL,
-  nome_instrutor VARCHAR2(255) NOT NULL,
+  descricao VARCHAR2(2000) NOT NULL,
   situacao CHAR(1) NOT NULL,
+  nome_instrutor VARCHAR2(255) NOT NULL,
   id_aluno NUMBER NOT NULL,
-  id_programa NUMBER NOT NULL,
-  id_trilha NUMBER NOT NULL,
   id_modulo NUMBER NOT NULL,
   PRIMARY KEY (id_feedback),
-  CONSTRAINT FK_FEEDBACK_PROGRAMA
-    FOREIGN KEY (id_programa)
-      REFERENCES PROGRAMA(id_programa),
   CONSTRAINT FK_FEEDBACK_ALUNO
     FOREIGN KEY (id_aluno)
       REFERENCES ALUNO(id_aluno),
+
   CONSTRAINT FK_FEEDBACK_TRILHA
     FOREIGN KEY (id_trilha)
       REFERENCES TRILHA(id_trilha)
+
+  CONSTRAINT FK_FEEDBACK_MODULO
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo)
+
 );
 
 CREATE TABLE ACOMPANHAMENTO (
   id_acompanhamento NUMBER,
   titulo VARCHAR2(255) NOT NULL,
-  descricao VARCHAR2(512) NOT NULL,
+  descricao VARCHAR2(512),
   data_inicio DATE NOT NULL,
   id_programa NUMBER NOT NULL,
   PRIMARY KEY (id_acompanhamento),
-  CONSTRAINT FK_ACOMP_PROGRAMA
+  CONSTRAINT FK_ACOMP_PROG
     FOREIGN KEY (id_programa)
       REFERENCES PROGRAMA(id_programa)
+);
+
+CREATE TABLE VAGA_PROGRAMA (
+  id_programa NUMBER,
+  id_vaga NUMBER,
+  CONSTRAINT FK_VAGA_PROGRAMA
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
+  CONSTRAINT FK_VAGA_PROGRAMA_VAGA
+    FOREIGN KEY (id_vaga)
+      REFERENCES VAGA(id_vaga)
+);
+
+CREATE TABLE ATIVIDADE (
+  id_atividade NUMBER,
+  titulo VARCHAR2(255) NOT NULL,
+  data_criacao DATE NOT NULL,
+  data_entrega DATE NOT NULL,
+  nome_instrutor VARCHAR2(255),
+  situacao CHAR(1) NOT NULL,
+  descricao VARCHAR2(2000) NOT NULL,
+  peso_atividade NUMBER(10) NOT NULL,
+  id_modulo NUMBER NOT NULL,
+  id_programa NUMBER NOT NULL,
+  PRIMARY KEY (id_atividade),
+  CONSTRAINT FK_ATIV_PROG
+    FOREIGN KEY (id_programa)
+      REFERENCES PROGRAMA(id_programa),
+  CONSTRAINT FK_ATIV_MODULO
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo)
+);
+
+CREATE TABLE MODULO_ATIVIDADE (
+  id_atividade NUMBER,
+  id_modulo NUMBER,
+  PRIMARY KEY (id_atividade, id_modulo),
+  CONSTRAINT FK_MODULO_ATIVIDADE
+    FOREIGN KEY (id_atividade)
+      REFERENCES ATIVIDADE(id_atividade),
+  CONSTRAINT FK_MODULO_ATIV_MODULO
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo)
 );
 
 CREATE TABLE AVALIACAO (
@@ -104,17 +173,14 @@ CREATE TABLE AVALIACAO (
   id_acompanhamento NUMBER NOT NULL,
   id_aluno NUMBER NOT NULL,
   id_programa NUMBER NOT NULL,
-  id_trilha NUMBER NOT NULL,
   PRIMARY KEY (id_avaliacao),
-  CONSTRAINT FK_AVALIACAO_PROGRAMA
+  CONSTRAINT FK_AVAL_PROG
     FOREIGN KEY (id_programa)
       REFERENCES PROGRAMA(id_programa),
-  CONSTRAINT FK_AVAL_ACOMP
-    FOREIGN KEY (id_acompanhamento)
-      REFERENCES ACOMPANHAMENTO(id_acompanhamento),
   CONSTRAINT FK_AVAL_ALUNO
     FOREIGN KEY (id_aluno)
       REFERENCES ALUNO(id_aluno),
+
   CONSTRAINT FK_AVAL_TRILHA
     FOREIGN KEY (id_trilha)
       REFERENCES TRILHA(id_trilha)
@@ -181,42 +247,53 @@ CREATE TABLE TRILHA_ATIVIDADE (
   CONSTRAINT FK_TRILHA_ATIV_ATIV
     FOREIGN KEY (id_atividade)
       REFERENCES ATIVIDADE(id_atividade)
+
+  CONSTRAINT FK_AVAL_ACOMP
+    FOREIGN KEY (id_acompanhamento)
+      REFERENCES ACOMPANHAMENTO(id_acompanhamento)
+
 );
 
 CREATE TABLE PROGRAMA_MODULO (
   id_modulo NUMBER,
   id_programa NUMBER,
-  CONSTRAINT FK_PROG_MOD_MOD
-    FOREIGN KEY (id_modulo)
-      REFERENCES MODULO(id_modulo),
-  CONSTRAINT FK_PROG_MOD_PROG
-    FOREIGN KEY (id_programa)
-      REFERENCES PROGRAMA(id_programa)
-);
-
-CREATE TABLE VAGA_PROGRAMA (
-  id_programa NUMBER,
-  id_vaga NUMBER,
-  CONSTRAINT FK_VAGA_PROG_PROG
+  PRIMARY KEY (id_modulo, id_programa),
+  CONSTRAINT FK_PROGRAMA_MODULO
     FOREIGN KEY (id_programa)
       REFERENCES PROGRAMA(id_programa),
-  CONSTRAINT FK_VAGA_PROG_VAGA
-    FOREIGN KEY (id_vaga)
-      REFERENCES VAGA(id_vaga)
+  CONSTRAINT FK_PROG_MODULO_MODULO
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo)
+);
+
+CREATE TABLE TECNOLOGIA (
+  id_tecnologia NUMBER,
+  nome VARCHAR2(255) NOT NULL,
+  PRIMARY KEY (id_tecnologia)
+);
+
+CREATE TABLE ALUNO_TECNOLOGIA (
+  id_tecnologia NUMBER,
+  id_aluno NUMBER,
+  CONSTRAINT FK_ALUNO_TEC_ALUNO
+    FOREIGN KEY (id_aluno)
+      REFERENCES ALUNO(id_aluno),
+  CONSTRAINT FK_ALUNO_TEC
+    FOREIGN KEY (id_tecnologia)
+      REFERENCES TECNOLOGIA(id_tecnologia)
 );
 
 CREATE TABLE RESERVA_ALOCACAO (
-  id_reserva NUMBER,
+  id_reserva_alocacao NUMBER,
   descricao VARCHAR2(2000) NOT NULL,
   data_reserva DATE,
   data_alocacao DATE,
   data_cancelamento DATE,
   data_finalizacao DATE,
   situacao CHAR(1) NOT NULL,
-  motivo VARCHAR2(2000),
-  id_aluno NUMBER NOT NULL,
-  id_vaga NUMBER NOT NULL,
-  PRIMARY KEY (id_reserva),
+  id_aluno NUMBER,
+  id_vaga NUMBER,
+  PRIMARY KEY (id_reserva_alocacao),
   CONSTRAINT FK_RESERVA_ALOC_ALUNO
     FOREIGN KEY (id_aluno)
       REFERENCES ALUNO(id_aluno),
@@ -227,10 +304,10 @@ CREATE TABLE RESERVA_ALOCACAO (
 
 CREATE TABLE COMENTARIO (
   id_comentario NUMBER,
-  id_atividade NUMBER NOT NULL,
-  id_aluno NUMBER NOT NULL,
   situacao CHAR(1) NOT NULL,
-  comentario VARCHAR2(2000) NOT NULL,
+  comentario VARCHAR2(2000),
+  id_aluno NUMBER NOT NULL,
+  id_atividade NUMBER NOT NULL,
   PRIMARY KEY (id_comentario),
   CONSTRAINT FK_COMENTARIO_ATIV
     FOREIGN KEY (id_atividade)
@@ -238,6 +315,31 @@ CREATE TABLE COMENTARIO (
   CONSTRAINT FK_COMENTARIO_ALUNO
       FOREIGN KEY (id_aluno)
         REFERENCES ALUNO(id_aluno)
+
+);
+
+CREATE TABLE TRILHA_MODULO (
+  id_trilha NUMBER,
+  id_modulo NUMBER,
+  CONSTRAINT FK_TRILHA_MODULO
+    FOREIGN KEY (id_trilha)
+      REFERENCES TRILHA(id_trilha),
+  CONSTRAINT FK_TRILHA_MODULO_MOD
+    FOREIGN KEY (id_modulo)
+      REFERENCES MODULO(id_modulo)
+);
+
+CREATE TABLE ATIVIDADE_ALUNO (
+  id_aluno NUMBER NOT NULL,
+  id_atividade NUMBER NOT NULL,
+  nota NUMBER NOT NULL,
+  CONSTRAINT FK_ATIVIDADE_ALUNO
+    FOREIGN KEY (id_aluno)
+      REFERENCES ALUNO(id_aluno),
+  CONSTRAINT FK_ATIV_ALUNO_ATIV
+    FOREIGN KEY (id_atividade)
+      REFERENCES ATIVIDADE(id_atividade)
+
 );
 
 CREATE SEQUENCE SEQ_RESERVA_ALOCACAO
