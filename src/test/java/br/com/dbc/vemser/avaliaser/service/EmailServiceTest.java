@@ -1,10 +1,10 @@
 package br.com.dbc.vemser.avaliaser.service;
 
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.recuperacao.UsuarioRecuperacaoDTO;
 import br.com.dbc.vemser.avaliaser.enums.TipoEmails;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
-import br.com.dbc.vemser.avaliaser.services.EmailService;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.EmailService;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.junit.Before;

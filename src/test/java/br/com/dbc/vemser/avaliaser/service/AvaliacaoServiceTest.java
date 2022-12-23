@@ -1,8 +1,8 @@
 package br.com.dbc.vemser.avaliaser.service;
 
-import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
@@ -13,11 +13,11 @@ import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
 import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
 import br.com.dbc.vemser.avaliaser.factory.AvaliacaoFactory;
 import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
-import br.com.dbc.vemser.avaliaser.repositories.AvaliacaoRepository;
-import br.com.dbc.vemser.avaliaser.services.AcompanhamentoService;
-import br.com.dbc.vemser.avaliaser.services.AlunoService;
-import br.com.dbc.vemser.avaliaser.services.AvaliacaoService;
-import br.com.dbc.vemser.avaliaser.services.UsuarioService;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AvaliacaoRepository;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AvaliacaoService;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.UsuarioService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

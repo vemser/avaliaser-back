@@ -1,14 +1,14 @@
 package br.com.dbc.vemser.avaliaser.service;
 
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.acompanhamento.EditarAcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.EditarAcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
-import br.com.dbc.vemser.avaliaser.repositories.AcompanhamentoRepository;
-import br.com.dbc.vemser.avaliaser.services.AcompanhamentoService;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AcompanhamentoRepository;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

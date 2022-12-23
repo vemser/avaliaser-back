@@ -1,9 +1,9 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
-import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.avaliacao.AvaliacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avaliacao.EditarAvaliacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioRetornoAvaliacaoFeedbackDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.EditarAvaliacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioRetornoAvaliacaoFeedbackDTO;
 import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 

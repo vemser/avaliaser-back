@@ -1,11 +1,11 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
-import br.com.dbc.vemser.avaliaser.dto.login.UsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.AtualizarUsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.recuperacao.UsuarioRecuperacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.AtualizarUsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.usuario.UsuarioDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.UsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.recuperacao.AtualizarUsuarioDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.recuperacao.UsuarioRecuperacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.AtualizarUsuarioLogadoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;

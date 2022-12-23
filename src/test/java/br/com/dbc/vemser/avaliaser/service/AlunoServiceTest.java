@@ -1,15 +1,15 @@
 package br.com.dbc.vemser.avaliaser.service;
 
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
-import br.com.dbc.vemser.avaliaser.repositories.AlunoRepository;
-import br.com.dbc.vemser.avaliaser.services.AlunoService;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AlunoRepository;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

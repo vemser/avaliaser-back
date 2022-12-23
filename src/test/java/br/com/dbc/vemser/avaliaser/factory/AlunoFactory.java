@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.avaliaser.factory;
 
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Stack;
