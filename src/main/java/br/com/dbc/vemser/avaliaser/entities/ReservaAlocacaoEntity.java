@@ -38,7 +38,7 @@ public class ReservaAlocacaoEntity {
     @Column(name = "data_cancelamento")
     private LocalDate dataCancelamento;
 
-    @Column(name = "data_finalizado")
+    @Column(name = "data_finalizacao")
     private LocalDate dataFinalizado;
 
     @Column(name = "situacao")

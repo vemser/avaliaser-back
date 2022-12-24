@@ -18,32 +18,44 @@ import java.util.Set;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Entity(name = "Alunos")
+@Entity(name = "Aluno")
 public class AlunoEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ALUNOS_SEQUENCIA")
-    @SequenceGenerator(name = "ALUNOS_SEQUENCIA", sequenceName = "SEQ_ALUNOS", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ALUNO_SEQUENCIA")
+    @SequenceGenerator(name = "ALUNO_SEQUENCIA", sequenceName = "SEQ_ALUNO", allocationSize = 1)
     @Column(name = "id_aluno")
     private Integer idAluno;
 
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "stack")
-    private Stack stack;
+    @Column(name = "telefone")
+    private String telefone;
+
+    @Column(name = "cidade")
+    private String cidade;
+
+    @Column(name = "estado")
+    private String estado;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "foto")
-    private byte[] foto;
-
-    @Column(name = "ativo")
-    private Ativo ativo;
-
-    @Column(name = "status_aluno")
+    @Column(name = "situacao")
     @Enumerated(EnumType.STRING)
     private Situacao situacao;
+
+    @Column(name = "descricao")
+    private String descricao;
+
+    @Column(name = "pontuacao")
+    private Integer pontuacao;
+
+    @Column(name = "id_trilha", updatable = false, insertable = false)
+    private Integer idTrilha;
+
+    @Column(name = "id_programa", updatable = false, insertable = false)
+    private Integer idPrograma;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity", cascade = CascadeType.REMOVE)

@@ -22,6 +22,7 @@ CREATE TABLE CLIENTE (
 CREATE TABLE VAGA (
   id_vaga NUMBER,
   id_cliente NUMBER NOT NULL,
+  nome VARCHAR2(255) NOT NULL,
   quantidade_vagas NUMBER NOT NULL,
   quantidade_alocados NUMBER,
   data_abertura DATE,
@@ -123,15 +124,12 @@ CREATE TABLE ATIVIDADE (
   situacao CHAR(1) NOT NULL,
   descricao VARCHAR2(2000) NOT NULL,
   peso_atividade NUMBER(10) NOT NULL,
-  id_modulo NUMBER NOT NULL,
+  link VARCHAR2(255),
   id_programa NUMBER NOT NULL,
   PRIMARY KEY (id_atividade),
   CONSTRAINT FK_ATIV_PROG
     FOREIGN KEY (id_programa)
-      REFERENCES PROGRAMA(id_programa),
-  CONSTRAINT FK_ATIV_MODULO
-    FOREIGN KEY (id_modulo)
-      REFERENCES MODULO(id_modulo)
+      REFERENCES PROGRAMA(id_programa)
 );
 
 CREATE TABLE MODULO_ATIVIDADE (
@@ -198,7 +196,7 @@ CREATE TABLE ALUNO_TECNOLOGIA (
 
 CREATE TABLE RESERVA_ALOCACAO (
   id_reserva_alocacao NUMBER,
-  descricao VARCHAR2(2000) NOT NULL,
+  motivo VARCHAR2(2000) NOT NULL,
   data_reserva DATE,
   data_alocacao DATE,
   data_cancelamento DATE,
