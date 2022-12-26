@@ -40,4 +40,9 @@ public class AcompanhamentoEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "acompanhamentoEntity")
     private Set<AvaliacaoEntity> avaliacoes;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
+    private ProgramaEntity programa;
+
 }

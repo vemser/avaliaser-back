@@ -1,8 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
-import br.com.dbc.vemser.avaliaser.enums.Stack;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -65,6 +63,15 @@ public class AlunoEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alunoEntity", cascade = CascadeType.REMOVE)
     private Set<FeedBackEntity> feedBack;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_trilha",referencedColumnName = "id_trilha")
+    private TrilhaEntity trilha;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_programa",referencedColumnName = "id_programa")
+    private ProgramaEntity programa;
 
 
 }

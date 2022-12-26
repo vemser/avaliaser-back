@@ -18,8 +18,5 @@ public class AtividadeAlunoPK implements Serializable {
     private Integer idAluno;
     @Column(name = "id_atividade")
     private Integer idAtividade;
-    @Column(name = "nota")
-    private Integer nota;
-    @Column(name = "link")
-    private String Link;
+
 }

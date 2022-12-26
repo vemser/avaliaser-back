@@ -28,14 +28,11 @@ public class AtividadeEntity {
     @Column(name = "ID_ATIVIDADE")
     private Integer idAtividade;
 
-    @Column(name = "id_modulo", insertable = false, updatable = false)
-    private Integer idModulo;
+//    @Column(name = "id_modulo", insertable = false, updatable = false)
+//    private Integer idModulo;
 
     @Column(name = "titulo")
     private String titulo;
-
-    @Column(name = "peso_atividade")
-    private Integer pesoAtividade;
 
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
@@ -43,18 +40,21 @@ public class AtividadeEntity {
     @Column(name = "data_entrega")
     private LocalDateTime dataEntrega;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "status_Atividade")
-    private Tipo statusAtividade;
-
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "situacao")
-    private Situacao situacao;
+    private Tipo situacao;
 
     @Column(name = "descricao")
     private String descricao;
+
+    @Column(name = "peso_atividade")
+    private Integer pesoAtividade;
+
+    @Column(name = "link")
+    private String link;
 
     @Column(name = "id_programa", insertable = false, updatable = false)
     private Integer idPrograma;
@@ -65,30 +65,15 @@ public class AtividadeEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_modulo", referencedColumnName = "id_modulo")
-    private ModuloEntity modulo;
+    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
+    private ProgramaEntity programa;
     
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "ATIVIDADE_USUARIO",
-            joinColumns = @JoinColumn(name = "id_atividade"),
-            inverseJoinColumns = @JoinColumn(name = "id_usuario")
-    )
-    private Set<UsuarioEntity> alunos = new HashSet<>();
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "ATIVIDADE_TRILHA",
-            joinColumns = @JoinColumn(name = "id_atividade"),
-            inverseJoinColumns = @JoinColumn(name = "id_trilha")
-    )
-    private Set<TrilhaEntity> trilhas = new HashSet<>();
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "modulo")
+    private Set<ModuloAtividadeEntity> modulos = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "atividade")
-    private Set<LinkEntity> links;
+    private Set<AtividadeAlunoEntity> atividadeAlunos;
 
 }
