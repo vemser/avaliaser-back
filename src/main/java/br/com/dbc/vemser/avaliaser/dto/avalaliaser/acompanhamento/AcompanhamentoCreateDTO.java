@@ -23,4 +23,7 @@ public class AcompanhamentoCreateDTO {
     @NotNull(message = "Data de Início não pode ser nula.")
     private LocalDate dataInicio;
 
+    @NotNull(message = "Programa não pode ser nulo.")
+    private Integer idPrograma;
+
 }

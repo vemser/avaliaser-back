@@ -1,8 +1,8 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao;
 
 
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
