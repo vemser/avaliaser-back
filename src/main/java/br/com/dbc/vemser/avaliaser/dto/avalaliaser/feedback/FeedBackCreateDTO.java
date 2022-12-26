@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,11 +16,20 @@ import javax.validation.constraints.NotNull;
 public class FeedBackCreateDTO {
     @Schema(example = "1")
     private Integer idAluno;
+    @Schema(example = "1")
+    private Integer idModulo;
+    @NotNull(message = "Nome instrutor responsável não pode ser nulo.")
+    @NotBlank(message = "Nome do instrutor responsável não pode ser nulo.")
+    @Schema(example = "Carlos Alberto")
+    private String nomeInstrutor;
     @NotNull(message = "Descrição não pode ser nulo.")
     @NotBlank(message = "Descrição não pode ficar em branco.")
     @Schema(example = "Texto descritivo")
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
-    private Tipo tipo;
+    private Tipo situacao;
+    @NotNull(message = "Data não pode ser nula.")
+    @Schema(example = "2022-12-01")
+    private LocalDate data;
 }
