@@ -22,15 +22,27 @@ public class FeedBackEntity {
     @Column(name = "id_aluno", insertable = false, updatable = false)
     private Integer idAluno;
 
+    @Column(name = "id_modulo", insertable = false, updatable = false)
+    private Integer idModulo;
+
     @Column(name = "descricao")
     private String descricao;
 
     @Column(name = "situacao")
     private Tipo situacao;
 
+    @Column(name = "nome_instrutor")
+    private String nomeInstrutor;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_aluno", referencedColumnName = "id_aluno")
     @ToString.Exclude
     private AlunoEntity alunoEntity;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_modulo", referencedColumnName = "id_modulo")
+    @ToString.Exclude
+    private ModuloEntity moduloEntity;
 }

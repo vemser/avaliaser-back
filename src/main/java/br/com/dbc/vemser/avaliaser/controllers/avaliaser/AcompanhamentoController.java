@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.controllers.avaliaser;
 
-import br.com.dbc.vemser.avaliaser.controllers.adocumentation.avaliaser.OperationControllerAcompanhamento;
+import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControllerAcompanhamento;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.EditarAcompanhamentoDTO;
