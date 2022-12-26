@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento;
 
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class AcompanhamentoDTO {
     private String descricao;
     @Schema(example = "2022-11-22")
     private LocalDate dataInicio;
+    private ProgramaDTO programa;
 
 
 }
