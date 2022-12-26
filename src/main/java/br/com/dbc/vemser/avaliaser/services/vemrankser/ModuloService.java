@@ -1,13 +1,14 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
-import br.com.vemrankser.ranqueamento.dto.ModuloCreateDTO;
-import br.com.vemrankser.ranqueamento.dto.ModuloDTO;
-import br.com.vemrankser.ranqueamento.dto.ModuloTrilhaDTO;
-import br.com.vemrankser.ranqueamento.entity.ModuloEntity;
-import br.com.vemrankser.ranqueamento.entity.TrilhaEntity;
-import br.com.vemrankser.ranqueamento.enums.StatusModulo;
-import br.com.vemrankser.ranqueamento.exceptions.RegraDeNegocioException;
-import br.com.vemrankser.ranqueamento.repository.ModuloRepository;
+
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
+import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
+import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
+import br.com.dbc.vemser.avaliaser.enums.StatusModulo;
+import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -69,4 +71,17 @@ public class ModuloService {
                 .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloDTO.class))
                 .toList();
     }
+
+    public ModuloDTO duplicarModulo(Integer idModulo) {
+        Optional<ModuloEntity> modulo = moduloRepository.findById(idModulo);
+        ModuloEntity moduloEntity = objectMapper.convertValue(modulo, ModuloEntity.class);
+
+        ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
+        return new ModuloDTO(moduloSalvo.getIdModulo(),
+                moduloSalvo.getNome(),
+                moduloSalvo.getDataInicio(),
+                moduloSalvo.getDataFim());
+    }
+
+
 }
