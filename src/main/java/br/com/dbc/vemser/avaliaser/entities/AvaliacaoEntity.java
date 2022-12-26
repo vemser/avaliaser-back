@@ -47,4 +47,10 @@ public class AvaliacaoEntity {
     @JoinColumn(name = "id_aluno", referencedColumnName = "id_aluno")
     @ToString.Exclude
     private AlunoEntity alunoEntity;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
+    @ToString.Exclude
+    private ProgramaEntity programaEntity;
 }

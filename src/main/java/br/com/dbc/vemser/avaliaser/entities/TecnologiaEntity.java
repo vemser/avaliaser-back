@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -26,7 +27,12 @@ public class TecnologiaEntity {
     private String nome;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tecnologias")
-    private Set<AlunoEntity> alunos;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "ALUNO_TECNOLOGIA",
+            joinColumns = @JoinColumn(name = "id_tecnologia"),
+            inverseJoinColumns = @JoinColumn(name = "id_aluno")
+    )
+    private Set<AlunoEntity> alunos = new HashSet<>();
 
 }

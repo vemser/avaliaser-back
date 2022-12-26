@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.vemrankser.ranqueamento.entity.pk.TrilhaUsuarioPK;
+import br.com.dbc.vemser.avaliaser.entities.pk.TrilhaModuloPK;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,11 +10,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "TRILHA_USUARIO")
-public class TrilhaUsuarioEntity {
+@Entity(name = "TRILHA_MODULO")
+public class TrilhaModuloEntity {
 
     @EmbeddedId
-    private TrilhaUsuarioPK trilhaUsuarioPK;
+    private TrilhaModuloPK idTrilhaModulo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idTrilha")
@@ -22,7 +22,7 @@ public class TrilhaUsuarioEntity {
     private TrilhaEntity trilha;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("idUsuario")
-    @JoinColumn(name = "ID_USUARIO", insertable = false, updatable = false)
-    private UsuarioEntity usuarioEntity;
+    @MapsId("idModulo")
+    @JoinColumn(name = "ID_MODULO")
+    private ModuloEntity modulo;
 }
