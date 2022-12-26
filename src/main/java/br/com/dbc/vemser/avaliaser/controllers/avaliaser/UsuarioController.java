@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.avaliaser.controllers.avaliaser;
 
 
-import br.com.dbc.vemser.avaliaser.controllers.adocumentation.avaliaser.OperationControllerAuth;
+import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControllerAuth;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.LoginDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.UsuarioLogadoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.AtualizarUsuarioLogadoDTO;

@@ -1,4 +1,4 @@
-package br.com.dbc.vemser.avaliaser.controllers.adocumentation.avaliaser;
+package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;

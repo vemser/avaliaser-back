@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.avaliaser.controllers.allocation;
 
 
-import br.com.dbc.vemser.avaliaser.controllers.adocumentation.avaliaser.VagaInterfaceController;
+import br.com.dbc.vemser.avaliaser.controllers.adocumentation.VagaInterfaceController;
 import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;

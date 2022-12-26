@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.controllers.avaliaser;
 
-import br.com.dbc.vemser.avaliaser.controllers.adocumentation.avaliaser.OperationControllerAluno;
+import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControllerAluno;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;

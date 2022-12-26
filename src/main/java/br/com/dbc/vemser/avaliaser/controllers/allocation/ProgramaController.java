@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.avaliaser.controllers.allocation;
 
 
-import br.com.dbc.vemser.avaliaser.controllers.adocumentation.avaliaser.ProgramaInterfaceController;
+import br.com.dbc.vemser.avaliaser.controllers.adocumentation.ProgramaInterfaceController;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
