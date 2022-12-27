@@ -1,60 +1,60 @@
-package br.com.dbc.vemser.avaliaser.service;
-
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.LoginDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.UsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.recuperacao.AtualizarUsuarioDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.AtualizarUsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.TrocarSenhaUsuarioLogadoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioDTO;
-import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
-import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
-import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
-import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
-import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
-import br.com.dbc.vemser.avaliaser.repositories.avaliaser.UsuarioRepository;
-import br.com.dbc.vemser.avaliaser.security.TokenService;
-import br.com.dbc.vemser.avaliaser.services.avaliaser.CargoService;
-import br.com.dbc.vemser.avaliaser.services.avaliaser.EmailService;
-import br.com.dbc.vemser.avaliaser.services.avaliaser.UsuarioService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-@RunWith(MockitoJUnitRunner.class)
-public class UsuarioServiceTest {
+//package br.com.dbc.vemser.avaliaser.service;
+//
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.LoginDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.login.UsuarioLogadoDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.recuperacao.AtualizarUsuarioDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.AtualizarUsuarioLogadoDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.TrocarSenhaUsuarioLogadoDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioCreateDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioDTO;
+//import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
+//import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
+//import br.com.dbc.vemser.avaliaser.enums.Ativo;
+//import br.com.dbc.vemser.avaliaser.enums.Cargo;
+//import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+//import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
+//import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
+//import br.com.dbc.vemser.avaliaser.repositories.avaliaser.UsuarioRepository;
+//import br.com.dbc.vemser.avaliaser.security.TokenService;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.CargoService;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.EmailService;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.UsuarioService;
+//import com.fasterxml.jackson.databind.DeserializationFeature;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.SerializationFeature;
+//import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+//import org.junit.Before;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
+//import org.mockito.junit.MockitoJUnitRunner;
+//import org.springframework.data.domain.PageImpl;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Pageable;
+//import org.springframework.mock.web.MockMultipartFile;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.test.util.ReflectionTestUtils;
+//import org.springframework.web.multipart.MultipartFile;
+//
+//import java.io.IOException;
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.List;
+//import java.util.Optional;
+//
+//import static org.junit.jupiter.api.Assertions.*;
+//import static org.mockito.ArgumentMatchers.*;
+//import static org.mockito.Mockito.*;
+//
+//@RunWith(MockitoJUnitRunner.class)
+//public class UsuarioServiceTest {
 //
 //    @InjectMocks
 //    private UsuarioService usuarioService;
@@ -426,4 +426,4 @@ public class UsuarioServiceTest {
 //
 //        return cargo;
 //    }
-}
+//}

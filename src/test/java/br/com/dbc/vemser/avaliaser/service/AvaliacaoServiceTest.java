@@ -1,50 +1,52 @@
-package br.com.dbc.vemser.avaliaser.service;
-
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
-import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
-
-import br.com.dbc.vemser.avaliaser.enums.Cargo;
-import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
-import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
-import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
-import br.com.dbc.vemser.avaliaser.factory.AvaliacaoFactory;
-import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
-import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AvaliacaoRepository;
-import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-
-@RunWith(MockitoJUnitRunner.class)
-public class AvaliacaoServiceTest {
+//package br.com.dbc.vemser.avaliaser.service;
+//
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
+//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+//import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
+//import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+//import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
+//import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
+//import br.com.dbc.vemser.avaliaser.enums.Cargo;
+//import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+//import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
+//import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
+//import br.com.dbc.vemser.avaliaser.factory.AvaliacaoFactory;
+//import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
+//import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AvaliacaoRepository;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.AvaliacaoService;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.UsuarioService;
+//import com.fasterxml.jackson.databind.DeserializationFeature;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.SerializationFeature;
+//import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+//import org.junit.Before;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.MockitoJUnitRunner;
+//import org.springframework.data.domain.PageImpl;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.test.util.ReflectionTestUtils;
+//
+//import java.util.ArrayList;
+//import java.util.Collections;
+//import java.util.List;
+//import java.util.Optional;
+//
+//import static org.junit.jupiter.api.Assertions.assertEquals;
+//import static org.junit.jupiter.api.Assertions.assertNotNull;
+//import static org.mockito.ArgumentMatchers.any;
+//import static org.mockito.ArgumentMatchers.anyInt;
+//import static org.mockito.Mockito.when;
+//
+//@RunWith(MockitoJUnitRunner.class)
+//public class AvaliacaoServiceTest {
 //
 //    @InjectMocks
 //    private AvaliacaoService avaliacaoService;
@@ -202,4 +204,4 @@ public class AvaliacaoServiceTest {
 //        when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.empty());
 //        avaliacaoService.findById(1);
 //    }
-}
+//}

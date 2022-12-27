@@ -45,7 +45,6 @@ public class AlunoCreateDTO {
     private String email;
 
     @NotNull(message = "Situação não pode ficar nulo.")
-    @NotBlank(message = "Situação não pode ficar em branco.")
     @Schema(example = "ALOCADO")
     private Situacao situacao;
 
@@ -55,12 +54,10 @@ public class AlunoCreateDTO {
     private String descricao;
 
     @NotNull(message = "Trilha não pode ficar nulo.")
-    @NotBlank(message = "Trilha não pode ficar em branco.")
     @Schema(example = "1")
     private Integer idTrilha;
 
     @NotNull(message = "Programa não pode ficar nulo.")
-    @NotBlank(message = "Programa não pode ficar em branco.")
     @Schema(example = "1")
     private Integer idPrograma;
 

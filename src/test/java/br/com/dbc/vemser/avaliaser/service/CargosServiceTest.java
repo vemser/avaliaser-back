@@ -1,15 +1,24 @@
-package br.com.dbc.vemser.avaliaser.service;
-
-
-
-import org.junit.runner.RunWith;
-
-import org.mockito.junit.MockitoJUnitRunner;
-
-
-
-@RunWith(MockitoJUnitRunner.class)
-public class CargosServiceTest {
+//package br.com.dbc.vemser.avaliaser.service;
+//
+//import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
+//import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+//import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
+//import br.com.dbc.vemser.avaliaser.repositories.avaliaser.CargoRepository;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.CargoService;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.MockitoJUnitRunner;
+//
+//import java.util.Optional;
+//
+//import static org.junit.jupiter.api.Assertions.assertNotNull;
+//import static org.mockito.ArgumentMatchers.anyInt;
+//import static org.mockito.Mockito.when;
+//
+//@RunWith(MockitoJUnitRunner.class)
+//public class CargosServiceTest {
 //    @InjectMocks
 //    private CargoService cargoService;
 //    @Mock
@@ -22,7 +31,7 @@ public class CargosServiceTest {
 //        cargoService.findById(idCargo);
 //
 //    }
-
+//
 //    @Test
 //    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
 //        CargoEntity cargo = CargoFactory.getCargo();
@@ -32,4 +41,4 @@ public class CargosServiceTest {
 //
 //        assertNotNull(cargoEntity);
 //    }
-}
+//}
