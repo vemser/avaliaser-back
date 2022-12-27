@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class ComentarioDTO extends ComentarioCreateDTO {
 
-//    @NotNull
+    //    @NotNull
     @Schema(example = "1")
-   // private Integer idComentario;
+    // private Integer idComentario;
     private Integer statusComentario;
 }

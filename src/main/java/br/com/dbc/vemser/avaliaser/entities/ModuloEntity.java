@@ -59,7 +59,7 @@ public class ModuloEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_feedback",referencedColumnName = "id_feedback")
+    @JoinColumn(name = "id_feedback", referencedColumnName = "id_feedback")
     private FeedBackEntity feedBack;
 }
 

@@ -3,7 +3,6 @@ package br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
-import br.com.dbc.vemser.avaliaser.enums.Stack;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
