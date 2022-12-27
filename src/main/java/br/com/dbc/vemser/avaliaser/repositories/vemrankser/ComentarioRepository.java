@@ -12,7 +12,7 @@ import java.util.List;
 public interface ComentarioRepository extends JpaRepository<ComentarioEntity, Integer> {
     List<ComentarioEntity> findAllByIdAtividade(Integer idAtividade);
 
-    List<ComentarioEntity> findAllByStatusComentario(String statusComentario);
+//    List<ComentarioEntity> findAllByStatusComentario(String statusComentario);
 
     Page<ComentarioEntity> findAllByIdUsuario(Pageable pageable,Integer idAluno);
 
