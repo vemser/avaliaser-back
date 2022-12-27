@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.programa;
 
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class ProgramaDTO {
     private Integer idPrograma;
     private String nome;
     private String descricao;
-    private String situacao;
-    private LocalDate dataTermino;
+    private Situacao situacao;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
 }
