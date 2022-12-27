@@ -2,7 +2,8 @@ package br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 
 @NoArgsConstructor
@@ -15,8 +16,8 @@ public class ModuloDTO  {
 
     private String nome;
 
-    private LocalDateTime dataInicio;
+    private LocalDate dataInicio;
 
-    private LocalDateTime dataFim;
+    private LocalDate dataFim;
 
 }

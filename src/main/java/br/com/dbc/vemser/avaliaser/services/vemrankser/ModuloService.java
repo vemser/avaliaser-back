@@ -73,8 +73,13 @@ public class ModuloService {
     }
 
     public ModuloDTO clonarModulo(Integer idModulo) {
-        Optional<ModuloEntity> modulo = moduloRepository.findById(idModulo);
-        ModuloEntity moduloEntity = objectMapper.convertValue(modulo, ModuloEntity.class);
+        ModuloEntity modulo = moduloRepository.findById(idModulo).get();
+        ModuloEntity moduloEntity = new ModuloEntity(null,
+                modulo.getNome(),
+                modulo.getDataInicio(),
+                modulo.getDataFim(),
+                modulo.getTrilhas(),
+                modulo.getProgramas());
 
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return new ModuloDTO(moduloSalvo.getIdModulo(),
