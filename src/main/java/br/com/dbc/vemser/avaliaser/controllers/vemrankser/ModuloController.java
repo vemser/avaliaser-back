@@ -35,7 +35,7 @@ public class ModuloController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/editar")
+    @PutMapping("/editar")
     public ResponseEntity<ModuloDTO> editar(@RequestBody @Valid ModuloCreateDTO modulo,Integer id) throws RegraDeNegocioException {
         log.info("Editando modulo....");
         ModuloDTO moduloDTO = moduloService.editar(id,modulo);
