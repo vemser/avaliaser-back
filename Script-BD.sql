@@ -73,6 +73,8 @@ CREATE TABLE ALUNO (
 CREATE TABLE MODULO (
   id_modulo NUMBER,
   nome VARCHAR2(255) NOT NULL,
+  data_inicio DATE NOT NULL,
+  data_fim DATE NOT NULL ,
   PRIMARY KEY (id_modulo)
 );
 

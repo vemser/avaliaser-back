@@ -2,7 +2,6 @@ package br.com.dbc.vemser.avaliaser.controllers.vemrankser;
 
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.ModuloService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,12 +41,35 @@ public class ModuloController {
         log.info("Modulo Criado com sucesso....");
         return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
     }
-
+    @Operation(summary = "Clonar modulo", description = "Duplicar modulo")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Modulo clonado com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/clonar-modulo/{idModulo}")
+    public ResponseEntity<ModuloDTO> clonar(@PathVariable(name = "idModulo") Integer idModulo) {
+        log.info("Clonando modulo....");
+        ModuloDTO moduloDTO = moduloService.clonarModulo(idModulo);
+        log.info("Modulo clonado com sucesso...");
+        return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
+    }
+    @Operation(summary = "Vincular modulos trilha", description = "Vincular modulo a trilha do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Foi vinculado  com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @PostMapping("/vincular-modulo-trilha/{idModulo}/{idTrilha}")
-    public ResponseEntity<ModuloDTO> vincular(@PathVariable(name = "idModulo") Integer idModulo, @PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
-        log.info("Criando modulo....");
+    public ResponseEntity<ModuloDTO> vincularModuloTrilha(@PathVariable(name = "idModulo") Integer idModulo,
+                                                          @PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
+        log.info("Vinculando modulo....");
         ModuloDTO moduloDTO = moduloService.vincularModuloTrilha(idModulo, idTrilha);
-        log.info("Modulo Criado com sucesso....");
+        log.info("Vinculado com sucesso....");
         return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
     }
 
@@ -76,5 +98,6 @@ public class ModuloController {
     public ResponseEntity<List<ModuloDTO>> findAllModulos() {
         return new ResponseEntity<>(moduloService.listAllModulos(), HttpStatus.OK);
     }
+
 
 }

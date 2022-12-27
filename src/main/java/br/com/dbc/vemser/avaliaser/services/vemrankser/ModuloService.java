@@ -3,7 +3,6 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 
@@ -34,7 +33,7 @@ public class ModuloService {
         ModuloEntity moduloEntityNovo = objectMapper.convertValue(modulo, ModuloEntity.class);
 //        moduloEntityNovo.setStatusModulo(StatusModulo.S);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-//        moduloEntityNovo.setDataInicio(now);
+//       moduloEntityNovo.setDataInicio(now);
         moduloRepository.save(moduloEntityNovo);
         return objectMapper.convertValue(moduloEntityNovo, ModuloDTO.class);
 
@@ -73,13 +72,15 @@ public class ModuloService {
                 .toList();
     }
 
-    public ModuloDTO duplicarModulo(Integer idModulo) {
+    public ModuloDTO clonarModulo(Integer idModulo) {
         Optional<ModuloEntity> modulo = moduloRepository.findById(idModulo);
         ModuloEntity moduloEntity = objectMapper.convertValue(modulo, ModuloEntity.class);
 
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return new ModuloDTO(moduloSalvo.getIdModulo(),
-                moduloSalvo.getNome());
+                moduloSalvo.getNome(),
+                moduloSalvo.getDataInicio(),
+                moduloSalvo.getDataFim());
     }
 
 
