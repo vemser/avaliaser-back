@@ -58,7 +58,8 @@ public class ModuloService {
                 .toList();
     }
 
-    public ModuloDTO vincularModuloTrilha(Integer idModulo, Integer idTrilha, ModuloTrilhaDTO moduloTrilhaDTO) throws RegraDeNegocioException {
+    public ModuloDTO vincularModuloTrilha(Integer idModulo,
+                                          Integer idTrilha) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(idModulo);
         TrilhaEntity trilhaEntity = trilhaService.findById(idTrilha);
         moduloEntity.getTrilhas().add(trilhaEntity);
