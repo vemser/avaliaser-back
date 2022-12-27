@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.controllers.vemrankser;
 
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -26,6 +27,35 @@ public class ModuloController {
 
     private final ModuloService moduloService;
 
+    @Operation(summary = "Editar Modulo", description = "Editar modulos")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Modulo editado com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/editar")
+    public ResponseEntity<ModuloDTO> editar(@RequestBody @Valid ModuloCreateDTO modulo,Integer id) throws RegraDeNegocioException {
+        log.info("Editando modulo....");
+        ModuloDTO moduloDTO = moduloService.editar(id,modulo);
+        log.info("Modulo editado com sucesso....");
+        return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
+    }
+    @Operation(summary = "Desativar Modulo", description = "Desativar modulos")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Modulo desativado com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @DeleteMapping("/desativar")
+    public ResponseEntity<Void> desativar(Integer idUsuario) throws RegraDeNegocioException {
+        moduloService.desativar(idUsuario);
+        log.info("Modulo desativado com sucesso");
+        return ResponseEntity.noContent().build();
+    }
     @Operation(summary = "Adicionar novo Modulo", description = "Adicionar novos modulos")
     @ApiResponses(
             value = {
@@ -34,14 +64,14 @@ public class ModuloController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/adicionar-modulo")
+    @PostMapping("/adicionar")
     public ResponseEntity<ModuloDTO> adicionar(@RequestBody @Valid ModuloCreateDTO modulo) {
         log.info("Criando modulo....");
-        ModuloDTO moduloDTO = moduloService.adicionar(modulo);
+        ModuloDTO moduloDTO = moduloService.criar(modulo);
         log.info("Modulo Criado com sucesso....");
         return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
     }
-    @Operation(summary = "Clonar modulo", description = "Duplicar modulo")
+    @Operation(summary = "Clonar modulo", description = "Clonar modulo")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Modulo clonado com sucesso"),
@@ -49,7 +79,7 @@ public class ModuloController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/clonar-modulo/{idModulo}")
+    @PostMapping("/clonar/{idModulo}")
     public ResponseEntity<ModuloDTO> clonar(@PathVariable(name = "idModulo") Integer idModulo) {
         log.info("Clonando modulo....");
         ModuloDTO moduloDTO = moduloService.clonarModulo(idModulo);
@@ -95,9 +125,8 @@ public class ModuloController {
             }
     )
     @GetMapping("/lista-todos-modulos")
-    public ResponseEntity<List<ModuloDTO>> findAllModulos() {
-        return new ResponseEntity<>(moduloService.listAllModulos(), HttpStatus.OK);
+    public ResponseEntity<PageDTO<ModuloDTO>> findAllModulos(Integer page, Integer size) {
+        return new ResponseEntity<>(moduloService.listarModulo(page,size), HttpStatus.OK);
     }
-
 
 }

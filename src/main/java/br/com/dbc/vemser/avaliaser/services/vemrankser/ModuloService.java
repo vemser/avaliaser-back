@@ -1,22 +1,27 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,14 +34,28 @@ public class ModuloService {
     private final ObjectMapper objectMapper;
 
 
-    public ModuloDTO adicionar(ModuloCreateDTO modulo) {
-        ModuloEntity moduloEntityNovo = objectMapper.convertValue(modulo, ModuloEntity.class);
-//        moduloEntityNovo.setStatusModulo(StatusModulo.S);
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-//       moduloEntityNovo.setDataInicio(now);
-        moduloRepository.save(moduloEntityNovo);
-        return objectMapper.convertValue(moduloEntityNovo, ModuloDTO.class);
+    public ModuloDTO criar(ModuloCreateDTO modulo) {
+        ModuloEntity moduloEntityNovo = converterEntity(modulo);
+        moduloEntityNovo.setAtivo(Ativo.S);
+        ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
+        return converterEmDTO(moduloSalvo);
 
+    }
+    public ModuloDTO editar(Integer id,ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
+        ModuloEntity moduloEntity = buscarPorIdModulo(id);
+        moduloEntity.setNome(moduloCreateDTO.getNome());
+        moduloEntity.setDataInicio(moduloCreateDTO.getDataInicio());
+        moduloEntity.setDataFim(moduloCreateDTO.getDataFim());
+        ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
+        return converterEmDTO(moduloSalvo);
+    }
+    public void desativar(Integer id) throws RegraDeNegocioException {
+        ModuloEntity moduloEntity = buscarPorIdModulo(id);
+        moduloEntity.setAtivo(Ativo.N);
+    }
+
+    private ModuloEntity converterEntity(ModuloCreateDTO modulo) {
+        return objectMapper.convertValue(modulo, ModuloEntity.class);
     }
 
     public ModuloEntity buscarPorIdModulo(Integer idModulo) throws RegraDeNegocioException {
@@ -46,16 +65,28 @@ public class ModuloService {
 
     public ModuloDTO findById(Integer idModulo) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(idModulo);
+        return converterEmDTO(moduloEntity);
+
+    }
+
+    private ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
         return objectMapper.convertValue(moduloEntity, ModuloDTO.class);
-
     }
 
-    List<ModuloDTO> listarModulo() {
-        return moduloRepository.findAll()
+    public PageDTO<ModuloDTO> listarModulo(Integer page,Integer size) {
+      List<ModuloDTO> moduloDTOS = moduloRepository.findAll()
                 .stream()
-                .map(modulo -> objectMapper.convertValue(modulo, ModuloDTO.class))
+                .map(modulo -> converterEmDTO(modulo))
                 .toList();
+        Page<ModuloDTO> pagina = new PageImpl<>(moduloDTOS);
+
+        return new PageDTO<>(pagina.getTotalElements(),
+                pagina.getTotalPages(),
+                page,
+                size,
+                moduloDTOS);
     }
+
 
     public ModuloDTO vincularModuloTrilha(Integer idModulo,
                                           Integer idTrilha) throws RegraDeNegocioException {
@@ -63,12 +94,12 @@ public class ModuloService {
         TrilhaEntity trilhaEntity = trilhaService.findById(idTrilha);
         moduloEntity.getTrilhas().add(trilhaEntity);
         moduloRepository.save(moduloEntity);
-        return objectMapper.convertValue(moduloEntity, ModuloDTO.class);
+        return converterEmDTO(moduloEntity);
     }
 
     public List<ModuloDTO> listAllModulos() {
         return moduloRepository.findAll().stream()
-                .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloDTO.class))
+                .map(this::converterEmDTO)
                 .toList();
     }
 
@@ -78,14 +109,16 @@ public class ModuloService {
                 modulo.getNome(),
                 modulo.getDataInicio(),
                 modulo.getDataFim(),
-                modulo.getTrilhas(),
-                modulo.getProgramas());
+                modulo.getAtivo(),
+                new HashSet<>(modulo.getTrilhas()),
+                new HashSet<>(modulo.getProgramas()));
 
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return new ModuloDTO(moduloSalvo.getIdModulo(),
                 moduloSalvo.getNome(),
                 moduloSalvo.getDataInicio(),
-                moduloSalvo.getDataFim());
+                moduloSalvo.getDataFim(),
+                moduloSalvo.getAtivo());
     }
 
 

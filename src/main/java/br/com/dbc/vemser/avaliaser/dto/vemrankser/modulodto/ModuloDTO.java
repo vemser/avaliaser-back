@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,5 +20,7 @@ public class ModuloDTO  {
     private LocalDate dataInicio;
 
     private LocalDate dataFim;
+
+    private Ativo ativo;
 
 }

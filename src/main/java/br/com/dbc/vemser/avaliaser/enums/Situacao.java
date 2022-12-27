@@ -4,9 +4,6 @@ public enum Situacao {
     ALOCADO("A"),
     DISPONIVEL("D"),
     RESERVADO("R"),
-
-//    ATIVO("A"),
-    INATIVO("I"),
     ABERTO("A"),
     FECHADO("F");
 

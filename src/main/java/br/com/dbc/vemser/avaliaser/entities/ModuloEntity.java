@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +34,10 @@ public class ModuloEntity {
 
     @Column(name = "data_fim")
     private LocalDate dataFim;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.STRING)
+    private Ativo ativo;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
