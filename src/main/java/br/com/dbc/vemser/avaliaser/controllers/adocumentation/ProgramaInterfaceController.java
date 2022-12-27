@@ -33,7 +33,7 @@ public interface ProgramaInterfaceController {
             }
     )
     @GetMapping
-    ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer pagina, Integer tamanho);
+    ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar pagina de programas por nome", description = "Lista uma pagina de programas por nome")
     @ApiResponses(
@@ -44,7 +44,7 @@ public interface ProgramaInterfaceController {
             }
     )
     @GetMapping("/nome/{nome}")
-    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer pagina, Integer tamanho, @PathVariable("nome") String nome);
+    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, @PathVariable("nome") String nome) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar um programa por id", description = "Lista um programa por id")
     @ApiResponses(

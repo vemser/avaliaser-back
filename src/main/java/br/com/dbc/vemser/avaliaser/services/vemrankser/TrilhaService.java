@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,19 +65,26 @@ public class TrilhaService {
     }
 
 
-    public PageDTO<TrilhaDTO> listarAllTrilhaPaginado(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<TrilhaEntity> trilha = trilhaRepository.findAll(pageRequest);
+    public PageDTO<TrilhaDTO> listarAllTrilhaPaginado(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (pagina < 0 || tamanho < 0) {
+            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<TrilhaEntity> trilha = trilhaRepository.findAll(pageRequest);
 
-        List<TrilhaDTO> trilhaDTOList = trilha.getContent().stream()
-                .map(itemEntretenimentoEntity -> objectMapper.convertValue(itemEntretenimentoEntity, TrilhaDTO.class))
-                .toList();
-        return new PageDTO<>(trilha.getTotalElements(),
-                trilha.getTotalPages(),
-                pagina,
-                tamanho,
-                trilhaDTOList
-        );
+            List<TrilhaDTO> trilhaDTOList = trilha.getContent().stream()
+                    .map(itemEntretenimentoEntity -> objectMapper.convertValue(itemEntretenimentoEntity, TrilhaDTO.class))
+                    .toList();
+            return new PageDTO<>(trilha.getTotalElements(),
+                    trilha.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    trilhaDTOList
+            );
+        }
+        List<TrilhaDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public void delete(Integer idTrilha) throws RegraDeNegocioException {
