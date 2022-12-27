@@ -6,7 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
-import br.com.dbc.vemser.avaliaser.enums.StatusModulo;
+
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,9 +32,9 @@ public class ModuloService {
 
     public ModuloDTO adicionar(ModuloCreateDTO modulo) {
         ModuloEntity moduloEntityNovo = objectMapper.convertValue(modulo, ModuloEntity.class);
-        moduloEntityNovo.setStatusModulo(StatusModulo.S);
+//        moduloEntityNovo.setStatusModulo(StatusModulo.S);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-        moduloEntityNovo.setDataInicio(now);
+//        moduloEntityNovo.setDataInicio(now);
         moduloRepository.save(moduloEntityNovo);
         return objectMapper.convertValue(moduloEntityNovo, ModuloDTO.class);
 
@@ -78,9 +78,7 @@ public class ModuloService {
 
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return new ModuloDTO(moduloSalvo.getIdModulo(),
-                moduloSalvo.getNome(),
-                moduloSalvo.getDataInicio(),
-                moduloSalvo.getDataFim());
+                moduloSalvo.getNome());
     }
 
 
