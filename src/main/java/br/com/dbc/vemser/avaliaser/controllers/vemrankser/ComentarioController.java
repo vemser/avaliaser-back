@@ -57,8 +57,8 @@ public class ComentarioController implements OperationControllerComentario {
 
     @Override
     @GetMapping("/listar-comentarios-aluno")
-    public ResponseEntity<PageDTO<ComentarioDTO>> listarComentariosAluno(@RequestParam(required = false, defaultValue = "0") Integer pagina, @RequestParam(required = false, defaultValue = "5") Integer tamanho, Integer idAluno) {
-        return ResponseEntity.ok(comentarioService.comentariosDoAluno(pagina, tamanho, idAluno));
+    public ResponseEntity<PageDTO<ComentarioDTO>> listarComentariosAluno(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "5") Integer size, Integer idAluno) throws RegraDeNegocioException {
+        return ResponseEntity.ok(comentarioService.comentariosDoAluno(page, size, idAluno));
     }
 
     @Override

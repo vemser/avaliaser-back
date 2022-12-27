@@ -13,6 +13,7 @@ public interface ComentarioRepository extends JpaRepository<ComentarioEntity, In
     List<ComentarioEntity> findAllByIdAtividade(Integer idAtividade);
 
 //    List<ComentarioEntity> findAllByStatusComentario(String statusComentario);
+    List<ComentarioEntity> findAllBySitucacao(String situacao);
 
     Page<ComentarioEntity> findAllByIdUsuario(Pageable pageable,Integer idAluno);
 

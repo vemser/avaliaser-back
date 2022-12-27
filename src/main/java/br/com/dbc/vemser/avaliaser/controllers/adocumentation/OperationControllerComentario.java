@@ -59,7 +59,7 @@ public interface OperationControllerComentario {
             }
     )
     @GetMapping("/listar-comentarios-aluno")
-    public ResponseEntity<PageDTO<ComentarioDTO>> listarComentariosAluno(@RequestParam(required = false, defaultValue = "0") Integer pagina, @RequestParam(required = false, defaultValue = "5") Integer tamanho, Integer idAluno);
+    public ResponseEntity<PageDTO<ComentarioDTO>> listarComentariosAluno(@RequestParam(required = false, defaultValue = "0") Integer pagina, @RequestParam(required = false, defaultValue = "5") Integer tamanho, Integer idAluno) throws RegraDeNegocioException;
 
     @Operation(summary = "Adicionar feedback ao aluno", description = "Listar comentários de um aluno")
     @ApiResponses(

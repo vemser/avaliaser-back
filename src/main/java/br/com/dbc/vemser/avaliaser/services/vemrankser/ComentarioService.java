@@ -96,7 +96,7 @@ public class ComentarioService {
     }
 
     public List<ComentarioDTO> listarComentarioPorFeedback(Situacao situacao) {
-        return comentarioRepository.findAllByStatusComentario(situacao.getSituacao())
+        return comentarioRepository.findAllBySitucacao(situacao.getSituacao())
                 .stream()
                 .map(comentarioEntity -> objectMapper.convertValue(comentarioEntity, ComentarioDTO.class))
                 .toList();
