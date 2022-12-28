@@ -61,11 +61,11 @@ public class AlunoService {
             alunoEntity.setSituacao(alunoCreateDTO.getSituacao());
             alunoEntity.setPrograma(programaService.findById(alunoCreateDTO.getIdPrograma()));
             alunoEntity.setTrilha(trilhaService.findById(alunoCreateDTO.getIdTrilha()));
-//            if(alunoCreateDTO.getTecnologias().size() > 0){
-//                for(Integer tecnologia: alunoCreateDTO.getTecnologias()){
-//                    alunoEntity.setTecnologia(tecnologiaService.findBySet(tecnologia));
-//                }
-//            }
+            if(alunoCreateDTO.getTecnologias().size() > 0){
+                for(Integer tecnologia: alunoCreateDTO.getTecnologias()){
+                    alunoEntity.setTecnologia(tecnologiaService.findById(tecnologia));
+                }
+            }
             alunoEntity.setAtivo(Ativo.S);
 
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
