@@ -60,9 +60,9 @@ public class ProgramaController implements ProgramaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<Void> deletar(Integer idPrograma) throws RegraDeNegocioException {
-        programaService.deletar(idPrograma);
-        log.info("Programa deletado com sucesso");
+    public ResponseEntity<Void> desativar(Integer idPrograma) throws RegraDeNegocioException {
+        programaService.desativar(idPrograma);
+        log.info("Programa desativado com sucesso");
         return ResponseEntity.noContent().build();
     }
 }

@@ -111,17 +111,17 @@ public class TrilhaController {
         return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(page, size), HttpStatus.OK);
     }
 
-    @Operation(summary = "Deletar uma trilha", description = "Deleta uma trilha do banco de dados")
+    @Operation(summary = "Desativar uma trilha", description = "Desativar uma trilha do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Trilha deletada com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Trilha desativada com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{idTrilha}")
-    public ResponseEntity<Void> deletarTrilha(@PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
-        trilhaService.delete(idTrilha);
+    public ResponseEntity<Void> desativar(@PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
+        trilhaService.desativar(idTrilha);
         log.info("Trilha Deletada com sucesso!");
         return ResponseEntity.noContent().build();
     }
