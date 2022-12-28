@@ -29,11 +29,11 @@ public class ProgramaCreateDTO {
 
 
     @Schema(description = "Data de abertura programa", example = "2023-02-23")
-    private LocalDate dataCriacao;
+    private LocalDate dataInicio;
 
     @NotNull
     @Schema(description = "Data de termino do programa", example = "2023-06-23")
-    private LocalDate dataTermino;
+    private LocalDate dataFim;
 
 
 }

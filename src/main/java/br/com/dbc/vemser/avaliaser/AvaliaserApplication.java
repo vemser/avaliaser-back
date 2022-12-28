@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories
-@SpringBootApplication
 @EnableFeignClients
+@SpringBootApplication
 public class AvaliaserApplication {
 
     public static void main(String[] args) {

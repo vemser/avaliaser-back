@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class ProgramaModuloEntity {
 
     @EmbeddedId
-    private ProgramaModuloPK udPrograModulo;
+    private ProgramaModuloPK idProgramaModulo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idModulo")

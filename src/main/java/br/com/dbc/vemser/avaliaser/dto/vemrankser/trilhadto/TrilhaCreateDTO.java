@@ -3,18 +3,17 @@ package br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class TrilhaCreateDTO {
 
     @Schema(description = "Nome", example = "Backend")
+    @NotBlank
     private String nome;
 
-    @Schema(description = "Edição do vem ser", example = "11")
-    private Integer edicao;
+    @Schema(description = "Descricao da trilha", example = "Especialidade com a parte mais logica e regra de négocios")
+    private String descricao;
 
-    @Schema(description = "Ano da edição", example = "15/02/2023")
-    private LocalDate anoEdicao;
 
 }

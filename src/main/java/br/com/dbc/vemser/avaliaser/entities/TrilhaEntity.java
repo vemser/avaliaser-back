@@ -1,13 +1,13 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "TRILHA")
 public class TrilhaEntity {
 
@@ -27,11 +28,8 @@ public class TrilhaEntity {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "edicao")
-    private Integer edicao;
-
-    @Column(name = "ano_edicao")
-    private LocalDate anoEdicao;
+    @Column(name = "descricao")
+    private String descricao;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
