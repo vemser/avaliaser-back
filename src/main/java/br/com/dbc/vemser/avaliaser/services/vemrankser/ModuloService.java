@@ -52,6 +52,7 @@ public class ModuloService {
     public void desativar(Integer id) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
         moduloEntity.setAtivo(Ativo.N);
+        moduloRepository.save(moduloEntity);
     }
 
     private ModuloEntity converterEntity(ModuloCreateDTO modulo) {
