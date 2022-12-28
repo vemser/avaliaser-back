@@ -12,6 +12,7 @@ import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AlunoRepository;
 import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
+import br.com.dbc.vemser.avaliaser.services.allocation.TecnologiaService;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.TrilhaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,8 @@ public class AlunoService {
     private final ProgramaService programaService;
     private final TrilhaService trilhaService;
     private final ObjectMapper objectMapper;
+
+    private final TecnologiaService tecnologiaService;
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer idAluno, String nome, String email, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
@@ -58,6 +61,11 @@ public class AlunoService {
             alunoEntity.setSituacao(alunoCreateDTO.getSituacao());
             alunoEntity.setPrograma(programaService.findById(alunoCreateDTO.getIdPrograma()));
             alunoEntity.setTrilha(trilhaService.findById(alunoCreateDTO.getIdTrilha()));
+//            if(alunoCreateDTO.getTecnologias().size() > 0){
+//                for(Integer tecnologia: alunoCreateDTO.getTecnologias()){
+//                    alunoEntity.setTecnologia(tecnologiaService.findBySet(tecnologia));
+//                }
+//            }
             alunoEntity.setAtivo(Ativo.S);
 
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);

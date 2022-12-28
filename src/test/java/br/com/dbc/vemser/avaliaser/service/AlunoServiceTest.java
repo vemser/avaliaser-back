@@ -1,102 +1,167 @@
-//package br.com.dbc.vemser.avaliaser.service;
-//
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-//import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-//import br.com.dbc.vemser.avaliaser.enums.Ativo;
-//import br.com.dbc.vemser.avaliaser.enums.Stack;
-//import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
-//import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
-//import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AlunoRepository;
-//import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
-//import com.fasterxml.jackson.databind.DeserializationFeature;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.fasterxml.jackson.databind.SerializationFeature;
-//import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.Mockito;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.springframework.data.domain.PageImpl;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.mock.web.MockMultipartFile;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.test.util.ReflectionTestUtils;
-//import org.springframework.web.multipart.MultipartFile;
-//
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.ArgumentMatchers.anyInt;
-//import static org.mockito.Mockito.*;
-//
-//@RunWith(MockitoJUnitRunner.class)
-//public class AlunoServiceTest {
-//
-//    @InjectMocks
-//    private AlunoService alunoService;
-//    @Mock
-//    private AlunoRepository alunoRepository;
-//
-//    private final ObjectMapper objectMapper = new ObjectMapper();
-//
-//    @Before
-//    public void init() {
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        ReflectionTestUtils.setField(alunoService, "objectMapper", objectMapper);
-//    }
-//
-//    @Test
-//    public void DeveListarUsuarioPaginadoCorretamente() throws RegraDeNegocioException {
-//        final int numeroPagina = 0;
-//        final int tamanho = 3;
-//
-//        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
-//        PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
-//
-//        when(alunoRepository.findAllByAtivo(any(), any(Pageable.class))).thenReturn(listaPaginada);
-//        PageDTO<AlunoDTO> alunoDTOPageDTO = alunoService.listarAlunoPaginado(numeroPagina, tamanho);
-//
-//        assertNotNull(alunoDTOPageDTO);
-//        assertEquals(1, alunoDTOPageDTO.getTotalElementos());
-//        assertEquals(1, alunoDTOPageDTO.getQuantidadePaginas());
-//        assertEquals(listaPaginada.getPageable().getPageNumber(), alunoDTOPageDTO.getPagina());
-//    }
-//
-//    @Test
-//    public void DeveListarAlunoPaginadoComListaVazia() throws RegraDeNegocioException {
-//        final int numeroPagina = 0;
-//        final int tamanho = 0;
-//        List<AlunoDTO> listaVazia = new ArrayList<>();
-//        PageDTO<AlunoDTO> alunoDTOPageDTOEsperado = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
-//
-//        PageDTO<AlunoDTO> paginaRecebida = alunoService.listarAlunoPaginado(numeroPagina, tamanho);
-//        assertEquals(paginaRecebida, alunoDTOPageDTOEsperado);
-//
-//    }
-//
-//    @Test(expected = RegraDeNegocioException.class)
-//    public void DeveListarAlunoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
-//        final int numeroPagina = -1;
-//        final int tamanho = -1;
-//        alunoService.listarAlunoPaginado(numeroPagina, tamanho);
-//
-//    }
-//
+package br.com.dbc.vemser.avaliaser.service;
+
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Stack;
+import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AlunoRepository;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
+public class AlunoServiceTest {
+
+    @InjectMocks
+    private AlunoService alunoService;
+    @Mock
+    private AlunoRepository alunoRepository;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Before
+    public void init() {
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ReflectionTestUtils.setField(alunoService, "objectMapper", objectMapper);
+    }
+
+    @Test
+    public void DeveListarUsuarioPaginadoBuscandoPorIdCorretamente() throws RegraDeNegocioException {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+        final int idAluno = 1;
+        final String nome = null;
+        final String email = null;
+
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
+        when(alunoRepository.findAllByIdAlunoAndAtivo(any(), any(), any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<AlunoDTO> alunoDTOPageDTO = alunoService.listarAlunoPaginado(idAluno,nome, email, numeroPagina, tamanho);
+
+        assertNotNull(alunoDTOPageDTO);
+        assertEquals(1, alunoDTOPageDTO.getTotalElementos());
+        assertEquals(1, alunoDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), alunoDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarUsuarioPaginadoBuscandoPorNomeCorretamente() throws RegraDeNegocioException {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+        final Integer idAluno = null;
+        final String nome = "Paulo";
+        final String email = null;
+
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
+        when(alunoRepository.findAllByNomeContainingIgnoreCaseAndAtivo(any(), any(), any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<AlunoDTO> alunoDTOPageDTO = alunoService.listarAlunoPaginado(idAluno,nome, email, numeroPagina, tamanho);
+
+        assertNotNull(alunoDTOPageDTO);
+        assertEquals(1, alunoDTOPageDTO.getTotalElementos());
+        assertEquals(1, alunoDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), alunoDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarUsuarioPaginadoBuscandoPorEmailCorretamente() throws RegraDeNegocioException {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+        final Integer idAluno = null;
+        final String nome = null;
+        final String email = "paulo.sergio";
+
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
+        when(alunoRepository.findAllByEmailContainingIgnoreCaseAndAtivo(any(), any(), any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<AlunoDTO> alunoDTOPageDTO = alunoService.listarAlunoPaginado(idAluno,nome, email, numeroPagina, tamanho);
+
+        assertNotNull(alunoDTOPageDTO);
+        assertEquals(1, alunoDTOPageDTO.getTotalElementos());
+        assertEquals(1, alunoDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), alunoDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarUsuarioPaginadoBuscandoCorretamente() throws RegraDeNegocioException {
+        final int numeroPagina = 0;
+        final int tamanho = 3;
+        final Integer idAluno = null;
+        final String nome = null;
+        final String email = null;
+
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+        PageImpl<AlunoEntity> listaPaginada = new PageImpl<>(List.of(aluno), PageRequest.of(numeroPagina, tamanho), 0);
+        when(alunoRepository.findAllByAtivo(any(), any(Pageable.class))).thenReturn(listaPaginada);
+        PageDTO<AlunoDTO> alunoDTOPageDTO = alunoService.listarAlunoPaginado(idAluno,nome, email, numeroPagina, tamanho);
+
+        assertNotNull(alunoDTOPageDTO);
+        assertEquals(1, alunoDTOPageDTO.getTotalElementos());
+        assertEquals(1, alunoDTOPageDTO.getQuantidadePaginas());
+        assertEquals(listaPaginada.getPageable().getPageNumber(), alunoDTOPageDTO.getPagina());
+    }
+
+    @Test
+    public void DeveListarAlunoPaginadoComListaVazia() throws RegraDeNegocioException {
+        final int numeroPagina = 0;
+        final int tamanho = 0;
+        final Integer idAluno = null;
+        final String nome = null;
+        final String email = null;
+        List<AlunoDTO> listaVazia = new ArrayList<>();
+        PageDTO<AlunoDTO> alunoDTOPageDTOEsperado = new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+        PageDTO<AlunoDTO> paginaRecebida = alunoService.listarAlunoPaginado(idAluno,nome, email, numeroPagina, tamanho);
+        assertEquals(paginaRecebida, alunoDTOPageDTOEsperado);
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void DeveListarAlunoPaginadoComListaErroDeValidacaoDosValoresDeSizeEpage() throws RegraDeNegocioException {
+        final int numeroPagina = -1;
+        final int tamanho = -1;
+        final Integer idAluno = null;
+        final String nome = null;
+        final String email = null;
+        alunoService.listarAlunoPaginado(idAluno,nome, email, numeroPagina, tamanho);
+
+    }
+
 //    @Test
 //    public void deveTestarCadastroAlunoComSucesso() throws RegraDeNegocioException {
 //
@@ -249,5 +314,5 @@
 //                null,
 //                Collections.emptyList());
 //    }
-//}
-//
+}
+
