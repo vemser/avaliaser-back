@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ProgramaRepository;
@@ -30,6 +31,7 @@ public class ProgramaService {
     public ProgramaDTO create(ProgramaCreateDTO programaCreate) {
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
+        programaEntity.setAtivo(Ativo.S);
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
     }
@@ -94,13 +96,10 @@ public class ProgramaService {
         return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
 
-    public void deletar(Integer idPrograma) throws RegraDeNegocioException {
+    public void desativar(Integer idPrograma) throws RegraDeNegocioException {
         ProgramaEntity programaEntity = findById(idPrograma);
-        try {
-            programaRepository.delete(programaEntity);
-        } catch (DataIntegrityViolationException ex) {
-            throw new RegraDeNegocioException("Não é possivel deletar pois existem registros atrelados a esse programa.");
-        }
+        programaEntity.setAtivo(Ativo.N);
+        programaRepository.save(programaEntity);
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {

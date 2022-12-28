@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.dto.allocation.programa;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 
 import lombok.AllArgsConstructor;
@@ -27,4 +28,5 @@ public class ProgramaDTO {
     private LocalDate dataInicio;
     @Schema(description = "Data de termino do programa", example = "2023-06-23")
     private LocalDate dataFim;
+    private Ativo ativo;
 }
