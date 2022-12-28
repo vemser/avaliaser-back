@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,9 @@ public class TrilhaEntity {
 
     @Column(name = "descricao")
     private String descricao;
+
+    @Column(name = "ativo")
+    private Ativo ativo;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
