@@ -1,9 +1,10 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 
-import br.com.dbc.vemser.avaliaser.entities.pk.VagaProgramaPK;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Programa")
 public class ProgramaEntity {
 
@@ -41,6 +43,9 @@ public class ProgramaEntity {
 
     @Column(name = "situacao")
     private Situacao situacao;
+
+    @Column(name = "ativo")
+    private Ativo ativo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)

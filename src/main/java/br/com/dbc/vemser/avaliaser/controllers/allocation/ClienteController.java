@@ -36,17 +36,17 @@ public class ClienteController implements ClienteInterfaceController {
     }
 
     @Override
-    public ResponseEntity<PageDTO<ClienteDTO>> listar(Integer pagina, Integer tamanho) {
+    public ResponseEntity<PageDTO<ClienteDTO>> listar(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         return ResponseEntity.ok(clienteService.listar(pagina, tamanho));
     }
 
     @Override
-    public ResponseEntity<PageDTO<ClienteDTO>> listarPorEmail(Integer pagina, Integer tamanho, String email) {
+    public ResponseEntity<PageDTO<ClienteDTO>> listarPorEmail(Integer pagina, Integer tamanho, String email) throws RegraDeNegocioException {
         return ResponseEntity.ok(clienteService.listarPorEmail(pagina, tamanho, email));
     }
 
     @Override
-    public ResponseEntity<PageDTO<ClienteDTO>> listarPorNome(Integer pagina, Integer tamanho, String nome) {
+    public ResponseEntity<PageDTO<ClienteDTO>> listarPorNome(Integer pagina, Integer tamanho, String nome) throws RegraDeNegocioException {
         return ResponseEntity.ok(clienteService.listarPorNome(pagina, tamanho, nome));
     }
 

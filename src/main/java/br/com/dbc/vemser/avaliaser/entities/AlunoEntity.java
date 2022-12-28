@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -40,7 +41,7 @@ public class AlunoEntity {
     private String email;
 
     @Column(name = "situacao")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Situacao situacao;
 
     @Column(name = "descricao")
@@ -48,6 +49,10 @@ public class AlunoEntity {
 
     @Column(name = "pontuacao")
     private Integer pontuacao;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
 
     @Column(name = "id_trilha", updatable = false, insertable = false)
     private Integer idTrilha;
@@ -65,12 +70,12 @@ public class AlunoEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_trilha",referencedColumnName = "id_trilha")
+    @JoinColumn(name = "id_trilha", referencedColumnName = "id_trilha")
     private TrilhaEntity trilha;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_programa",referencedColumnName = "id_programa")
+    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
     private ProgramaEntity programa;
 
 

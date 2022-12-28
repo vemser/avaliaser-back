@@ -28,12 +28,12 @@ public class TrilhaController {
 
     private final TrilhaService trilhaService;
 
-    @Operation(summary = "Adicionar Trilha", description = "Realiza a adição de uma nova trilha.")
+    @Operation(summary = "Adicionar Trilha", description = "Adicionar uma nova trilha ")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Trilha adicionada com sucesso!"),
-                    @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações."),
-                    @ApiResponse(responseCode = "500", description = "Não foi possivel verificar o Usuario logado. Verifique se realizou o login.")
+                    @ApiResponse(responseCode = "200", description = "Trilha adicionada com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PostMapping
@@ -44,12 +44,12 @@ public class TrilhaController {
         return new ResponseEntity<>(trilhaDTO, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Atualizar Trilha", description = "Realiza a Atualização da Trilha no banco de dados")
+    @Operation(summary = "Atualizar Trilha", description = "Atualizar Trilha no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Trilha atualizada com sucesso !"),
-                    @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações."),
-                    @ApiResponse(responseCode = "500", description = "Não foi possivel verificar o Usuario logado. Verifique se realizou o login.")
+                    @ApiResponse(responseCode = "200", description = "Trilha atualizada com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PutMapping("/update/{idTrilha}")
@@ -58,11 +58,11 @@ public class TrilhaController {
 
     }
 
-    @Operation(summary = "Busca a lista de alunos na trilha pela pontuação", description = "Resgata a lista de alunos na trilha pela pontuacao no banco de dados")
+    @Operation(summary = "Pega a lista de alunos na trilha pela pontuação", description = "Resgata a lista de alunos na trilha pela pontuacao no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso !"),
-                    @ApiResponse(responseCode = "404", description = "Você não possui credenciais para acessar essas informações."),
+                    @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
@@ -71,11 +71,11 @@ public class TrilhaController {
         return new ResponseEntity<>(trilhaService.rankingtrilha(idTrilha), HttpStatus.OK);
     }
 
-    @Operation(summary = "Busca o nome da trilha ou lista", description = "Realiza a listagem do nome da trilha ou lista todas as trilhas do banco de dados")
+    @Operation(summary = "Pega o nome da trilha ou lista", description = "Resgata o nome da trilha ou lista do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso "),
-                    @ApiResponse(responseCode = "404", description = "Você não possui credenciais para acessar essas informações."),
+                    @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
@@ -85,11 +85,11 @@ public class TrilhaController {
     }
 
 
-    @Operation(summary = "Busca trilha pelo id", description = "Realiza a busca da trilha pelo id do banco de dados")
+    @Operation(summary = "Pega trilha pelo id", description = "Resgata a trilha pelo id do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Você não possui credenciais para acessar essas informações."),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
@@ -98,31 +98,31 @@ public class TrilhaController {
         return new ResponseEntity<>(trilhaService.pegarIdTrilha(idTrilha), HttpStatus.OK);
     }
 
-    @Operation(summary = "Busca a lista de trilha paginado", description = "Realiza a busca da lista de trilha paginado do banco de dados")
+    @Operation(summary = "Pega a lista de trilha paginado", description = "Resgata a lista de trilha paginado do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Você não possui credenciais para acessar essas informações."),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/lista-trilha-page")
-    public ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam(required = false, defaultValue = "0") Integer pagina, @RequestParam(required = false, defaultValue = "5") Integer tamanho) {
-        return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(pagina, tamanho), HttpStatus.OK);
+    public ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "5") Integer size) throws RegraDeNegocioException {
+        return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(page, size), HttpStatus.OK);
     }
 
-    @Operation(summary = "Deletar uma trilha", description = "Realiza o exclusão logica de uma trilha do banco de dados")
+    @Operation(summary = "Desativar uma trilha", description = "Desativar uma trilha do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "204", description = "Trilha desativada com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem autorização para remover este usuario."),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{idTrilha}")
-    public ResponseEntity<Void> deletarTrilha(@PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
-        trilhaService.delete(idTrilha);
-        log.info("Trilha desativada com sucesso!");
+    public ResponseEntity<Void> desativar(@PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
+        trilhaService.desativar(idTrilha);
+        log.info("Trilha Deletada com sucesso!");
         return ResponseEntity.noContent().build();
     }
 

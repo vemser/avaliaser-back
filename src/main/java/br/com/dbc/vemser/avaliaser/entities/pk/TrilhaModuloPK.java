@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Embeddable
 public class TrilhaModuloPK implements Serializable {
 
-    @Column(name = "id_trila")
+    @Column(name = "id_trilha")
     private Integer idTrilha;
     @Column(name = "id_modulo")
     private Integer idModulo;

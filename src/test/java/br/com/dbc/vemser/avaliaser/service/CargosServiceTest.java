@@ -1,8 +1,10 @@
 //package br.com.dbc.vemser.avaliaser.service;
 //
-//
+//import br.com.dbc.vemser.avaliaser.entities.CargoEntity;
 //import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 //import br.com.dbc.vemser.avaliaser.factory.CargoFactory;
+//import br.com.dbc.vemser.avaliaser.repositories.avaliaser.CargoRepository;
+//import br.com.dbc.vemser.avaliaser.services.avaliaser.CargoService;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
 //import org.mockito.InjectMocks;

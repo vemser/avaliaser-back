@@ -1,6 +1,5 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -67,7 +66,7 @@ public class AtividadeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
     private ProgramaEntity programa;
-    
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "modulo")
     private Set<ModuloAtividadeEntity> modulos = new HashSet<>();

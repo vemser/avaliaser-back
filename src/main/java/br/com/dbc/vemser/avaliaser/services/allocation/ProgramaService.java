@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ProgramaRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,30 +31,45 @@ public class ProgramaService {
     public ProgramaDTO create(ProgramaCreateDTO programaCreate) {
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
+        programaEntity.setAtivo(Ativo.S);
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
     }
 
-    public PageDTO<ProgramaDTO> listar(Integer pagina, Integer tamanho) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<ProgramaEntity> paginaRepository = programaRepository.findAll(pageRequest);
+    public PageDTO<ProgramaDTO> listar(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (pagina < 0 || tamanho < 0) {
+            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<ProgramaEntity> paginaRepository = programaRepository.findAll(pageRequest);
 
-        List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
-                .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
-                .toList();
+            List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
+                    .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
+                    .toList();
+            return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, clientePagina);
+        }
+        List<ProgramaDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
 
-        return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, clientePagina);
     }
 
-    public PageDTO<ProgramaDTO> listarPorNome(Integer pagina, Integer tamanho, String nome) {
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<ProgramaEntity> paginaRepository = programaRepository.findAllByNomeContainingIgnoreCase(nome, pageRequest);
+    public PageDTO<ProgramaDTO> listarPorNome(Integer pagina, Integer tamanho, String nome) throws RegraDeNegocioException {
+        if (pagina < 0 || tamanho < 0) {
+            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<ProgramaEntity> paginaRepository = programaRepository.findAllByNomeContainingIgnoreCase(nome, pageRequest);
 
-        List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
-                .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
-                .toList();
+            List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
+                    .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
+                    .toList();
 
-        return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, clientePagina);
+            return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, clientePagina);
+        }
+        List<ProgramaDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
@@ -79,13 +96,10 @@ public class ProgramaService {
         return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
 
-    public void deletar(Integer idPrograma) throws RegraDeNegocioException {
+    public void desativar(Integer idPrograma) throws RegraDeNegocioException {
         ProgramaEntity programaEntity = findById(idPrograma);
-        try {
-            programaRepository.delete(programaEntity);
-        } catch (DataIntegrityViolationException ex) {
-            throw new RegraDeNegocioException("Não é possivel deletar pois existem registros atrelados a esse programa.");
-        }
+        programaEntity.setAtivo(Ativo.N);
+        programaRepository.save(programaEntity);
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
