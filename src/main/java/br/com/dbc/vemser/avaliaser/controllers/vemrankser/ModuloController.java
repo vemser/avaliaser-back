@@ -27,11 +27,11 @@
 //
 //    private final ModuloService moduloService;
 //
-//    @Operation(summary = "Adicionar novo Modulo", description = "Adicionar novos modulos")
+//    @Operation(summary = "Adicionar novo Modulo", description = "Realiza o cadastramento de novos modulos")
 //    @ApiResponses(
 //            value = {
 //                    @ApiResponse(responseCode = "200", description = "Modulo adicionado com sucesso"),
-//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+//                    @ApiResponse(responseCode = "403", description = "Você não tem autorização para remover este usuario."),
 //                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
 //            }
 //    )
@@ -51,7 +51,7 @@
 //        return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
 //    }
 //
-//    @Operation(summary = "Pega modulo pelo id", description = "Resgata o modulo pelo id do banco de dados")
+//    @Operation(summary = "Busca modulo pelo id", description = "Realiza a busda do modulo pelo id do banco de dados")
 //    @ApiResponses(
 //            value = {
 //                    @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso"),
@@ -64,7 +64,7 @@
 //        return new ResponseEntity<>(moduloService.findById(idModulo), HttpStatus.OK);
 //    }
 //
-//    @Operation(summary = "Pega a lista dos modulos", description = "Resgata a lista de modulos do banco de dados")
+//    @Operation(summary = "Busca a lista dos modulos", description = "Realiza a busca da lista de modulos do banco de dados")
 //    @ApiResponses(
 //            value = {
 //                    @ApiResponse(responseCode = "200", description = "Foi resgatado com sucesso"),
