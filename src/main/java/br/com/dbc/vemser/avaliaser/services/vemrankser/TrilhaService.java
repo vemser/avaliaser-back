@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.TrilhaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,7 @@ public class TrilhaService {
 
     public TrilhaDTO create(TrilhaCreateDTO trilhaNova) {
         TrilhaEntity trilha = objectMapper.convertValue(trilhaNova, TrilhaEntity.class);
+        trilha.setAtivo(Ativo.S);
         trilhaRepository.save(trilha);
         return objectMapper.convertValue(trilha, TrilhaDTO.class);
     }
@@ -87,8 +89,10 @@ public class TrilhaService {
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
-    public void delete(Integer idTrilha) throws RegraDeNegocioException {
-        trilhaRepository.delete(findById(idTrilha));
+    public void desativar(Integer idTrilha) throws RegraDeNegocioException {
+        TrilhaEntity trilhaEntity = findById(idTrilha);
+        trilhaEntity.setAtivo(Ativo.N);
+        trilhaRepository.save(trilhaEntity);
     }
 
     public List<RankingDTO> rankingtrilha(Integer idTrilha) throws RegraDeNegocioException {
