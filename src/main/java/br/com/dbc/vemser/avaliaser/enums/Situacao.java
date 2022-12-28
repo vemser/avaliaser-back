@@ -1,11 +1,15 @@
 package br.com.dbc.vemser.avaliaser.enums;
 
 public enum Situacao {
-    ALOCADO("A"),
+    ALOCADO("L"),
     DISPONIVEL("D"),
     RESERVADO("R"),
     ABERTO("A"),
-    FECHADO("F");
+    FECHADO("F"),
+
+    ATIVO("S"),
+    INATIVO("N");
+
 
     private final String situacao;
 
