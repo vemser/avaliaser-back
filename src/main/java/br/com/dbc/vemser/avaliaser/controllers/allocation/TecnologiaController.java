@@ -7,6 +7,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.allocation.TecnologiaService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/tecnologia")
@@ -25,6 +25,7 @@ import java.io.IOException;
 @Slf4j
 public class TecnologiaController implements TecnologiaInterfaceController {
     private final TecnologiaService tecnologiaService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/tecnologia-busca")
     public PageDTO<TecnologiaDTO> buscar(@RequestParam String nomeTecnologia,
@@ -34,10 +35,19 @@ public class TecnologiaController implements TecnologiaInterfaceController {
     }
 
     @PostMapping
-    public ResponseEntity<TecnologiaDTO> create(@RequestBody @Valid TecnologiaCreateDTO tecnologia){
+    public ResponseEntity<TecnologiaDTO> create(@RequestBody @Valid TecnologiaCreateDTO tecnologia) {
         log.info("Criando Tecnologia...");
         TecnologiaDTO tecnologiaDTO = tecnologiaService.create(tecnologia);
         log.info("tecnologia Criada!!");
         return new ResponseEntity<>(tecnologiaDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/{idTecnologia}")
+    public ResponseEntity<TecnologiaDTO> findByIdTecnologia(@PathVariable("idEndereco") Integer idTecnologia){
+        log.info("Buscando Tecnologia...");
+        TecnologiaDTO enderecoDTO = objectMapper.convertValue(tecnologiaService.findByIdTecnologia(idTecnologia), TecnologiaDTO.class);
+        log.info("Tecnologia encontrada!");
+        return new ResponseEntity<>(enderecoDTO, HttpStatus.OK);
+    }
 }
+

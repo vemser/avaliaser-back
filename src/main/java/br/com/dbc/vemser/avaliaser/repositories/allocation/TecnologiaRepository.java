@@ -19,4 +19,6 @@ public interface TecnologiaRepository extends JpaRepository<TecnologiaEntity, In
     Set<TecnologiaEntity> findAllByAlunos(AlunoEntity aluno);
 
     TecnologiaEntity findByNome(String nome);
+
+    TecnologiaEntity findByIdTecnologia(Integer idTecnologia);
 }
