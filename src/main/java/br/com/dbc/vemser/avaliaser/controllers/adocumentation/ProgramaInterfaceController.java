@@ -69,15 +69,15 @@ public interface ProgramaInterfaceController {
     ResponseEntity<ProgramaDTO> editar(@Valid @RequestBody ProgramaCreateDTO programaCreate,
                                        @PathVariable(name = "idPrograma") Integer idPrograma) throws RegraDeNegocioException;
 
-    @Operation(summary = "Deletar programa", description = "Deleta o programa no banco de dados")
+    @Operation(summary = "Desativar programa", description = "Desativar o programa no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Deletado com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Desativado com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "404", description = "Não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{idPrograma}")
-    public ResponseEntity<Void> deletar(@PathVariable(name = "idPrograma") Integer idPrograma) throws RegraDeNegocioException;
+    public ResponseEntity<Void> desativar(@PathVariable(name = "idPrograma") Integer idPrograma) throws RegraDeNegocioException;
 }
