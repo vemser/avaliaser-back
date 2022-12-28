@@ -11,7 +11,15 @@ import java.util.Optional;
 
 @Repository
 public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
-//    Optional<AlunoEntity> findByAtivoAndIdAluno(Ativo ativo, Integer idUsuario);
+    //    Optional<AlunoEntity> findByAtivoAndIdAluno(Ativo ativo, Integer idUsuario);
 //
-//    Page<AlunoEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+    Page<AlunoEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+
+    Page<AlunoEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
+
+    Page<AlunoEntity> findAllByIdAlunoAndAtivo(Integer idAluno, Ativo ativo, Pageable pageable);
+
+    Page<AlunoEntity> findAllByEmailContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
+
+    Optional<AlunoEntity> findByEmailContainingIgnoreCase(String email);
 }

@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class EditarAvaliacaoDTO {
+    @NotNull(message = "Acompanhamento não pode ser nulo.")
+    @Schema(example = "1")
     private Integer idAcompanhamento;
     @NotNull(message = "Aluno não pode ser nulo.")
     @Schema(example = "1")
@@ -17,8 +19,8 @@ public class EditarAvaliacaoDTO {
     @NotBlank(message = "Não pode ser nulo.")
     @Schema(example = "Descrição")
     private String descricao;
-    @NotNull(message = "Tipo não pode ser nulo.")
+    @NotNull(message = "Situação não pode ser nulo.")
     @Schema(example = "POSITIVO")
-    private Tipo status;
+    private Tipo situacao;
 
 }

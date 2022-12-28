@@ -37,13 +37,13 @@ public class ProgramaController implements ProgramaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer pagina, Integer tamanho) {
-        return ResponseEntity.ok(programaService.listar(pagina, tamanho));
+    public ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer page, Integer size) throws RegraDeNegocioException {
+        return ResponseEntity.ok(programaService.listar(page, size));
     }
 
     @Override
-    public ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer pagina, Integer tamanho, String nome) {
-        return ResponseEntity.ok(programaService.listarPorNome(pagina, tamanho, nome));
+    public ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, String nome) throws RegraDeNegocioException {
+        return ResponseEntity.ok(programaService.listarPorNome(page, size, nome));
     }
 
     @Override

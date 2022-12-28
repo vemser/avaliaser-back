@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +29,16 @@ public class ModuloEntity {
     @Column(name = "nome")
     private String nome;
 
+    @Column(name = "data_inicio")
+    private LocalDate dataInicio;
+
+    @Column(name = "data_fim")
+    private LocalDate dataFim;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.STRING)
+    private Ativo ativo;
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -35,14 +48,6 @@ public class ModuloEntity {
     )
     private Set<TrilhaEntity> trilhas = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "MODULO_ATIVIDADE",
-            joinColumns = @JoinColumn(name = "id_modulo"),
-            inverseJoinColumns = @JoinColumn(name = "id_atividade")
-    )
-    private Set<ModuloEntity> modulos = new HashSet<>();
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -57,10 +62,10 @@ public class ModuloEntity {
 //    @OneToMany(mappedBy = "modulos", fetch = FetchType.LAZY)
 //    private Set<AtividadeEntity> atividades = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_feedback",referencedColumnName = "id_feedback")
-    private FeedBackEntity feedBack;
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_feedback",referencedColumnName = "id_feedback")
+//    private FeedBackEntity feedBack;
 }
 
 

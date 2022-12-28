@@ -28,7 +28,6 @@ public class AtividadeCreateDTO {
     private Integer pesoAtividade;
 
 
-
     @Schema(description = "Data de início da atividade", example = "15/02/2023")
     private LocalDateTime dataCriacao;
 

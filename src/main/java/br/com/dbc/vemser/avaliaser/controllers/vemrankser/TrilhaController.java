@@ -107,8 +107,8 @@ public class TrilhaController {
             }
     )
     @GetMapping("/lista-trilha-page")
-    public ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam(required = false, defaultValue = "0") Integer pagina, @RequestParam(required = false, defaultValue = "5") Integer tamanho) {
-        return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(pagina, tamanho), HttpStatus.OK);
+    public ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "5") Integer size) throws RegraDeNegocioException {
+        return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(page, size), HttpStatus.OK);
     }
 
     @Operation(summary = "Deletar uma trilha", description = "Deleta uma trilha do banco de dados")
