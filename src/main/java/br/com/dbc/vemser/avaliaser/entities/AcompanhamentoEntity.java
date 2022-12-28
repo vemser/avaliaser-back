@@ -33,7 +33,7 @@ public class AcompanhamentoEntity {
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
 
-    @Column(name  = "id_programa", updatable = false, insertable = false)
+    @Column(name = "id_programa", updatable = false, insertable = false)
     private Integer idPrograma;
 
     @JsonIgnore

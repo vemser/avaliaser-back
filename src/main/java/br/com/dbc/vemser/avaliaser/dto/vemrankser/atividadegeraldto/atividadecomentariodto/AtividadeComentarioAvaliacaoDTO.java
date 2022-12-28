@@ -6,5 +6,5 @@ import lombok.Data;
 public class AtividadeComentarioAvaliacaoDTO {
     private Integer notaAvalicao;
     private String comentario;
-   // private Integer statusComentario;
+    // private Integer statusComentario;
 }

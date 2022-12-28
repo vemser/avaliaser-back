@@ -45,5 +45,5 @@ public interface OperationControllerAvaliacao {
             @ApiResponse(responseCode = "400", description = "Campo nulo, ou preenchido de forma incorreta, tente de novo.")
     })
     ResponseEntity<AvaliacaoDTO> editandoAvaliacao(@PathVariable("idAvaliacao") Integer idAvaliacao,
-                                                    @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException;
+                                                   @RequestBody EditarAvaliacaoDTO editarAvaliacaoDTO) throws RegraDeNegocioException;
 }
