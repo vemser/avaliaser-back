@@ -8,7 +8,10 @@ public enum Situacao {
     FECHADO("F"),
 
     ATIVO("S"),
-    INATIVO("N");
+    INATIVO("N"),
+
+    ENTREGUE("E"),
+    PENDENTE("P");
 
 
     private final String situacao;

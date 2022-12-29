@@ -19,10 +19,6 @@ public class AtividadeCreateDTO {
     @Schema(description = "título da atividade", example = "POO")
     private String titulo;
 
-
-    @Schema(description = "Instruções para a atividade", example = "Exercício de orientação à objeto")
-    private String instrucoes;
-
     @NotNull
     @Schema(description = "Peso da atividade", example = "2")
     private Integer pesoAtividade;
@@ -31,12 +27,21 @@ public class AtividadeCreateDTO {
     @Schema(description = "Data de início da atividade", example = "15/02/2023")
     private LocalDateTime dataCriacao;
 
+    @Schema(description = "Descrição da atividade", example = "Uma lista de exercicios de Java")
+    private String descricao;
+
     @NotNull
     @Schema(description = "Data final para entrega da atividade", example = "16/02/2023")
     private LocalDateTime dataEntrega;
 
+    @Schema(description = "Nome do instrutor", example = "Rafa")
+    private String nomeInstrutor;
 
-    private List<Integer> trilhas;
+    private List<Integer> modulos;
 
-    private Integer idModulo;
+    private List<Integer> alunos;
+
+    @NotNull(message = "Programa não pode ficar nulo.")
+    @Schema(example = "1")
+    private Integer idPrograma;
 }
