@@ -98,7 +98,7 @@ public class ModuloService {
     public PageDTO<ModuloDTO> listarModulo(Integer page, Integer size) {
         List<ModuloDTO> moduloDTOS = moduloRepository.findAll()
                 .stream()
-                .map(moduloEntity -> converterEmDTO(moduloEntity))
+                .map(this::converterEmDTO)
                 .toList();
         Page<ModuloDTO> pagina = new PageImpl<>(moduloDTOS);
 
@@ -142,7 +142,7 @@ public class ModuloService {
                 moduloSalvo.getDataFim(),
                 moduloSalvo.getAtivo(),
                 trilhaService.converterEmDTO(moduloEntity.getTrilha()),
-                modulo.getProgramas().stream().map(programaEntity -> programaService.converterEmDTO(programaEntity)).collect(Collectors.toList()));
+                modulo.getProgramas().stream().map(programaService::converterEmDTO).collect(Collectors.toList()));
 
     }
 
