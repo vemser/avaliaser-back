@@ -16,7 +16,7 @@ public interface ProgramaInterfaceController {
     @Operation(summary = "Criar programa", description = "Cria um programa no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Programa Criado com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Programa Criado com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -60,7 +60,7 @@ public interface ProgramaInterfaceController {
     @Operation(summary = "Editar programa", description = "Editar um programa no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Programa Editado com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Programa Editado com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -72,7 +72,7 @@ public interface ProgramaInterfaceController {
     @Operation(summary = "Desativar programa", description = "Desativar o programa no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Desativado com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Desativado com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "404", description = "Não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")

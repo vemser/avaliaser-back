@@ -30,7 +30,7 @@ public class ProgramaController implements ProgramaInterfaceController {
     @Override
     public ResponseEntity<ProgramaDTO> salvar(@Valid @RequestBody ProgramaCreateDTO programaCreate) {
 
-        log.info("Programa o Usuário...");
+        log.info("Criando programa ...");
         ProgramaDTO programa = programaService.create(programaCreate);
         log.info("Programa adicionado com sucesso!");
         return new ResponseEntity<>(programa, HttpStatus.CREATED);
