@@ -43,7 +43,8 @@ public class ModuloService {
         TrilhaEntity trilhaEntity = trilhaService.findById(modulo.getIdTrilha());
         trilhaService.verificarTrilhaDesativada(trilhaEntity);
         moduloEntityNovo.setTrilha(trilhaEntity);
-        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService.findAllById(modulo.getListPrograma()));
+        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService
+                .findAllById(modulo.getListPrograma()));
         moduloEntityNovo.setProgramas(programaEntitySet);
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
 
@@ -58,7 +59,8 @@ public class ModuloService {
         moduloEntity.setDataFim(moduloCreateDTO.getDataFim());
         TrilhaEntity trilhaEntity = trilhaService.findById(moduloCreateDTO.getIdTrilha());
         moduloEntity.setTrilha(trilhaEntity);
-        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService.findAllById(moduloCreateDTO.getListPrograma()));
+        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService
+                .findAllById(moduloCreateDTO.getListPrograma()));
         moduloEntity.setProgramas(programaEntitySet);
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
@@ -92,7 +94,8 @@ public class ModuloService {
                 moduloEntity.getDataFim(),
                 moduloEntity.getAtivo(),
                 trilhaService.converterEmDTO(moduloEntity.getTrilha()),
-                moduloEntity.getProgramas().stream().map(programaService::converterEmDTO).collect(Collectors.toList()));
+                moduloEntity.getProgramas().stream().map(programaService::converterEmDTO)
+                        .collect(Collectors.toList()));
     }
 
     public PageDTO<ModuloDTO> listarModulo(Integer page, Integer size) {
@@ -142,7 +145,8 @@ public class ModuloService {
                 moduloSalvo.getDataFim(),
                 moduloSalvo.getAtivo(),
                 trilhaService.converterEmDTO(moduloEntity.getTrilha()),
-                modulo.getProgramas().stream().map(programaService::converterEmDTO).collect(Collectors.toList()));
+                modulo.getProgramas().stream().map(programaService::converterEmDTO)
+                        .collect(Collectors.toList()));
 
     }
 
