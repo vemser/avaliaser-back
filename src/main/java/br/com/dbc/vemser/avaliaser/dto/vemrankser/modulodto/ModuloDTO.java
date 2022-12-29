@@ -28,7 +28,7 @@ public class ModuloDTO  {
 
     private Ativo ativo;
 
-    private List<TrilhaDTO> listTrilhaDTO;
+    private TrilhaDTO trilhaDTO;
 
     private List<ProgramaDTO> listProgramaDTO;
 

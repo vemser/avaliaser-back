@@ -58,7 +58,7 @@ public class ModuloServiceTest {
     }
 
     @Test
-    public void deveTestarAdicionarComSucesso() {
+    public void deveTestarAdicionarComSucesso() throws RegraDeNegocioException {
         ModuloCreateDTO moduloCreateDTO = getModuloCreateDTO();
         when(moduloRepository.save(any())).thenReturn(getModuloEntity(1));
         ModuloDTO moduloDTO1 = moduloService.criar(moduloCreateDTO);

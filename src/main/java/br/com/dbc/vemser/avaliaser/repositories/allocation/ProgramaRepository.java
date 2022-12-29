@@ -2,7 +2,7 @@ package br.com.dbc.vemser.avaliaser.repositories.allocation;
 
 
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +15,7 @@ public interface ProgramaRepository extends JpaRepository<ProgramaEntity, Intege
 
     Optional<ProgramaEntity> findByNomeContainingIgnoreCase(String nome);
 
-    ProgramaEntity findByIdProgramaAndAtivo(Integer idPrograma, Ativo ativo);
+    ProgramaEntity findByIdProgramaAndSituacao(Integer idPrograma, Situacao situacao);
 
     Page<ProgramaEntity> findAllByNomeContainingIgnoreCase(String nome, Pageable pageabl);
 }

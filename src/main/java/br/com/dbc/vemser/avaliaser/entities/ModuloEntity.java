@@ -40,13 +40,13 @@ public class ModuloEntity {
     private Ativo ativo;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "TRILHA_MODULO",
             joinColumns = @JoinColumn(name = "id_modulo"),
             inverseJoinColumns = @JoinColumn(name = "id_trilha")
     )
-    private Set<TrilhaEntity> trilhas = new HashSet<>();
+    private TrilhaEntity trilha;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)

@@ -20,7 +20,7 @@ public class ProgramaCreateDTO {
     private String nome;
 
     @NotBlank(message = "situacao não pode ser vazio ou nulo.")
-    @Schema(description = "situacao do programa", example = "ABERTO")
+    @Schema(description = "situacao do programa", example = "A")
     private String situacao;
 
 

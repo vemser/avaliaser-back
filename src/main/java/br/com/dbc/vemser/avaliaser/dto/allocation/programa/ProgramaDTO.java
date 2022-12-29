@@ -28,5 +28,5 @@ public class ProgramaDTO {
     private LocalDate dataInicio;
     @Schema(description = "Data de termino do programa", example = "2023-06-23")
     private LocalDate dataFim;
-    private Ativo ativo;
+
 }

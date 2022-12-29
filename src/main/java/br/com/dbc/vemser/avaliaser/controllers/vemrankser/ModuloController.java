@@ -65,7 +65,7 @@ public class ModuloController {
             }
     )
     @PostMapping("/adicionar")
-    public ResponseEntity<ModuloDTO> adicionar(@RequestBody @Valid ModuloCreateDTO modulo) {
+    public ResponseEntity<ModuloDTO> adicionar(@RequestBody @Valid ModuloCreateDTO modulo) throws RegraDeNegocioException {
         log.info("Criando modulo....");
         ModuloDTO moduloDTO = moduloService.criar(modulo);
         log.info("Modulo Criado com sucesso....");
@@ -80,28 +80,28 @@ public class ModuloController {
             }
     )
     @PostMapping("/clonar/{idModulo}")
-    public ResponseEntity<ModuloDTO> clonar(@PathVariable(name = "idModulo") Integer idModulo) {
+    public ResponseEntity<ModuloDTO> clonar(@PathVariable(name = "idModulo") Integer idModulo) throws RegraDeNegocioException {
         log.info("Clonando modulo....");
         ModuloDTO moduloDTO = moduloService.clonarModulo(idModulo);
         log.info("Modulo clonado com sucesso...");
         return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
     }
-    @Operation(summary = "Vincular modulos trilha", description = "Vincular modulo a trilha do banco de dados")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Foi vinculado  com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping("/vincular-modulo-trilha/{idModulo}/{idTrilha}")
-    public ResponseEntity<ModuloDTO> vincularModuloTrilha(@PathVariable(name = "idModulo") Integer idModulo,
-                                                          @PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
-        log.info("Vinculando modulo....");
-        ModuloDTO moduloDTO = moduloService.vincularModuloTrilha(idModulo, idTrilha);
-        log.info("Vinculado com sucesso....");
-        return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
-    }
+//    @Operation(summary = "Vincular modulos trilha", description = "Vincular modulo a trilha do banco de dados")
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(responseCode = "200", description = "Foi vinculado  com sucesso"),
+//                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
+//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+//            }
+//    )
+//    @PostMapping("/vincular-modulo-trilha/{idModulo}/{idTrilha}")
+//    public ResponseEntity<ModuloDTO> vincularModuloTrilha(@PathVariable(name = "idModulo") Integer idModulo,
+//                                                          @PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
+//        log.info("Vinculando modulo....");
+//        ModuloDTO moduloDTO = moduloService.vincularModuloTrilha(idModulo, idTrilha);
+//        log.info("Vinculado com sucesso....");
+//        return new ResponseEntity<>(moduloDTO, HttpStatus.OK);
+//    }
 
     @Operation(summary = "Pega modulo pelo id", description = "Resgata o modulo pelo id do banco de dados")
     @ApiResponses(

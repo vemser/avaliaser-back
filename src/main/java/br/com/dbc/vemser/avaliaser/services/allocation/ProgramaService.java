@@ -5,14 +5,11 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
-import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ProgramaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +29,7 @@ public class ProgramaService {
     public ProgramaDTO create(ProgramaCreateDTO programaCreate) {
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
-        programaEntity.setAtivo(Ativo.S);
+        programaEntity.setSituacao(Situacao.ABERTO);
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
     }
@@ -84,7 +81,12 @@ public class ProgramaService {
                 list
         );
     }
-    public List<ProgramaEntity> findAllById(List<Integer> ids) {
+
+    public List<ProgramaEntity> findAllById(List<Integer> ids) throws RegraDeNegocioException {
+        for (int i = 0; i < ids.size(); i++) {
+            ProgramaEntity programaEntity = findById(ids.get(i));
+            verificarProgramaFechado(programaEntity);
+        }
         return programaRepository.findAllById(ids);
 
     }
@@ -103,16 +105,24 @@ public class ProgramaService {
 
     public void desativar(Integer idPrograma) throws RegraDeNegocioException {
         ProgramaEntity programaEntity = findById(idPrograma);
-        programaEntity.setAtivo(Ativo.N);
+        programaEntity.setSituacao(Situacao.FECHADO);
         programaRepository.save(programaEntity);
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
-        return programaRepository.findByIdProgramaAndAtivo(id, Ativo.S);
-
+        return programaRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
     }
-    public ProgramaDTO converterEmDTO(ProgramaEntity programaEntity)  {
-        return objectMapper.convertValue(programaEntity,ProgramaDTO.class);
+
+
+    public ProgramaDTO converterEmDTO(ProgramaEntity programaEntity) {
+        return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
+    }
+
+    public void verificarProgramaFechado(ProgramaEntity programaEntity) throws RegraDeNegocioException {
+        if (programaEntity.getSituacao().equals(Situacao.FECHADO)) {
+            throw new RegraDeNegocioException("Programa de id " + programaEntity.getIdPrograma() + " Fechado!");
+        }
     }
 
 

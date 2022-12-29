@@ -45,9 +45,9 @@ public class ProgramaEntity {
     @Enumerated(EnumType.STRING)
     private Situacao situacao;
 
-    @Column(name = "ativo")
-    @Enumerated(EnumType.STRING)
-    private Ativo ativo;
+//    @Column(name = "ativo")
+//    @Enumerated(EnumType.STRING)
+//    private Ativo ativo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)

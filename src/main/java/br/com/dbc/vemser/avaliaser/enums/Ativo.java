@@ -2,9 +2,8 @@ package br.com.dbc.vemser.avaliaser.enums;
 
 public enum Ativo {
     N("N"),
-    S("S"),
-    ABERTO("A"),
-    FECHADO("F");
+    S("S");
+
 
     private final String descricao;
 

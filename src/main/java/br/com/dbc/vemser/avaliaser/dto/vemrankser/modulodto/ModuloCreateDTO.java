@@ -23,7 +23,7 @@ public class ModuloCreateDTO {
     private LocalDate dataFim;
 
     @NotNull
-    private List<Integer> listTrilha;
+    private Integer idTrilha;
 
     @NotNull
     private List<Integer> listPrograma;

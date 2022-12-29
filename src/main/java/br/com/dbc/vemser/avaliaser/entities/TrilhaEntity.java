@@ -37,7 +37,7 @@ public class TrilhaEntity {
     private Ativo ativo;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "TRILHA_MODULO",
             joinColumns = @JoinColumn(name = "id_trilha"),

@@ -37,12 +37,14 @@ public class ModuloService {
     private final ObjectMapper objectMapper;
 
 
-    public ModuloDTO criar(ModuloCreateDTO modulo) {
+    public ModuloDTO criar(ModuloCreateDTO modulo) throws RegraDeNegocioException {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
         moduloEntityNovo.setAtivo(Ativo.S);
-        Set<TrilhaEntity> trilhaEntitySet = new HashSet<>(trilhaService.findAllById(modulo.getListTrilha()));
-        moduloEntityNovo.setTrilhas(trilhaEntitySet);
+        TrilhaEntity trilhaEntity = trilhaService.findById(modulo.getIdTrilha());
+        trilhaService.verificarTrilhaDesativada(trilhaEntity);
+        moduloEntityNovo.setTrilha(trilhaEntity);
         Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService.findAllById(modulo.getListPrograma()));
+
         moduloEntityNovo.setProgramas(programaEntitySet);
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
 
@@ -86,7 +88,7 @@ public class ModuloService {
                 moduloEntity.getDataInicio(),
                 moduloEntity.getDataFim(),
                 moduloEntity.getAtivo(),
-                moduloEntity.getTrilhas().stream().map(trilhaService::converterEmDTO).collect(Collectors.toList()),
+                trilhaService.converterEmDTO(moduloEntity.getTrilha()),
                 moduloEntity.getProgramas().stream().map(programaService::converterEmDTO).collect(Collectors.toList()));
     }
 
@@ -109,7 +111,7 @@ public class ModuloService {
                                           Integer idTrilha) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(idModulo);
         TrilhaEntity trilhaEntity = trilhaService.findById(idTrilha);
-        moduloEntity.getTrilhas().add(trilhaEntity);
+        moduloEntity.setTrilha(trilhaEntity);
         moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloEntity);
     }
@@ -120,14 +122,14 @@ public class ModuloService {
                 .toList();
     }
 
-    public ModuloDTO clonarModulo(Integer idModulo) {
+    public ModuloDTO clonarModulo(Integer idModulo) throws RegraDeNegocioException {
         ModuloEntity modulo = moduloRepository.findById(idModulo).get();
         ModuloEntity moduloEntity = new ModuloEntity(null,
                 modulo.getNome(),
                 modulo.getDataInicio(),
                 modulo.getDataFim(),
                 modulo.getAtivo(),
-                new HashSet<>(modulo.getTrilhas()),
+                trilhaService.findById(modulo.getTrilha().getIdTrilha()),
                 new HashSet<>(modulo.getProgramas()));
 
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
@@ -136,10 +138,11 @@ public class ModuloService {
                 moduloSalvo.getDataInicio(),
                 moduloSalvo.getDataFim(),
                 moduloSalvo.getAtivo(),
-                modulo.getTrilhas().stream().map(trilhaEntity -> trilhaService.converterEmDTO(trilhaEntity)).collect(Collectors.toList()),
+                trilhaService.converterEmDTO(moduloEntity.getTrilha()),
                 modulo.getProgramas().stream().map(programaEntity -> programaService.converterEmDTO(programaEntity)).collect(Collectors.toList()));
 
     }
+
 
 
 }

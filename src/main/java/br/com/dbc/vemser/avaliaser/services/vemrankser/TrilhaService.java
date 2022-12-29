@@ -115,5 +115,10 @@ public class TrilhaService {
     public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
         return objectMapper.convertValue(trilhaEntity,TrilhaDTO.class);
     }
+    public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {
+        if (trilhaEntity.getAtivo().equals(Ativo.N)){
+            throw new RegraDeNegocioException("Trilha desativada!");
+        }
+    }
 
 }
