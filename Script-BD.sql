@@ -49,7 +49,7 @@ CREATE TABLE PROGRAMA (
   nome VARCHAR2(255) NOT NULL,
   data_inicio DATE NOT NULL,
   data_fim DATE NOT NULL,
-  situacao VARCHAR2(10) NOT NULL,
+  situacao CHAR(1) NOT NULL,
   descricao VARCHAR2(2000),
   PRIMARY KEY (id_programa)
 );
@@ -89,6 +89,7 @@ CREATE TABLE FEEDBACK (
   id_feedback NUMBER,
   descricao VARCHAR2(2000) NOT NULL,
   situacao CHAR(1) NOT NULL,
+  ativo CHAR(1) NOT NULL,
   nome_instrutor VARCHAR2(255) NOT NULL,
   id_aluno NUMBER NOT NULL,
   id_modulo NUMBER NOT NULL,
@@ -106,6 +107,7 @@ CREATE TABLE ACOMPANHAMENTO (
   titulo VARCHAR2(255) NOT NULL,
   descricao VARCHAR2(512),
   data_inicio DATE NOT NULL,
+  ativo CHAR(1) NOT NULL,
   id_programa NUMBER NOT NULL,
   PRIMARY KEY (id_acompanhamento),
   CONSTRAINT FK_ACOMP_PROG
@@ -131,6 +133,7 @@ CREATE TABLE ATIVIDADE (
   data_entrega DATE NOT NULL,
   nome_instrutor VARCHAR2(255),
   situacao CHAR(1) NOT NULL,
+  ativo CHAR(1) NOT NULL,
   descricao VARCHAR2(2000) NOT NULL,
   peso_atividade NUMBER(10) NOT NULL,
   link VARCHAR2(255),
@@ -156,6 +159,7 @@ CREATE TABLE MODULO_ATIVIDADE (
 CREATE TABLE AVALIACAO (
   id_avaliacao NUMBER,
   situacao CHAR(1) NOT NULL,
+  ativo CHAR(1) NOT NULL,
   descricao VARCHAR2(2000) NOT NULL,
   data_criacao DATE NOT NULL,
   nome_gestao_pessoas VARCHAR2(255) NOT NULL,
@@ -251,7 +255,8 @@ CREATE TABLE TRILHA_MODULO (
 CREATE TABLE ATIVIDADE_ALUNO (
   id_aluno NUMBER NOT NULL,
   id_atividade NUMBER NOT NULL,
-  nota NUMBER NOT NULL,
+  nota NUMBER,
+  link VARCHAR2(2500),
   CONSTRAINT FK_ATIVIDADE_ALUNO
     FOREIGN KEY (id_aluno)
       REFERENCES ALUNO(id_aluno),
