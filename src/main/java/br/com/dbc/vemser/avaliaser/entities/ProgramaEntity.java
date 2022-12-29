@@ -52,7 +52,7 @@ public class ProgramaEntity {
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "VAGA_PROGRAMA",
+            name = "Vaga_Programa",
             joinColumns = @JoinColumn(name = "id_programa"),
             inverseJoinColumns = @JoinColumn(name = "id_vaga")
     )
