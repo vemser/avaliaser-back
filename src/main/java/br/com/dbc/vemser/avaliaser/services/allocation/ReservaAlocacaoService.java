@@ -47,7 +47,7 @@ public class ReservaAlocacaoService {
 
         try {
             adicionarQtdAlocadosEmVagas(reservaAlocacaoCreateDTO, reservaAlocacaoEntity, aluno);
-//            ReservaAlocacaoEntity saveAlocacaoReserva = reservaAlocacaoRepository.save(reservaAlocacaoEntity);
+            ReservaAlocacaoEntity saveAlocacaoReserva = reservaAlocacaoRepository.save(reservaAlocacaoEntity);
 //            aluno.getReservaAlocacaos().add(saveAlocacaoReserva);
             reservaAlocacaoEntity = reservaAlocacaoRepository.save(reservaAlocacaoEntity);
             verificarAlunoReservado(reservaAlocacaoEntity.getAluno(), reservaAlocacaoCreateDTO);
@@ -71,7 +71,7 @@ public class ReservaAlocacaoService {
         adicionarQtdAlocadosEmVagas(reservaAlocacaoCreateDTO, reservaAlocacaoEntity, aluno);
         if (reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.RESERVADO)) {
             if (reservaAlocacaoCreateDTO.getIdVaga().equals(reservaAlocacaoEntity.getVaga().getIdVaga())) {
-//                alunoService.alterarStatusAluno(aluno.getIdAluno(), reservaAlocacaoCreateDTO);
+                alunoService.alterarStatusAluno(aluno.getIdAluno(), reservaAlocacaoCreateDTO);
             }
         }
 
@@ -180,11 +180,11 @@ public class ReservaAlocacaoService {
 
     private ReservaAlocacaoDTO converterEmDTO(ReservaAlocacaoEntity reservaAlocacaoEntity) {
         VagaDTO vagaDTO = vagaService.converterEmDTO(reservaAlocacaoEntity.getVaga());
-//        AlunoDTO alunoDTO = alunoService.converterEmDTO(reservaAlocacaoEntity.getAluno());
+        AlunoDTO alunoDTO = alunoService.converterAlunoDTO(reservaAlocacaoEntity.getAluno());
 
         return new ReservaAlocacaoDTO(reservaAlocacaoEntity.getIdReservaAlocacao(),
                 vagaDTO,
-                new AlunoDTO(),
+                alunoDTO,
                 reservaAlocacaoEntity.getSituacao(),
                 reservaAlocacaoEntity.getMotivo(),
                 reservaAlocacaoEntity.getDataReserva(),

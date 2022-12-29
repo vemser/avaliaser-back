@@ -20,7 +20,7 @@ public class ReservaAlocacaoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "RESERVA_ALOCACAO_SEQ")
     @SequenceGenerator(name = "RESERVA_ALOCACAO_SEQ", sequenceName = "seq_reserva_alocacao", allocationSize = 1)
-    @Column(name = "codigo_reserva_alocacao")
+    @Column(name = "id_reserva_alocacao")
     private Integer idReservaAlocacao;
 
     @Column(name = "id_aluno", insertable = false, updatable = false)
@@ -42,7 +42,7 @@ public class ReservaAlocacaoEntity {
     private LocalDate dataFinalizado;
 
     @Column(name = "situacao")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Situacao situacao;
 
     @JsonIgnore
