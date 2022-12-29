@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.cliente;
 
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,6 @@ public class ClienteDTO {
     @Schema(example = "(11)92345-1234 ou (11)2234-1234")
     private String telefone;
     @Schema(example = "ALOCADO")
-    private Situacao situacao;
+    private Ativo ativo;
 
 }

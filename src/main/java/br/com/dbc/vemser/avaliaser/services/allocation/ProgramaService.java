@@ -108,8 +108,8 @@ public class ProgramaService {
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
-        return programaRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
+        return programaRepository.findByIdProgramaAndAtivo(id, Ativo.S);
+
     }
     public ProgramaDTO converterEmDTO(ProgramaEntity programaEntity)  {
         return objectMapper.convertValue(programaEntity,ProgramaDTO.class);

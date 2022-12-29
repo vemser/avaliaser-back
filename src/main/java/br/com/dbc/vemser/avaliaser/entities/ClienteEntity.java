@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -35,8 +36,8 @@ public class ClienteEntity {
     private String telefone;
 
     @Column(name = "situacao")
-    @Enumerated(EnumType.STRING)
-    private Situacao situacao;
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

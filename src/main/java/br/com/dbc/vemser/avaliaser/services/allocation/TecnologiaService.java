@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaCreateDTO
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
+import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.TecnologiaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,9 @@ public class TecnologiaService {
 
     public TecnologiaDTO converterEmDTO(TecnologiaEntity tecnologiaEntity) {
         return objectMapper.convertValue(tecnologiaEntity, TecnologiaDTO.class);
+    }
+
+    public TecnologiaEntity findByIdTecnologia(Integer idTecnologia) {
+        return objectMapper.convertValue(tecnologiaRepository.findByIdTecnologia(idTecnologia), TecnologiaEntity.class);
     }
 }

@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -60,5 +61,8 @@ public class AlunoCreateDTO {
     @NotNull(message = "Programa não pode ficar nulo.")
     @Schema(example = "1")
     private Integer idPrograma;
+
+    @Schema(example = "[1, 2, 3]")
+    private List<Integer> tecnologias;
 
 }

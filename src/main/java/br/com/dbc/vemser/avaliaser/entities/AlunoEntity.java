@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -78,5 +79,13 @@ public class AlunoEntity {
     @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
     private ProgramaEntity programa;
 
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "ALUNO_TECNOLOGIA",
+            joinColumns = @JoinColumn(name = "id_aluno"),
+            inverseJoinColumns = @JoinColumn(name = "id_tecnologia")
+    )
+    private Set<TecnologiaEntity> tecnologia = new HashSet<>();
 
 }

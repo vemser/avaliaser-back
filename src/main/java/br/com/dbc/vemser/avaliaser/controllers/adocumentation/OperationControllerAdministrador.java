@@ -1,9 +1,5 @@
 //package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 //
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.recuperacao.AtualizarUsuarioDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioCreateDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.usuario.UsuarioDTO;
 //import br.com.dbc.vemser.avaliaser.enums.Cargo;
 //import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 //import io.swagger.v3.oas.annotations.Operation;
