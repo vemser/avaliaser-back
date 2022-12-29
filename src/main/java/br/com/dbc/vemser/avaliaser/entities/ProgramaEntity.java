@@ -42,6 +42,7 @@ public class ProgramaEntity {
     private LocalDate dataFim;
 
     @Column(name = "situacao")
+    @Enumerated(EnumType.STRING)
     private Situacao situacao;
 
 //    @Column(name = "ativo")

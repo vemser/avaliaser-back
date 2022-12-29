@@ -54,6 +54,7 @@ public class AtividadeEntity {
     private Integer pesoAtividade;
 
     @Column(name = "ativo")
+    @Enumerated(EnumType.STRING)
     private Ativo ativo;
 
     @Column(name = "id_programa", insertable = false, updatable = false)
