@@ -137,7 +137,7 @@ public class AlunoService {
         return converterAlunoDTO(aluno);
     }
 
-    private AlunoDTO converterAlunoDTO(AlunoEntity aluno) {
+    public AlunoDTO converterAlunoDTO(AlunoEntity aluno) {
 
         AlunoDTO alunoDTO = objectMapper.convertValue(aluno, AlunoDTO.class);
         alunoDTO.setPrograma(objectMapper.convertValue(aluno.getPrograma(), ProgramaDTO.class));
