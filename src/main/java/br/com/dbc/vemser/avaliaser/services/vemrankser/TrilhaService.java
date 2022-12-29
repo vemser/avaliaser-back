@@ -30,7 +30,7 @@ public class TrilhaService {
 
     public TrilhaDTO create(TrilhaCreateDTO trilhaNova) {
         TrilhaEntity trilha = objectMapper.convertValue(trilhaNova, TrilhaEntity.class);
-        trilha.setAtivo(Ativo.S);
+        trilha.setAtivo(Ativo.valueOf("S"));
         trilhaRepository.save(trilha);
         return objectMapper.convertValue(trilha, TrilhaDTO.class);
     }
@@ -92,7 +92,7 @@ public class TrilhaService {
 
     public void desativar(Integer idTrilha) throws RegraDeNegocioException {
         TrilhaEntity trilhaEntity = findById(idTrilha);
-        trilhaEntity.setAtivo(Ativo.N);
+        trilhaEntity.setAtivo(Ativo.valueOf("N"));
         trilhaRepository.save(trilhaEntity);
     }
 
@@ -116,7 +116,7 @@ public class TrilhaService {
         return objectMapper.convertValue(trilhaEntity,TrilhaDTO.class);
     }
     public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {
-        if (trilhaEntity.getAtivo().equals(Ativo.N)){
+        if (trilhaEntity.getAtivo().equals(Ativo.valueOf("N"))){
             throw new RegraDeNegocioException("Trilha desativada!");
         }
     }

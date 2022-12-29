@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Entity(name = "TRILHA")
+@Entity(name = "Trilha")
 public class TrilhaEntity {
 
     @Id
@@ -33,7 +33,7 @@ public class TrilhaEntity {
     private String descricao;
 
     @Column(name = "ativo")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Ativo ativo;
 
     @JsonIgnore

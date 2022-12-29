@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "MODULO")
+@Entity(name = "Modulo")
 public class ModuloEntity {
 
     @Id
@@ -36,7 +36,7 @@ public class ModuloEntity {
     private LocalDate dataFim;
 
     @Column(name = "ativo")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Ativo ativo;
 
     @JsonIgnore

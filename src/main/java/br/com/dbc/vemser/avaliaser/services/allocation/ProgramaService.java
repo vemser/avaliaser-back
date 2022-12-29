@@ -124,7 +124,7 @@ public class ProgramaService {
     }
 
     public void verificarProgramaFechado(ProgramaEntity programaEntity) throws RegraDeNegocioException {
-        if (programaEntity.getSituacao().equals(Situacao.FECHADO)) {
+        if (programaEntity.getSituacao().equals(Situacao.valueOf("FECHADO"))) {
             throw new RegraDeNegocioException("Programa de id " + programaEntity.getIdPrograma() + " Fechado!");
         }
     }

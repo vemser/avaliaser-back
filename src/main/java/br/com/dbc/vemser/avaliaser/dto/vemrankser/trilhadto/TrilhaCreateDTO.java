@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

@@ -42,12 +42,8 @@ public class ProgramaEntity {
     private LocalDate dataFim;
 
     @Column(name = "situacao")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Situacao situacao;
-
-//    @Column(name = "ativo")
-//    @Enumerated(EnumType.STRING)
-//    private Ativo ativo;
 
     @JsonIgnore
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)

@@ -39,7 +39,7 @@ public class ModuloService {
 
     public ModuloDTO criar(ModuloCreateDTO modulo) throws RegraDeNegocioException {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
-        moduloEntityNovo.setAtivo(Ativo.S);
+        moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
         TrilhaEntity trilhaEntity = trilhaService.findById(modulo.getIdTrilha());
         trilhaService.verificarTrilhaDesativada(trilhaEntity);
         moduloEntityNovo.setTrilha(trilhaEntity);
@@ -63,7 +63,7 @@ public class ModuloService {
 
     public void desativar(Integer id) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
-        moduloEntity.setAtivo(Ativo.N);
+        moduloEntity.setAtivo(Ativo.valueOf("N"));
         moduloRepository.save(moduloEntity);
     }
 
