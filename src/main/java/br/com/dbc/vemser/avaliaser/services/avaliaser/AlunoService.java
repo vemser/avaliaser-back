@@ -89,6 +89,7 @@ public class AlunoService {
             aluno.setPrograma(programaService.findById(alunoAtualizado.getIdPrograma()));
             aluno.setTrilha(trilhaService.findById(alunoAtualizado.getIdTrilha()));
             if(alunoAtualizado.getTecnologias().size() > 0){
+                aluno.getTecnologia().clear();
                 for(Integer tecnologia: alunoAtualizado.getTecnologias()){
                     aluno.getTecnologia().add(tecnologiaService.findByIdTecnologia(tecnologia));
                 }
