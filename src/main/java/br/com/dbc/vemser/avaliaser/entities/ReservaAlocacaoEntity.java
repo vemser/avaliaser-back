@@ -52,7 +52,7 @@ public class ReservaAlocacaoEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "codigo_vaga", referencedColumnName = "codigo_vaga")
+    @JoinColumn(name = "id_vaga", referencedColumnName = "id_vaga")
     private VagaEntity vaga;
 
 }

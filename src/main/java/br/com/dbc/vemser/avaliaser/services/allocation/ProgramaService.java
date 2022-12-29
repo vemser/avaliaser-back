@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -83,6 +84,10 @@ public class ProgramaService {
                 list
         );
     }
+    public List<ProgramaEntity> findAllById(List<Integer> ids) {
+        return programaRepository.findAllById(ids);
+
+    }
 
     public ProgramaDTO editar(Integer idPrograma, ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
         ProgramaEntity programaEntity = findById(idPrograma);
@@ -105,6 +110,9 @@ public class ProgramaService {
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
         return programaRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
+    }
+    public ProgramaDTO converterEmDTO(ProgramaEntity programaEntity)  {
+        return objectMapper.convertValue(programaEntity,ProgramaDTO.class);
     }
 
 

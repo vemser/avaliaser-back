@@ -48,7 +48,6 @@ public class ModuloEntity {
     )
     private Set<TrilhaEntity> trilhas = new HashSet<>();
 
-
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

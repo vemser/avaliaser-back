@@ -136,6 +136,10 @@ public class ModuloServiceTest {
         assertNotNull(moduloDTOS);
         assertEquals(1, moduloDTOS.size());
     }
+    @Test
+    public void deveTestarClonarComSucesso(){
+
+    }
 
 
     private ModuloEntity getModuloEntity(Integer idModulo) {

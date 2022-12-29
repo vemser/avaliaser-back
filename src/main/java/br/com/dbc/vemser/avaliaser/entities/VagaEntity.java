@@ -21,7 +21,7 @@ public class VagaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VAGA_SEQ")
     @SequenceGenerator(name = "VAGA_SEQ", sequenceName = "seq_vaga", allocationSize = 1)
-    @Column(name = "codigo_vaga")
+    @Column(name = "id_vaga")
     private Integer idVaga;
 
     @Column(name = "id_cliente", insertable = false, updatable = false)

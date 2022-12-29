@@ -1,13 +1,14 @@
 package br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto;
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class TrilhaDTO extends TrilhaCreateDTO {
+public class TrilhaDTO  {
 
     private Integer idTrilha;
     private Ativo ativo;
+    private String nome;
 
 
 }

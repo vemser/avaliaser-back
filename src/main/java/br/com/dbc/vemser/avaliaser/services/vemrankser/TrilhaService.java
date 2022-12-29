@@ -16,9 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -53,7 +51,10 @@ public class TrilhaService {
         return trilhaRepository.findById(idTrilha)
                 .orElseThrow(() -> new RegraDeNegocioException("Trilha não encontrada."));
     }
+    public List<TrilhaEntity> findAllById(List<Integer> ids) {
+        return trilhaRepository.findAllById(ids);
 
+    }
     public List<TrilhaDTO> findTrilhaByNome(String nomeTrilha) {
         if (nomeTrilha != null) {
             return trilhaRepository.findAllByNomeContainingIgnoreCase(nomeTrilha.trim().replaceAll("\\s+", " "))
@@ -110,6 +111,9 @@ public class TrilhaService {
 
     private RankingDTO mapRankingDTO(AlunoEntity alunoEntity) {
         return new RankingDTO(alunoEntity.getNome(), alunoEntity.getPontuacao());
+    }
+    public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
+        return objectMapper.convertValue(trilhaEntity,TrilhaDTO.class);
     }
 
 }

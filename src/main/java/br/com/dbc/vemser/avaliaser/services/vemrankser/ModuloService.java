@@ -1,26 +1,27 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
-import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
+import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
-
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
+import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -31,17 +32,25 @@ public class ModuloService {
     private final ModuloRepository moduloRepository;
 
     private final TrilhaService trilhaService;
+
+    private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
 
 
     public ModuloDTO criar(ModuloCreateDTO modulo) {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
         moduloEntityNovo.setAtivo(Ativo.S);
+        Set<TrilhaEntity> trilhaEntitySet = new HashSet<>(trilhaService.findAllById(modulo.getListTrilha()));
+        moduloEntityNovo.setTrilhas(trilhaEntitySet);
+        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService.findAllById(modulo.getListPrograma()));
+        moduloEntityNovo.setProgramas(programaEntitySet);
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
+
         return converterEmDTO(moduloSalvo);
 
     }
-    public ModuloDTO editar(Integer id,ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
+
+    public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
         moduloEntity.setNome(moduloCreateDTO.getNome());
         moduloEntity.setDataInicio(moduloCreateDTO.getDataInicio());
@@ -49,6 +58,7 @@ public class ModuloService {
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
     }
+
     public void desativar(Integer id) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
         moduloEntity.setAtivo(Ativo.N);
@@ -71,13 +81,19 @@ public class ModuloService {
     }
 
     private ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
-        return objectMapper.convertValue(moduloEntity, ModuloDTO.class);
+        return new ModuloDTO(moduloEntity.getIdModulo(),
+                moduloEntity.getNome(),
+                moduloEntity.getDataInicio(),
+                moduloEntity.getDataFim(),
+                moduloEntity.getAtivo(),
+                moduloEntity.getTrilhas().stream().map(trilhaService::converterEmDTO).collect(Collectors.toList()),
+                moduloEntity.getProgramas().stream().map(programaService::converterEmDTO).collect(Collectors.toList()));
     }
 
-    public PageDTO<ModuloDTO> listarModulo(Integer page,Integer size) {
-      List<ModuloDTO> moduloDTOS = moduloRepository.findAll()
+    public PageDTO<ModuloDTO> listarModulo(Integer page, Integer size) {
+        List<ModuloDTO> moduloDTOS = moduloRepository.findAll()
                 .stream()
-                .map(modulo -> converterEmDTO(modulo))
+                .map(moduloEntity -> converterEmDTO(moduloEntity))
                 .toList();
         Page<ModuloDTO> pagina = new PageImpl<>(moduloDTOS);
 
@@ -119,7 +135,10 @@ public class ModuloService {
                 moduloSalvo.getNome(),
                 moduloSalvo.getDataInicio(),
                 moduloSalvo.getDataFim(),
-                moduloSalvo.getAtivo());
+                moduloSalvo.getAtivo(),
+                modulo.getTrilhas().stream().map(trilhaEntity -> trilhaService.converterEmDTO(trilhaEntity)).collect(Collectors.toList()),
+                modulo.getProgramas().stream().map(programaEntity -> programaService.converterEmDTO(programaEntity)).collect(Collectors.toList()));
+
     }
 
 

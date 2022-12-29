@@ -33,6 +33,7 @@ public class TrilhaEntity {
     private String descricao;
 
     @Column(name = "ativo")
+    @Enumerated(EnumType.STRING)
     private Ativo ativo;
 
     @JsonIgnore
