@@ -43,7 +43,7 @@ public class TecnologiaController implements TecnologiaInterfaceController {
     }
 
     @GetMapping("/{idTecnologia}")
-    public ResponseEntity<TecnologiaDTO> findByIdTecnologia(@PathVariable("idEndereco") Integer idTecnologia){
+    public ResponseEntity<TecnologiaDTO> findByIdTecnologia(@PathVariable("idTecnologia") Integer idTecnologia){
         log.info("Buscando Tecnologia...");
         TecnologiaDTO enderecoDTO = objectMapper.convertValue(tecnologiaService.findByIdTecnologia(idTecnologia), TecnologiaDTO.class);
         log.info("Tecnologia encontrada!");

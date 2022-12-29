@@ -45,6 +45,7 @@ public class ProgramaEntity {
     private Situacao situacao;
 
     @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
     private Ativo ativo;
 
     @JsonIgnore

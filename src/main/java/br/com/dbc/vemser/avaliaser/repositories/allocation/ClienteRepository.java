@@ -14,9 +14,9 @@ import java.util.Optional;
 @Repository
 public interface ClienteRepository extends JpaRepository<ClienteEntity, Integer> {
 
-    Optional<ClienteEntity> findByEmailIgnoreCaseAndAtivo(Ativo ativo,String email);
+    ClienteEntity findByEmailIgnoreCaseAndAtivo(String email, Ativo ativo);
     Page<ClienteEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
-    Page<ClienteEntity> findAllByIdAlunoAndAtivo(Integer idAluno, Ativo ativo, Pageable pageable);
-    Page<ClienteEntity> findAllByEmailContainingIgnoreCaseAndAtivo(Ativo ativo,Pageable pageable, String email);
-    Page<ClienteEntity> findAllByNomeContainingIgnoreCaseAndAtivo(Ativo ativo, Pageable pageable, String nome);
+//    Page<ClienteEntity> findAllByIdClienteAndAtivo(Integer idCliente, Ativo ativo, Pageable pageable);
+    Page<ClienteEntity> findAllByEmailContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
+    Page<ClienteEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
 }

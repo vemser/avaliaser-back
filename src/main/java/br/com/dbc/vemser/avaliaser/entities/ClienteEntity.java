@@ -36,7 +36,7 @@ public class ClienteEntity {
     private String telefone;
 
     @Column(name = "situacao")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Ativo ativo;
 
     @JsonIgnore

@@ -69,7 +69,7 @@ public class ClienteService {
         if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
             Page<ClienteEntity> paginaRepository =
-                    clienteRepository.findAllByEmailContainingIgnoreCaseAndAtivo(Ativo.S,pageRequest, email);
+                    clienteRepository.findAllByEmailContainingIgnoreCaseAndAtivo(email, Ativo.S, pageRequest);
 
             List<ClienteDTO> clienteDTOList = getClienteDTOS(paginaRepository);
 
@@ -90,7 +90,7 @@ public class ClienteService {
         if (size > 0) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<ClienteEntity> paginaRepository =
-                clienteRepository.findAllByNomeContainingIgnoreCaseAndAtivo(Ativo.S,pageRequest, nome);
+                clienteRepository.findAllByNomeContainingIgnoreCaseAndAtivo(nome, Ativo.S, pageRequest);
 
         List<ClienteDTO> clienteDTOList = getClienteDTOS(paginaRepository);
 
@@ -124,7 +124,7 @@ public class ClienteService {
     }
 
     public ClienteEntity findByEmail(String email) throws RegraDeNegocioException {
-        return clienteRepository.findByEmailIgnoreCaseAndAtivo(Ativo.S,email).orElseThrow(() -> new RegraDeNegocioException("Email cliente não encontrado ou não existe."));
+        return clienteRepository.findByEmailIgnoreCaseAndAtivo(email, Ativo.S);
     }
 
     public ClienteEntity converterEntity(ClienteCreateDTO clienteCreateDTO) {

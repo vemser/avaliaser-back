@@ -39,6 +39,7 @@ CREATE TABLE TRILHA (
   id_trilha NUMBER,
   nome VARCHAR2(255) NOT NULL,
   descricao VARCHAR2(255),
+  ativo CHAR(1) NOT NULL,
   PRIMARY KEY (id_trilha)
 );
 
@@ -49,9 +50,7 @@ CREATE TABLE PROGRAMA (
   data_fim DATE NOT NULL,
   situacao CHAR(1),
   descricao VARCHAR2(2000),
-  situacao CHAR(1) NOT NULL,
-  data_inicio DATE NOT NULL,
-  data_fim DATE NOT NULL,
+  ativo CHAR(1) NOT NULL,
   PRIMARY KEY (id_programa)
 );
 

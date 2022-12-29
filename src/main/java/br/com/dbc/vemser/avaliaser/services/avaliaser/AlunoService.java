@@ -2,11 +2,13 @@ package br.com.dbc.vemser.avaliaser.services.avaliaser;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -31,7 +33,6 @@ public class AlunoService {
     private final ProgramaService programaService;
     private final TrilhaService trilhaService;
     private final ObjectMapper objectMapper;
-
     private final TecnologiaService tecnologiaService;
 
     public PageDTO<AlunoDTO> listarAlunoPaginado(Integer idAluno, String nome, String email, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
@@ -63,7 +64,7 @@ public class AlunoService {
             alunoEntity.setTrilha(trilhaService.findById(alunoCreateDTO.getIdTrilha()));
             if(alunoCreateDTO.getTecnologias().size() > 0){
                 for(Integer tecnologia: alunoCreateDTO.getTecnologias()){
-                    alunoEntity.setTecnologia(tecnologiaService.findById(tecnologia));
+                    alunoEntity.getTecnologia().add(tecnologiaService.findByIdTecnologia(tecnologia));
                 }
             }
             alunoEntity.setAtivo(Ativo.S);
@@ -87,6 +88,11 @@ public class AlunoService {
             aluno.setSituacao(alunoAtualizado.getSituacao());
             aluno.setPrograma(programaService.findById(alunoAtualizado.getIdPrograma()));
             aluno.setTrilha(trilhaService.findById(alunoAtualizado.getIdTrilha()));
+            if(alunoAtualizado.getTecnologias().size() > 0){
+                for(Integer tecnologia: alunoAtualizado.getTecnologias()){
+                    aluno.getTecnologia().add(tecnologiaService.findByIdTecnologia(tecnologia));
+                }
+            }
             if (!aluno.getEmail().equals(alunoAtualizado.getEmail())) {
                 aluno.setEmail(alunoAtualizado.getEmail());
             }
@@ -132,6 +138,11 @@ public class AlunoService {
         AlunoDTO alunoDTO = objectMapper.convertValue(aluno, AlunoDTO.class);
         alunoDTO.setPrograma(objectMapper.convertValue(aluno.getPrograma(), ProgramaDTO.class));
         alunoDTO.setTrilha(objectMapper.convertValue(aluno.getTrilha(), TrilhaDTO.class));
+        List<TecnologiaDTO> listaTecnologia = aluno.getTecnologia()
+                .stream()
+                        .map(tecnologia -> objectMapper.convertValue(tecnologia, TecnologiaDTO.class)).toList();
+        alunoDTO.setTecnologias(listaTecnologia);
+
         return alunoDTO;
     }
 

@@ -135,7 +135,7 @@ public class ClienteServiceTest {
 
         Page<ClienteEntity> clienteEntityPage = new PageImpl<>(List.of(clienteEntity));
 
-        when(clienteRepository.findAllByEmailContainingIgnoreCaseAndAtivo(Ativo.S, any(Pageable.class), anyString())).thenReturn(clienteEntityPage);
+        when(clienteRepository.findAllByEmailContainingIgnoreCaseAndAtivo(any(), any(), any())).thenReturn(clienteEntityPage);
 
         PageDTO<ClienteDTO> clienteDTOPageDTO = clienteService.listarPorEmail(pagina, quantidade, email);
 
@@ -153,7 +153,7 @@ public class ClienteServiceTest {
 
         Page<ClienteEntity> clienteEntityPage = new PageImpl<>(List.of(clienteEntity));
 
-        when(clienteRepository.findAllByNomeContainingIgnoreCaseAndAtivo(Ativo.S,any(Pageable.class), anyString())).thenReturn(clienteEntityPage);
+        when(clienteRepository.findAllByNomeContainingIgnoreCaseAndAtivo(any(),any(), any())).thenReturn(clienteEntityPage);
         //ACT
         PageDTO<ClienteDTO> clienteDTOPageDTO = clienteService.listarPorNome(pagina, quantidade, email);
 
@@ -165,7 +165,7 @@ public class ClienteServiceTest {
     public void deveTestarFindByEmailComSucesso() throws RegraDeNegocioException {
         String email = "cocacolabr@mail.com.br";
         ClienteEntity clienteEntity = ClienteFactory.getClienteEntity();
-        when(clienteRepository.findByEmailIgnoreCaseAndAtivo(Ativo.S,anyString())).thenReturn(Optional.of(clienteEntity));
+        when(clienteRepository.findByEmailIgnoreCaseAndAtivo(any(), any())).thenReturn(clienteEntity);
         ClienteEntity cliente = clienteService.findByEmail(email);
 
         assertNotNull(cliente);

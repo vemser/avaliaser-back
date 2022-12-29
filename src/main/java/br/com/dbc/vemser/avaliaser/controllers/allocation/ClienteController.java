@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/cliente")
 @Validated
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/cliente")
 public class ClienteController implements ClienteInterfaceController {
 
     private final ClienteService clienteService;
