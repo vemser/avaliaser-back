@@ -20,9 +20,8 @@ public class ClienteCreateDTO {
     @Schema(description = "email", example = "sicred@dbccompany.com.br")
     @Email
     private String email;
-    @NotBlank(message = "Nome não pode ser vazio ou nulo.")
-    @Pattern(regexp = "^([1-9]{2})(?:[2-8]|9[1-9])[0-9]{3}-[0-9]{4}", message = "Deve seguir o exemplo a seguir: (11)92345-1234 ")
     @Schema(example = "(11)92345-1234 ou (11)2234-1234")
+    @Pattern(regexp = "^\\([1-9]{2}\\)(?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}", message = "Permitido apenas Telefone Fixo ou Celular.")
     private String telefone;
 
 }

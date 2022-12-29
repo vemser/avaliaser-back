@@ -17,7 +17,6 @@ public class VagaDTO {
     private String nome;
     private Integer quantidade;
     private Integer quantidadeAlocados;
-    private Integer idPrograma;
     private Situacao situacao;
     private LocalDate dataAbertura;
     private LocalDate dataFechamento;

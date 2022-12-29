@@ -18,11 +18,11 @@ public class VagaProgramaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idVaga")
-    @JoinColumn(name = "ID_VAGA")
+    @JoinColumn(name = "id_vaga")
     private VagaEntity vaga;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idPrograma")
-    @JoinColumn(name = "ID_PROGRAMA")
+    @JoinColumn(name = "id_programa")
     private ProgramaEntity programa;
 }
