@@ -92,7 +92,6 @@ public class ProgramaService {
             verificarProgramaFechado(programaEntity);
         }
         return programaRepository.findAllById(ids);
-
     }
 
     public ProgramaDTO editar(Integer idPrograma, ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {

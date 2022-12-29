@@ -44,7 +44,6 @@ public class ModuloService {
         trilhaService.verificarTrilhaDesativada(trilhaEntity);
         moduloEntityNovo.setTrilha(trilhaEntity);
         Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService.findAllById(modulo.getListPrograma()));
-
         moduloEntityNovo.setProgramas(programaEntitySet);
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
 
@@ -57,6 +56,10 @@ public class ModuloService {
         moduloEntity.setNome(moduloCreateDTO.getNome());
         moduloEntity.setDataInicio(moduloCreateDTO.getDataInicio());
         moduloEntity.setDataFim(moduloCreateDTO.getDataFim());
+        TrilhaEntity trilhaEntity = trilhaService.findById(moduloCreateDTO.getIdTrilha());
+        moduloEntity.setTrilha(trilhaEntity);
+        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService.findAllById(moduloCreateDTO.getListPrograma()));
+        moduloEntity.setProgramas(programaEntitySet);
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
     }
