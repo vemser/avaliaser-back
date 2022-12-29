@@ -24,5 +24,5 @@ public class AtividadeDTO {
     private Ativo ativo;
     private ProgramaDTO programa;
     private List<AtividadeAlunoDTO> alunos;
-    private List<ModuloDTO> modulos;
+    private List<ModuloAtividadeDTO> modulos;
 }

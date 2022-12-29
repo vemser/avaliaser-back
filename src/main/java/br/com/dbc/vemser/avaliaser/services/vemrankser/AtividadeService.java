@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeAlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.ModuloAtividadeDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -131,9 +132,9 @@ public class AtividadeService {
     private AtividadeDTO converterAtividadeDTO(AtividadeEntity atividade) {
         AtividadeDTO atividadeDTO = objectMapper.convertValue(atividade, AtividadeDTO.class);
         atividadeDTO.setPrograma(objectMapper.convertValue(atividade.getPrograma(), ProgramaDTO.class));
-        List<ModuloDTO> listModulo = atividade.getModulos()
+        List<ModuloAtividadeDTO> listModulo = atividade.getModulos()
                 .stream()
-                .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloDTO.class)).toList();
+                .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloAtividadeDTO.class)).toList();
         atividadeDTO.setModulos(listModulo);
 
         List<AtividadeAlunoDTO> listAlunos = atividade.getAlunos()
