@@ -72,20 +72,25 @@ public class ProgramaService {
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
-    public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
-        List<ProgramaDTO> list = List.of(objectMapper.convertValue(findById(idPrograma), ProgramaDTO.class));
-        Page<ProgramaDTO> page = new PageImpl<>(list);
+//    public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
+//        List<ProgramaDTO> list = List.of(objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class));
+//        Page<ProgramaDTO> page = new PageImpl<>(list);
+//
+//        return new PageDTO<>(page.getTotalElements(),
+//                page.getTotalPages(),
+//                0,
+//                1,
+//                list
+//        );
+//    }
 
-        return new PageDTO<>(page.getTotalElements(),
-                page.getTotalPages(),
-                0,
-                1,
-                list
-        );
+    public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
+        return objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class);
     }
 
+
     public ProgramaDTO editar(Integer idPrograma, ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
-        ProgramaEntity programaEntity = findById(idPrograma);
+        ProgramaEntity programaEntity = buscarProgramaId(idPrograma);
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
         programaEntity.setNome(programaCreate.getNome());
         programaEntity.setDescricao(programaCreate.getDescricao());
@@ -97,9 +102,14 @@ public class ProgramaService {
     }
 
     public void desativar(Integer idPrograma) throws RegraDeNegocioException {
-        ProgramaEntity programaEntity = findById(idPrograma);
+        ProgramaEntity programaEntity = buscarProgramaId(idPrograma);
         programaEntity.setAtivo(Ativo.N);
         programaRepository.save(programaEntity);
+    }
+
+    public ProgramaEntity buscarProgramaId(Integer idPrograma) throws RegraDeNegocioException {
+        return programaRepository.findById(idPrograma)
+                .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado."));
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {

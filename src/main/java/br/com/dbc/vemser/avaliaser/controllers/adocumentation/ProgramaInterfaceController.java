@@ -46,16 +46,16 @@ public interface ProgramaInterfaceController {
     @GetMapping("/nome/{nome}")
     ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, @PathVariable("nome") String nome) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar um programa por id", description = "Lista um programa por id")
+    @Operation(summary = "Buscar um programa por id", description = "Buscar um programa por id do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Programas Listados com sucesso"),
+                    @ApiResponse(responseCode = "200", description = "Programa resgatado com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @GetMapping("/{idPrograma}")
-    public ResponseEntity<PageDTO<ProgramaDTO>> listarPorId(Integer idPrograma) throws RegraDeNegocioException;
+    public ResponseEntity<ProgramaDTO> pegarPrograma(@PathVariable(name = "idPrograma") Integer idPrograma) throws RegraDeNegocioException;
 
     @Operation(summary = "Editar programa", description = "Editar um programa no banco de dados")
     @ApiResponses(

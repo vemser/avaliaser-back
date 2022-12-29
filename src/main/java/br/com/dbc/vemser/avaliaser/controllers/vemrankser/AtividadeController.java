@@ -157,7 +157,7 @@ public class AtividadeController {
     }
 
 
-    @Operation(summary = "Desativar ativade", description = "Desativa atividade pelo id do banco de dados")
+    @Operation(summary = "Desativar atividade", description = "Desativa atividade pelo id do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "204", description = "Foi desativado com sucesso"),
@@ -165,7 +165,7 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/find-id-atividade")
+    @DeleteMapping("/deletar-atividade")
     public ResponseEntity<Void> desativar(Integer idAtividade) throws RegraDeNegocioException {
         atividadeService.desativar(idAtividade);
         return ResponseEntity.noContent().build();
