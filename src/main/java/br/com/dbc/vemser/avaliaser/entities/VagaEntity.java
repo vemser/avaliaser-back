@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "vaga")
+@Entity(name = "Vaga")
 public class VagaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VAGA_SEQ")
