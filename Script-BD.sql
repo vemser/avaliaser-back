@@ -49,9 +49,8 @@ CREATE TABLE PROGRAMA (
   nome VARCHAR2(255) NOT NULL,
   data_inicio DATE NOT NULL,
   data_fim DATE NOT NULL,
-  situacao CHAR(1),
+  situacao VARCHAR2(10) NOT NULL,
   descricao VARCHAR2(2000),
-  ativo CHAR(1) NOT NULL,
   PRIMARY KEY (id_programa)
 );
 
