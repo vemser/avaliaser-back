@@ -10,7 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "VAGA_PROGRAMA")
+@Entity(name = "Vaga_Programa")
 public class VagaProgramaEntity {
 
     @EmbeddedId

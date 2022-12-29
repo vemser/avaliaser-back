@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.services.allocation;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.cliente.ClienteDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
@@ -39,7 +40,7 @@ public class VagaService {
         vagaCreate.setSituacao(Situacao.ABERTO);
         VagaEntity vagaEntity = converterEntity(vagaCreate);
         vagaEntity.setCliente(cliente);
-        vagaEntity.setPrograma(programa);
+        vagaEntity.getPrograma().add(programa);
         vagaEntity.setDataCriacao(LocalDate.now());
         vagaEntity = vagaRepository.save(vagaEntity);
         verificarClienteInativo(vagaEntity);
@@ -117,7 +118,7 @@ public class VagaService {
         ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         vagaEntity.setCliente(cliente);
-        vagaEntity.setPrograma(programa);
+        vagaEntity.getPrograma().add(programa);
         vagaEntity.setIdVaga(idVaga);
         vagaEntity.setDataCriacao(LocalDate.now());
 
@@ -129,16 +130,18 @@ public class VagaService {
     public VagaDTO converterEmDTO(VagaEntity vagaEntity) {
 
         ClienteDTO clienteDTO = clienteService.converterEmDTO(vagaEntity.getCliente());
+        List<ProgramaDTO> programaDTO = vagaEntity.getPrograma().stream()
+                .map(programa -> programaService.converterEmDTO(programa)).toList();
         VagaDTO vagaDTO = new VagaDTO(vagaEntity.getIdVaga(),
                 vagaEntity.getNome(),
                 vagaEntity.getQuantidade(),
                 vagaEntity.getQuantidadeAlocados(),
-                vagaEntity.getPrograma().getIdPrograma(),
                 vagaEntity.getSituacao(),
                 vagaEntity.getDataAbertura(),
                 vagaEntity.getDataFechamento(),
                 vagaEntity.getDataCriacao(),
-                clienteDTO);
+                clienteDTO,
+                programaDTO);
         return vagaDTO;
     }
 
