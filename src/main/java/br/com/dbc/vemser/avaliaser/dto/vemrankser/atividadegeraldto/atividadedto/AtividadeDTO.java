@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class AtividadeDTO {
     private Integer pesoAtividade;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataEntrega;
+    private Situacao situacao;
     private Ativo ativo;
     private ProgramaDTO programa;
     private List<AtividadeAlunoDTO> alunos;

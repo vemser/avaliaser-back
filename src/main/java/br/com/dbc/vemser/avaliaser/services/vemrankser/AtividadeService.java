@@ -89,13 +89,19 @@ public class AtividadeService {
         atividadeRecuperada.setNomeInstrutor(atividadeAtualizar.getNomeInstrutor());
         Set<ModuloEntity> moduloEntities = new HashSet<>();
         Set<AlunoEntity> alunoEntities = new HashSet<>();
-        for (Integer modulos : atividadeAtualizar.getModulos()) {
-            moduloEntities.add(moduloService.buscarPorIdModulo(modulos));
-            atividadeRecuperada.setModulos(new HashSet<>(moduloEntities));
+
+        if (atividadeAtualizar.getModulos().size() > 0) {
+            for (Integer modulos : atividadeAtualizar.getModulos()) {
+                moduloEntities.add(moduloService.buscarPorIdModulo(modulos));
+                atividadeRecuperada.setModulos(new HashSet<>(moduloEntities));
+            }
         }
-        for (Integer alunos : atividadeAtualizar.getAlunos()) {
-            alunoEntities.add(alunoService.findById(alunos));
-            atividadeRecuperada.setAlunos(new HashSet<>(alunoEntities));
+
+        if (atividadeAtualizar.getAlunos().size() > 0) {
+            for (Integer alunos : atividadeAtualizar.getAlunos()) {
+                alunoEntities.add(alunoService.findById(alunos));
+                atividadeRecuperada.setAlunos(new HashSet<>(alunoEntities));
+            }
         }
         atividadeRepository.save(atividadeRecuperada);
         return converterAtividadeDTO(atividadeRecuperada);
