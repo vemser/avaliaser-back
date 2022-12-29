@@ -29,7 +29,6 @@ public class ProgramaService {
     public ProgramaDTO create(ProgramaCreateDTO programaCreate) {
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
-        programaEntity.setSituacao(Situacao.ABERTO);
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
     }
@@ -83,7 +82,7 @@ public class ProgramaService {
 //    }
 
     public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        return objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class);
+        return objectMapper.convertValue(findById(idPrograma), ProgramaDTO.class);
     }
 
 
