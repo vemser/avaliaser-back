@@ -51,8 +51,8 @@ public class ModuloController {
             }
     )
     @DeleteMapping("/desativar")
-    public ResponseEntity<Void> desativar(Integer idUsuario) throws RegraDeNegocioException {
-        moduloService.desativar(idUsuario);
+    public ResponseEntity<Void> desativar(Integer idModulo) throws RegraDeNegocioException {
+        moduloService.desativar(idModulo);
         log.info("Modulo desativado com sucesso");
         return ResponseEntity.noContent().build();
     }
