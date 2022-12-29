@@ -72,7 +72,10 @@ public class AlunoService {
             AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
 
             return converterAlunoDTO(alunoSalvo);
-        } catch (Exception e) {
+        } catch (RegraDeNegocioException e){
+            throw new RegraDeNegocioException(e.getMessage());
+        }
+        catch (Exception e) {
             throw new RegraDeNegocioException("Email já consta como cadastrado no nosso sistema!");
         }
     }
