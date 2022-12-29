@@ -70,17 +70,22 @@ public class ProgramaService {
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
-    public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
-        List<ProgramaDTO> list = List.of(objectMapper.convertValue(findById(idPrograma), ProgramaDTO.class));
-        Page<ProgramaDTO> page = new PageImpl<>(list);
+//    public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
+//        List<ProgramaDTO> list = List.of(objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class));
+//        Page<ProgramaDTO> page = new PageImpl<>(list);
+//
+//        return new PageDTO<>(page.getTotalElements(),
+//                page.getTotalPages(),
+//                0,
+//                1,
+//                list
+//        );
+//    }
 
-        return new PageDTO<>(page.getTotalElements(),
-                page.getTotalPages(),
-                0,
-                1,
-                list
-        );
+    public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
+        return objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class);
     }
+
 
     public List<ProgramaEntity> findAllById(List<Integer> ids) throws RegraDeNegocioException {
         for (int i = 0; i < ids.size(); i++) {

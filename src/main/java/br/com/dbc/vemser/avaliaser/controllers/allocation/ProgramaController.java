@@ -47,8 +47,8 @@ public class ProgramaController implements ProgramaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<PageDTO<ProgramaDTO>> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
-        return ResponseEntity.ok(programaService.listarPorId(idPrograma));
+    public ResponseEntity<ProgramaDTO> pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
+        return ResponseEntity.ok(programaService.pegarPrograma(idPrograma));
     }
 
     @Override

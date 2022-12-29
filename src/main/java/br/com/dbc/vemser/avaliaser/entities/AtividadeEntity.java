@@ -1,5 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -42,9 +44,8 @@ public class AtividadeEntity {
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "situacao")
-    private Tipo situacao;
+    private Situacao situacao;
 
     @Column(name = "descricao")
     private String descricao;
@@ -52,8 +53,8 @@ public class AtividadeEntity {
     @Column(name = "peso_atividade")
     private Integer pesoAtividade;
 
-    @Column(name = "link")
-    private String link;
+    @Column(name = "ativo")
+    private Ativo ativo;
 
     @Column(name = "id_programa", insertable = false, updatable = false)
     private Integer idPrograma;
@@ -67,9 +68,28 @@ public class AtividadeEntity {
     @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
     private ProgramaEntity programa;
 
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "modulo")
+//    private Set<ModuloAtividadeEntity> modulos = new HashSet<>();
+
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "modulo")
-    private Set<ModuloAtividadeEntity> modulos = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "MODULO_ATIVIDADE",
+            joinColumns = @JoinColumn(name = "id_atividade"),
+            inverseJoinColumns = @JoinColumn(name = "id_modulo")
+    )
+    private Set<ModuloEntity> modulos = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "ATIVIDADE_ALUNO",
+            joinColumns = @JoinColumn(name = "id_atividade"),
+            inverseJoinColumns = @JoinColumn(name = "id_aluno")
+    )
+    private Set<AlunoEntity> alunos = new HashSet<>();
+
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "atividade")
