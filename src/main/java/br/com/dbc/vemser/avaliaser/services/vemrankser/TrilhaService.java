@@ -89,7 +89,7 @@ public class TrilhaService {
         }
         if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<TrilhaEntity> trilha = trilhaRepository.findAll(pageRequest);
+            Page<TrilhaEntity> trilha = trilhaRepository.findAllTrilhasAtiva(pageRequest);
 
             List<TrilhaDTO> trilhaDTOList = trilha.getContent().stream()
                     .map(itemEntretenimentoEntity -> objectMapper.convertValue(itemEntretenimentoEntity, TrilhaDTO.class))
