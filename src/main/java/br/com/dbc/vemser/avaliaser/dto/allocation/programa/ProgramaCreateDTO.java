@@ -30,7 +30,6 @@ public class ProgramaCreateDTO {
 
     @Schema(description = "Data de abertura programa", example = "2023-02-23")
     @NotNull
-    @Future
     private LocalDate dataInicio;
 
     @NotNull
