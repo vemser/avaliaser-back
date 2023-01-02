@@ -73,6 +73,7 @@ public class ReservaAlocacaoService {
         if (reservaAlocacaoCreateDTO.getSituacao().equals(Situacao.RESERVADO)) {
             if (reservaAlocacaoCreateDTO.getIdVaga().equals(reservaAlocacaoEntity.getVaga().getIdVaga())) {
                 alunoService.alterarStatusAluno(aluno.getIdAluno(), reservaAlocacaoCreateDTO);
+                vagaService.alterarQuantidadeDeVagas(reservaAlocacaoEntity.getVaga().getIdVaga());
             }
         }
 

@@ -35,7 +35,7 @@ public class VagaEntity {
     private Integer quantidade;
 
     @Column(name = "quantidade_alocados")
-    private Integer quantidadeAlocados;
+    private Integer quantidadeAlocados = 0;
 
     @Column(name = "data_abertura")
     private LocalDate dataAbertura;
