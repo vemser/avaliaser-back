@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,7 +79,7 @@ public class ModuloService {
     }
 
     public ModuloEntity buscarPorIdModulo(Integer idModulo) throws RegraDeNegocioException {
-        return moduloRepository.findById(idModulo)
+        return moduloRepository.findByIdModuloAndAtivo(idModulo, Ativo.S)
                 .orElseThrow(() -> new RegraDeNegocioException("Modulo não encontrado."));
     }
 
@@ -98,8 +100,12 @@ public class ModuloService {
                         .collect(Collectors.toList()));
     }
 
-    public PageDTO<ModuloDTO> listarModulo(Integer page, Integer size) {
-        List<ModuloDTO> moduloDTOS = moduloRepository.findAll()
+    public PageDTO<ModuloDTO> listarModulo(Integer page, Integer size) throws RegraDeNegocioException {
+        if (page < 0 || size < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (size > 0) {
+        List<ModuloDTO> moduloDTOS = moduloRepository.findAllByAtivo(Ativo.S)
                 .stream()
                 .map(this::converterEmDTO)
                 .toList();
@@ -110,6 +116,9 @@ public class ModuloService {
                 page,
                 size,
                 moduloDTOS);
+        }
+        List<ModuloDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
 
@@ -129,7 +138,7 @@ public class ModuloService {
     }
 
     public ModuloDTO clonarModulo(Integer idModulo) throws RegraDeNegocioException {
-        ModuloEntity modulo = moduloRepository.findById(idModulo).get();
+        ModuloEntity modulo = buscarPorIdModulo(idModulo);
         ModuloEntity moduloEntity = new ModuloEntity(null,
                 modulo.getNome(),
                 modulo.getDataInicio(),

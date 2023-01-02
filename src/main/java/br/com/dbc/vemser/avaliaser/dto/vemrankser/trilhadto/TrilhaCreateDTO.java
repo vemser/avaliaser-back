@@ -11,7 +11,6 @@ public class TrilhaCreateDTO {
     @Schema(description = "Nome", example = "Backend")
     @NotBlank
     private String nome;
-
     @Schema(description = "Descricao da trilha", example = "Especialidade com a parte mais logica e regra de négocios")
     private String descricao;
 
