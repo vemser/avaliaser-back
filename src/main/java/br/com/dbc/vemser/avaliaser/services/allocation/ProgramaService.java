@@ -43,12 +43,12 @@ public class ProgramaService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<ProgramaEntity> paginaRepository = programaRepository.findAll(pageRequest);
+            Page<ProgramaEntity> programasAbertos = programaRepository.findAllProgramasAbertos(pageRequest);
 
-            List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
+            List<ProgramaDTO> clientePagina = programasAbertos.getContent().stream()
                     .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
                     .toList();
-            return new PageDTO<>(paginaRepository.getTotalElements(), paginaRepository.getTotalPages(), pagina, tamanho, clientePagina);
+            return new PageDTO<>(programasAbertos.getTotalElements(), programasAbertos.getTotalPages(), pagina, tamanho, clientePagina);
         }
         List<ProgramaDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);

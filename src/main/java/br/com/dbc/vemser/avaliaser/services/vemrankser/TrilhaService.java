@@ -82,6 +82,7 @@ public class TrilhaService {
     }
 
 
+
     public PageDTO<TrilhaDTO> listarAllTrilhaPaginado(Integer page, Integer size) throws RegraDeNegocioException {
         if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
