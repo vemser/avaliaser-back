@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -100,22 +101,23 @@ public class ModuloService {
                         .collect(Collectors.toList()));
     }
 
+
     public PageDTO<ModuloDTO> listarModulo(Integer page, Integer size) throws RegraDeNegocioException {
         if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (size > 0) {
-        List<ModuloDTO> moduloDTOS = moduloRepository.findAllByAtivo(Ativo.S)
-                .stream()
-                .map(this::converterEmDTO)
-                .toList();
-        Page<ModuloDTO> pagina = new PageImpl<>(moduloDTOS);
+            PageRequest pageRequest = PageRequest.of(page, size);
+            Page<ModuloEntity> paginaDoRepositorio = moduloRepository.findAllByAtivo(Ativo.S, pageRequest);
+            List<ModuloDTO> moduloPaginas = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterEmDTO)
+                    .toList();
 
-        return new PageDTO<>(pagina.getTotalElements(),
-                pagina.getTotalPages(),
-                page,
-                size,
-                moduloDTOS);
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    page,
+                    size,
+                    moduloPaginas);
         }
         List<ModuloDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, size, listaVazia);

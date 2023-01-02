@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
 @Getter
@@ -30,7 +31,7 @@ public class ProgramaCreateDTO {
 
     @Schema(description = "Data de abertura programa", example = "2023-02-23")
     @NotNull
-    @Future
+    @Past(message = "Não é permitido datas anteriores a data atual!")
     private LocalDate dataInicio;
 
     @NotNull

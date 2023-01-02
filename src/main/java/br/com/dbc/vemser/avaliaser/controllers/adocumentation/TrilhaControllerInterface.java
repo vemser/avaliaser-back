@@ -81,9 +81,8 @@ public interface TrilhaControllerInterface {
             }
     )
     @GetMapping
-    ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam(required = false, defaultValue = "0") Integer page,
-                                                                    @RequestParam(required = false,
-                                                                            defaultValue = "5") Integer size) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam Integer page,
+                                                                    @RequestParam Integer size) throws RegraDeNegocioException;
     @Operation(summary = "Desativa uma trilha", description = "Desativa uma trilha do banco de dados")
     @ApiResponses(
             value = {
