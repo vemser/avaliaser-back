@@ -43,8 +43,8 @@ public interface ProgramaInterfaceController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/nome/{nome}")
-    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, @PathVariable("nome") String nome) throws RegraDeNegocioException;
+    @GetMapping("/list-nome")
+    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size,String nome) throws RegraDeNegocioException;
 
     @Operation(summary = "Buscar um programa por id", description = "Buscar um programa por id do banco de dados")
     @ApiResponses(

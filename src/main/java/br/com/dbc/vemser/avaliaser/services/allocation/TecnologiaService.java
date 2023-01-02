@@ -31,7 +31,7 @@ public class TecnologiaService {
 
     public PageDTO<TecnologiaDTO> buscarPorTecnologia(String nomeTecnologia, PageRequest pageRequest) {
 
-        Page<TecnologiaEntity> tecnologiaEntities = tecnologiaRepository.findByNomeIsLikeIgnoreCase(nomeTecnologia, pageRequest);
+        Page<TecnologiaEntity> tecnologiaEntities = tecnologiaRepository.findByNomeContainingIgnoreCase(nomeTecnologia, pageRequest);
         List<TecnologiaDTO> tecnologiaDTOS = tecnologiaEntities.getContent().stream().map(this::converterEmDTO).collect(Collectors.toList());
 
         return new PageDTO<>(tecnologiaEntities.getTotalElements(),
