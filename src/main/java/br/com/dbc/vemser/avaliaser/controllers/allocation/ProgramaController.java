@@ -28,7 +28,7 @@ public class ProgramaController implements ProgramaInterfaceController {
     private final ProgramaService programaService;
 
     @Override
-    public ResponseEntity<ProgramaDTO> salvar(@Valid @RequestBody ProgramaCreateDTO programaCreate) {
+    public ResponseEntity<ProgramaDTO> create(@Valid @RequestBody ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
 
         log.info("Criando programa ...");
         ProgramaDTO programa = programaService.create(programaCreate);

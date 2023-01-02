@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -23,12 +24,13 @@ public class ProgramaCreateDTO {
     @Schema(description = "situacao do programa", example = "ABERTO")
     private String situacao;
 
-
     @Schema(description = "Descrição do programa", example = "Programa de formação profissional trilha Backend Vem Ser DBC 10º edição.")
     private String descricao;
 
 
     @Schema(description = "Data de abertura programa", example = "2023-02-23")
+    @NotNull
+    @Future
     private LocalDate dataInicio;
 
     @NotNull

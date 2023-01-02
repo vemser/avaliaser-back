@@ -8,6 +8,7 @@ public class TrilhaDTO  {
     private Integer idTrilha;
     private String descricao;
     private String nome;
+    private String ativo;
 
 
 }

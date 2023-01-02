@@ -16,7 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class TrilhaService {
         return objectMapper.convertValue(trilhaRepository.save(trilhaEntity), TrilhaDTO.class);
     }
 
-    public TrilhaDTO pegarIdTrilha(Integer id) throws RegraDeNegocioException {
+    public TrilhaDTO getIdTrilha(Integer id) throws RegraDeNegocioException {
         TrilhaEntity trilhaEntity = findById(id);
         return objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
     }
@@ -51,29 +53,41 @@ public class TrilhaService {
         return trilhaRepository.findById(idTrilha)
                 .orElseThrow(() -> new RegraDeNegocioException("Trilha não encontrada."));
     }
+
     public List<TrilhaEntity> findAllById(List<Integer> ids) {
         return trilhaRepository.findAllById(ids);
 
     }
-    public List<TrilhaDTO> findTrilhaByNome(String nomeTrilha) {
-        if (nomeTrilha != null) {
-            return trilhaRepository.findAllByNomeContainingIgnoreCase(nomeTrilha.trim().replaceAll("\\s+", " "))
-                    .stream()
-                    .map(trilha -> objectMapper.convertValue(trilha, TrilhaDTO.class))
-                    .toList();
+
+    public PageDTO<TrilhaDTO> findTrilhaByNome(String nomeTrilha, PageRequest pageRequest) throws RegraDeNegocioException {
+        if (pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() < 0) {
+            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
         }
-        return trilhaRepository.findAll().stream()
-                .map(trilhaEntity -> objectMapper.convertValue(trilhaEntity, TrilhaDTO.class))
-                .toList();
+        if (pageRequest.getPageSize() > 0) {
+            Page<TrilhaEntity> trilhaEntities = trilhaRepository
+                    .findAllByNomeContainingIgnoreCase(nomeTrilha.trim().replaceAll("\\s+", " "), pageRequest);
+
+            List<TrilhaDTO> trilhaDTOS = trilhaEntities.getContent().stream().map(trilhaEntity -> objectMapper.convertValue(trilhaEntity, TrilhaDTO.class))
+                    .collect(Collectors.toList());
+
+            return new PageDTO<>(trilhaEntities.getTotalElements(),
+                    trilhaEntities.getTotalPages(),
+                    pageRequest.getPageNumber(),
+                    pageRequest.getPageSize(),
+                    trilhaDTOS);
+        }
+
+        List<TrilhaDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, pageRequest.getPageSize(), listaVazia);
     }
 
 
-    public PageDTO<TrilhaDTO> listarAllTrilhaPaginado(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        if (pagina < 0 || tamanho < 0) {
+    public PageDTO<TrilhaDTO> listarAllTrilhaPaginado(Integer page, Integer size) throws RegraDeNegocioException {
+        if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
         }
-        if (tamanho > 0) {
-            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
             Page<TrilhaEntity> trilha = trilhaRepository.findAll(pageRequest);
 
             List<TrilhaDTO> trilhaDTOList = trilha.getContent().stream()
@@ -81,13 +95,13 @@ public class TrilhaService {
                     .toList();
             return new PageDTO<>(trilha.getTotalElements(),
                     trilha.getTotalPages(),
-                    pagina,
-                    tamanho,
+                    page,
+                    size,
                     trilhaDTOList
             );
         }
         List<TrilhaDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
     public void desativar(Integer idTrilha) throws RegraDeNegocioException {
@@ -96,27 +110,42 @@ public class TrilhaService {
         trilhaRepository.save(trilhaEntity);
     }
 
-    public List<RankingDTO> rankingtrilha(Integer idTrilha) throws RegraDeNegocioException {
-        TrilhaEntity trilha = findById(idTrilha);
-        List<RankingDTO> listAlunos = trilha.getAlunos()
-                .stream()
-                .sorted(Comparator.comparing(AlunoEntity::getPontuacao)
-                        .reversed())
-                .limit(5L)
-                .map(this::mapRankingDTO)
-                .collect(Collectors
-                        .toList());
-        return listAlunos;
+    public PageDTO<RankingDTO> rankingTrilha(Integer page, Integer size,Integer idTrilha) throws RegraDeNegocioException {
+        if (size < 0 || page < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            Page<TrilhaEntity> trilhaEntityPage = trilhaRepository.findByIdTrilha(idTrilha,pageRequest);
+            TrilhaEntity trilha = findById(idTrilha);
+            List<RankingDTO> listRankingAlunos = trilha.getAlunos()
+                    .stream()
+                    .sorted(Comparator.comparing(AlunoEntity::getPontuacao)
+                            .reversed())
+                    .limit(5L)
+                    .map(this::mapRankingDTO)
+                    .collect(Collectors
+                            .toList());
+            return new PageDTO<>(trilhaEntityPage.getTotalElements(),
+                    trilhaEntityPage.getTotalPages(),
+                    page,
+                    size,
+                    listRankingAlunos);
+        }
+        List<RankingDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
     private RankingDTO mapRankingDTO(AlunoEntity alunoEntity) {
         return new RankingDTO(alunoEntity.getNome(), alunoEntity.getPontuacao());
     }
+
     public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
-        return objectMapper.convertValue(trilhaEntity,TrilhaDTO.class);
+        return objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
     }
+
     public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {
-        if (trilhaEntity.getAtivo().equals(Ativo.valueOf("N"))){
+        if (trilhaEntity.getAtivo().equals(Ativo.valueOf("N"))) {
             throw new RegraDeNegocioException("Trilha desativada!");
         }
     }

@@ -3,6 +3,8 @@ package br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -18,9 +20,11 @@ public class ModuloCreateDTO {
     private String nome;
     @NotNull(message = "Campo não pode estar ser nulo!")
     @Schema(description = "Data inicial do modulo ", example = "26/11/2022")
+    @Future
     private LocalDate dataInicio;
     @NotNull(message = "Campo não pode estar ser nulo!")
     @Schema(description = "Data para o fim do modulo ", example = "30/11/2022")
+    @Future
     private LocalDate dataFim;
     @NotNull(message = "Campo não pode estar em branco ou nulo!")
     private Integer idTrilha;

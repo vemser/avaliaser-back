@@ -17,18 +17,18 @@ public interface ProgramaInterfaceController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Programa Criado com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PostMapping
-    ResponseEntity<ProgramaDTO> salvar(@Valid @RequestBody ProgramaCreateDTO programaCreate);
+    ResponseEntity<ProgramaDTO> create(@Valid @RequestBody ProgramaCreateDTO programaCreate) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar pagina de programas", description = "Lista uma pagina de programas")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Programas Listados com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
@@ -39,18 +39,18 @@ public interface ProgramaInterfaceController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Programas Listados com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/nome/{nome}")
-    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, @PathVariable("nome") String nome) throws RegraDeNegocioException;
+    @GetMapping("/list-nome")
+    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size,String nome) throws RegraDeNegocioException;
 
     @Operation(summary = "Buscar um programa por id", description = "Buscar um programa por id do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Programa resgatado com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
@@ -61,7 +61,7 @@ public interface ProgramaInterfaceController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Programa Editado com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
@@ -73,8 +73,7 @@ public interface ProgramaInterfaceController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Desativado com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
