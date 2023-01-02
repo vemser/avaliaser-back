@@ -26,8 +26,12 @@ public class ProgramaService {
     private final ObjectMapper objectMapper;
 
 
-    public ProgramaDTO create(ProgramaCreateDTO programaCreate) {
+    public ProgramaDTO create(ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
+
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
+        if(programaCreate.getDataFim().isBefore(programaCreate.getDataInicio())) {
+            throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
+        }
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
@@ -82,7 +86,8 @@ public class ProgramaService {
 //    }
 
     public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        return objectMapper.convertValue(findById(idPrograma), ProgramaDTO.class);
+        ProgramaEntity programaEntity = findById(idPrograma);
+        return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
 
 
