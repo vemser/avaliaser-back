@@ -211,7 +211,11 @@ public class VagaService {
 
     public void removerQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() - 1);
+        if (vaga.getQuantidadeAlocados() != null){
+            vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() - 1);
+        }else {
+            throw new RegraDeNegocioException("Quantidades de alocados null!");
+        }
         vagaRepository.save(vaga);
     }
 
