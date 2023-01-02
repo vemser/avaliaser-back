@@ -66,9 +66,8 @@ public class TrilhaController implements TrilhaControllerInterface {
 
 
     @GetMapping("/lista-trilha-page")
-    public ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam(required = false, defaultValue = "0") Integer page,
-                                                                    @RequestParam(required = false,
-                                                                            defaultValue = "5") Integer size) throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<TrilhaDTO>> listAllTrilhaPaginado(@RequestParam Integer page,
+                                                                    @RequestParam Integer size) throws RegraDeNegocioException {
         return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(page, size), HttpStatus.OK);
     }
 
