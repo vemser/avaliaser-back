@@ -125,7 +125,7 @@ public class ModuloController {
             }
     )
     @GetMapping("/lista-todos-modulos")
-    public ResponseEntity<PageDTO<ModuloDTO>> findAllModulos(Integer page, Integer size) {
+    public ResponseEntity<PageDTO<ModuloDTO>> findAllModulos(Integer page, Integer size) throws RegraDeNegocioException {
         return new ResponseEntity<>(moduloService.listarModulo(page,size), HttpStatus.OK);
     }
 
