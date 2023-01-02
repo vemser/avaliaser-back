@@ -1,7 +1,6 @@
 package br.com.dbc.vemser.avaliaser.services.allocation;
 
 
-import br.com.dbc.vemser.avaliaser.dto.allocation.cliente.ClienteDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaDTO;
@@ -36,6 +35,7 @@ public class ReservaAlocacaoService {
 
 
     public ReservaAlocacaoDTO salvar(ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+        verificarDatas(reservaAlocacaoCreateDTO);
         ReservaAlocacaoEntity reservaAlocacaoEntity = converterEntity(reservaAlocacaoCreateDTO);
 
         AlunoEntity aluno = reservaAlocacaoEntity.getAluno();
@@ -59,6 +59,7 @@ public class ReservaAlocacaoService {
     }
 
     public ReservaAlocacaoDTO editar(Integer idReserva, ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+        verificarDatas(reservaAlocacaoCreateDTO);
         this.findById(idReserva);
 
         ReservaAlocacaoEntity reservaAlocacaoEntity = converterEntity(reservaAlocacaoCreateDTO);
@@ -208,5 +209,17 @@ public class ReservaAlocacaoService {
             }
         }
 
+    }
+
+    private static void verificarDatas(ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+        if(reservaAlocacaoCreateDTO.getDataReserva().isAfter(reservaAlocacaoCreateDTO.getDataAlocacao())) {
+            throw new RegraDeNegocioException("Data de reserva não pode ser maior que a data de alocação.");
+        }
+        if(reservaAlocacaoCreateDTO.getDataAlocacao().isAfter(reservaAlocacaoCreateDTO.getDataCancelamento())) {
+            throw new RegraDeNegocioException("Data de alocação não pode ser maior que a data de cancelamento.");
+        }
+        if(reservaAlocacaoCreateDTO.getDataCancelamento().isAfter(reservaAlocacaoCreateDTO.getDataFinalizado())) {
+            throw new RegraDeNegocioException("Data de cancelamento não pode ser maior que a data de finalização.");
+        }
     }
 }

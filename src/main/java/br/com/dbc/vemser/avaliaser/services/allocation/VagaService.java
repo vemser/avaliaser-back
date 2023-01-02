@@ -35,9 +35,7 @@ public class VagaService {
 
 
     public VagaDTO salvar(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
-        if (vagaCreate.getDataAbertura().isAfter(vagaCreate.getDataFechamento())) {
-            throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
-        }
+        verificarDatas(vagaCreate);
         ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         vagaCreate.setSituacao(Situacao.ABERTO);
@@ -112,10 +110,9 @@ public class VagaService {
     }
 
     public VagaDTO editar(Integer idVaga, VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
+        verificarDatas(vagaCreate);
         VagaEntity vagaEntity1 = findById(idVaga);
-        if (vagaCreate.getDataAbertura().isAfter(vagaCreate.getDataFechamento())) {
-            throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento na atualização.");
-        }
+
         if (vagaCreate.getSituacao().equals(Situacao.FECHADO)) {
             fecharVaga(vagaEntity1);
         }
@@ -219,4 +216,10 @@ public class VagaService {
     }
 
 
+
+    private static void verificarDatas(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
+        if (vagaCreate.getDataAbertura().isAfter(vagaCreate.getDataFechamento())) {
+            throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
+        }
+    }
 }
