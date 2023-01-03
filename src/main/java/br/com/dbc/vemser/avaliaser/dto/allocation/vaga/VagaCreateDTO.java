@@ -43,9 +43,6 @@ public class VagaCreateDTO {
     @FutureOrPresent
     private LocalDate dataFechamento;
 
-    @Schema(description = "Data criação")
-    @FutureOrPresent
-    private LocalDate dataCriacao;
 
     @NotNull(message = "Id cliente não pode ser vazio ou nulo.")
     @Schema(description = "Id do cliente", example = "16")
