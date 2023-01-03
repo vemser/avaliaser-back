@@ -27,11 +27,9 @@ public class ProgramaService {
 
 
     public ProgramaDTO create(ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
+        verificarDatas(programaCreate);
 
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
-        if(programaCreate.getDataFim().isBefore(programaCreate.getDataInicio())) {
-            throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
-        }
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
@@ -61,7 +59,8 @@ public class ProgramaService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<ProgramaEntity> paginaRepository = programaRepository.findAllByNomeContainingIgnoreCase(nome, pageRequest);
+            Page<ProgramaEntity> paginaRepository = programaRepository
+                    .findAllByNomeContainingIgnoreCaseAndSituacao(nome.trim().replaceAll("\\s+", " "), pageRequest, Situacao.ABERTO);
 
             List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
                     .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
@@ -72,6 +71,7 @@ public class ProgramaService {
         List<ProgramaDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
+
 
 //    public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
 //        List<ProgramaDTO> list = List.of(objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class));
@@ -84,9 +84,8 @@ public class ProgramaService {
 //                list
 //        );
 //    }
-
     public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        ProgramaEntity programaEntity = findById(idPrograma);
+        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndSituacao(idPrograma, Situacao.ABERTO);
         return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
 
@@ -100,6 +99,8 @@ public class ProgramaService {
     }
 
     public ProgramaDTO editar(Integer idPrograma, ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
+        verificarDatas(programaCreate);
+
         ProgramaEntity programaEntity = findById(idPrograma);
         programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
         programaEntity.setNome(programaCreate.getNome());
@@ -133,5 +134,9 @@ public class ProgramaService {
         }
     }
 
-
+    private static void verificarDatas(ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
+        if(programaCreate.getDataFim().isBefore(programaCreate.getDataInicio())) {
+            throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
+        }
+    }
 }
