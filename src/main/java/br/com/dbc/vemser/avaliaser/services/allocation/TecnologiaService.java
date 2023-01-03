@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -82,11 +83,13 @@ public class TecnologiaService {
     }
 
     public TecnologiaEntity findByIdTecnologia(Integer idTecnologia) throws RegraDeNegocioException {
-        return tecnologiaRepository.findById(idTecnologia).orElseThrow(() -> new RegraDeNegocioException("Tecnologia não encontrado."));
+        Optional<TecnologiaEntity> tecnologia = tecnologiaRepository.findById(idTecnologia);
+        return tecnologia.orElse(null);
     }
 
     public TecnologiaDTO findByIdDTO (Integer id) throws RegraDeNegocioException{
-        TecnologiaEntity tecnologia = findByIdTecnologia(id);
+        TecnologiaEntity tecnologia = tecnologiaRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Tecnologia não encontrado"));
         return converterEmDTO(tecnologia);
     }
 }

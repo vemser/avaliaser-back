@@ -23,7 +23,6 @@ import javax.validation.Valid;
 @Slf4j
 public class TecnologiaController implements TecnologiaInterfaceController {
     private final TecnologiaService tecnologiaService;
-    private final ObjectMapper objectMapper;
 
     @GetMapping("/tecnologia-busca")
     public ResponseEntity<PageDTO<TecnologiaDTO>> buscar(@RequestParam(required = false) String nomeTecnologia,
@@ -45,9 +44,9 @@ public class TecnologiaController implements TecnologiaInterfaceController {
     @GetMapping("/{idTecnologia}")
     public ResponseEntity<TecnologiaDTO> BuscarTecnologiaPorId(@PathVariable("idTecnologia") Integer idTecnologia) throws RegraDeNegocioException {
         log.info("Buscando Tecnologia...");
-        TecnologiaDTO enderecoDTO = objectMapper.convertValue(tecnologiaService.findByIdDTO(idTecnologia), TecnologiaDTO.class);
+        TecnologiaDTO tecnologiaDTO = tecnologiaService.findByIdDTO(idTecnologia);
         log.info("Tecnologia encontrada!");
-        return new ResponseEntity<>(enderecoDTO, HttpStatus.OK);
+        return new ResponseEntity<>(tecnologiaDTO, HttpStatus.OK);
     }
 }
 
