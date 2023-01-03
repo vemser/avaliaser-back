@@ -1,11 +1,13 @@
 package br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback;
 
+import br.com.dbc.vemser.avaliaser.enums.Stack;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -18,6 +20,8 @@ public class FeedBackCreateDTO {
     private Integer idAluno;
     @Schema(example = "1")
     private Integer idModulo;
+//    @Column(name = "Trilha")
+//    private Stack stack;
     @NotNull(message = "Nome instrutor responsável não pode ser nulo.")
     @NotBlank(message = "Nome do instrutor responsável não pode ser nulo.")
     @Schema(example = "Carlos Alberto")
@@ -27,9 +31,13 @@ public class FeedBackCreateDTO {
     @Schema(example = "Texto descritivo")
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")
-    @Schema(example = "POSITIVO")
+    @Schema(example = "ATIVO")
     private Tipo situacao;
     @NotNull(message = "Data não pode ser nula.")
     @Schema(example = "2022-12-01")
     private LocalDate data;
+//    @NotBlank(message = "Nome não pode ser vazio ou nulo.")
+//    @Schema(description = "Nome do programa", example = "VemSer 11° edição")
+//    private String programa;
+
 }

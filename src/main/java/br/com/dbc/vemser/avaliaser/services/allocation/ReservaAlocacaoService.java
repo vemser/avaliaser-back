@@ -127,6 +127,7 @@ public class ReservaAlocacaoService {
         AlunoEntity aluno = reservaAlocacao.getAluno();
         reservaAlocacao.setSituacao(Situacao.INATIVO);
         aluno.setSituacao(Situacao.DISPONIVEL);
+        reservaAlocacaoRepository.save(reservaAlocacao);
         vagaService.removerQuantidadeDeAlocados(reservaAlocacao.getVaga().getIdVaga());
         alunoRepository.save(aluno);
 

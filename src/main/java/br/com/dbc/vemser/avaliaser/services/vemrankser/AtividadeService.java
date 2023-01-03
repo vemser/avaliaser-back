@@ -7,6 +7,7 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.ModuloAtividadeDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AtividadeEntity;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class AtividadeService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AtividadeEntity> atividadeEntity = atividadeRepository.findAll(pageRequest);
+            Page<AtividadeEntity> atividadeEntity = atividadeRepository.findAllByAtivo(Ativo.S,pageRequest);
             List<AtividadeDTO> atividadeDTOList = atividadeEntity.getContent()
                     .stream()
                     .map(this::converterAtividadeDTO)
@@ -60,8 +62,7 @@ public class AtividadeService {
     }
 
     public AtividadeDTO createAtividade(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
-        //   UsuarioLogadoDTO loggedUser = usuarioService.getLoggedUser();
-        // atividadeEntity.setNomeInstrutor(loggedUser.getNome());
+        verificarDatas(atividadeCreateDTO);
         AtividadeEntity atividadeEntity = objectMapper.convertValue(atividadeCreateDTO, AtividadeEntity.class);
         atividadeEntity.setPrograma(programaService.findById(atividadeCreateDTO.getIdPrograma()));
         atividadeEntity.setSituacao(Situacao.ABERTO);
@@ -69,6 +70,7 @@ public class AtividadeService {
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         atividadeEntity.setDataCriacao(now);
+        atividadeEntity.setDataEntrega(atividadeCreateDTO.getDataEntrega());
 
         for (Integer modulos : atividadeCreateDTO.getModulos()) {
             atividadeEntity.getModulos().add(moduloService.buscarPorIdModulo(modulos));
@@ -82,6 +84,7 @@ public class AtividadeService {
 
     public AtividadeDTO atualizarAtividade(Integer idAtividade, AtividadeCreateDTO atividadeAtualizar) throws RegraDeNegocioException {
         AtividadeEntity atividadeRecuperada = buscarPorIdAtividade(idAtividade);
+        verificarDatas(atividadeAtualizar);
         atividadeRecuperada.setTitulo(atividadeAtualizar.getTitulo());
         atividadeRecuperada.setDescricao(atividadeAtualizar.getDescricao());
         atividadeRecuperada.setDataEntrega(atividadeAtualizar.getDataEntrega());
@@ -121,8 +124,8 @@ public class AtividadeService {
     }
 
     public AtividadeEntity buscarPorIdAtividade(Integer idAtividade) throws RegraDeNegocioException {
-        return atividadeRepository.findById(idAtividade)
-                .orElseThrow(() -> new RegraDeNegocioException("Atividade não encontrada."));
+        return atividadeRepository.findByIdAtividadeAndAtivo(idAtividade, Ativo.S)
+                .orElseThrow(() -> new RegraDeNegocioException("Atividade não encontrada. Insira um Id Valido!"));
     }
 
     public AtividadeDTO save(AtividadeEntity atividadeEntity) {
@@ -143,6 +146,12 @@ public class AtividadeService {
         atividadeDTO.setAlunos(listAlunos);
 
         return atividadeDTO;
+    }
+
+    private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
+        if (atividadeCreateDTO.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {
+            throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
+        }
     }
 
 

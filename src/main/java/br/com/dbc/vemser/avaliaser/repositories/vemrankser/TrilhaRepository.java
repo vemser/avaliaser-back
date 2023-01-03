@@ -1,22 +1,26 @@
 package br.com.dbc.vemser.avaliaser.repositories.vemrankser;
 
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface TrilhaRepository extends JpaRepository<TrilhaEntity, Integer> {
 
 
-    Page<TrilhaEntity> findAllByNomeContainingIgnoreCase(String nome, Pageable pageable);
+    Page<TrilhaEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String nome, Pageable pageable, Ativo ativo);
 
-    Page<TrilhaEntity> findByIdTrilha(Integer idTrilha, Pageable pageable);
+    Page<TrilhaEntity> findByIdTrilhaAndAtivo(Integer idTrilha, Pageable pageable, Ativo ativo);
 
-    @Query(value = "select t from Trilha t where t.ativo = 1 " , countQuery = "select count(t)  from Trilha t where t.ativo = 1")
-    Page<TrilhaEntity> findAllTrilhasAtiva(Pageable pageable);
+    Page<TrilhaEntity> findAllByAtivo(Pageable pageable, Ativo ativo);
+
+    Optional<TrilhaEntity> findByIdTrilhaAndAtivo(Integer id, Ativo ativo);
 
 
 }

@@ -108,6 +108,7 @@ public class ClienteService {
         this.findById(idCliente);
         ClienteEntity clienteEntity = converterEntity(clienteCreate);
         clienteEntity.setIdCliente(idCliente);
+        clienteEntity.setAtivo(findById(idCliente).getAtivo());
         clienteEntity = clienteRepository.save(clienteEntity);
         return converterEmDTO(clienteEntity);
     }
