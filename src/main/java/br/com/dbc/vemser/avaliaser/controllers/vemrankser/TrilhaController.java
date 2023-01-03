@@ -52,10 +52,10 @@ public class TrilhaController implements TrilhaControllerInterface {
     }
 
     @GetMapping("/lista-trilha-nome")
-    public ResponseEntity<PageDTO<TrilhaDTO>> findTrilhaByNome(@RequestParam(required = false) String nome,
+    public ResponseEntity<PageDTO<TrilhaDTO>> findTrilhaByNome(@RequestParam String nome,
                                                             @RequestParam int page,
                                                             @RequestParam int size) throws RegraDeNegocioException {
-        return new ResponseEntity<>(trilhaService.findTrilhaByNome(nome, PageRequest.of(page, size)), HttpStatus.OK);
+        return new ResponseEntity<>(trilhaService.findTrilhaByNome(nome, page, size), HttpStatus.OK);
     }
 
 

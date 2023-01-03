@@ -50,7 +50,7 @@ public class TrilhaService {
     }
 
     public TrilhaEntity findById(Integer idTrilha) throws RegraDeNegocioException {
-        return trilhaRepository.findById(idTrilha)
+        return trilhaRepository.findByIdTrilhaAndAtivo(idTrilha, Ativo.S)
                 .orElseThrow(() -> new RegraDeNegocioException("Trilha não encontrada."));
     }
 
@@ -59,13 +59,14 @@ public class TrilhaService {
 
     }
 
-    public PageDTO<TrilhaDTO> findTrilhaByNome(String nomeTrilha, PageRequest pageRequest) throws RegraDeNegocioException {
-        if (pageRequest.getPageNumber() < 0 || pageRequest.getPageSize() < 0) {
+    public PageDTO<TrilhaDTO> findTrilhaByNome(String nomeTrilha, Integer page, Integer size) throws RegraDeNegocioException {
+        if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
         }
-        if (pageRequest.getPageSize() > 0) {
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
             Page<TrilhaEntity> trilhaEntities = trilhaRepository
-                    .findAllByNomeContainingIgnoreCase(nomeTrilha.trim().replaceAll("\\s+", " "), pageRequest);
+                    .findAllByNomeContainingIgnoreCaseAndAtivo(nomeTrilha.trim().replaceAll("\\s+", " "), pageRequest, Ativo.S);
 
             List<TrilhaDTO> trilhaDTOS = trilhaEntities.getContent().stream().map(trilhaEntity -> objectMapper.convertValue(trilhaEntity, TrilhaDTO.class))
                     .collect(Collectors.toList());
@@ -78,7 +79,7 @@ public class TrilhaService {
         }
 
         List<TrilhaDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, pageRequest.getPageSize(), listaVazia);
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
 
@@ -89,7 +90,7 @@ public class TrilhaService {
         }
         if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<TrilhaEntity> trilha = trilhaRepository.findAllTrilhasAtiva(pageRequest);
+            Page<TrilhaEntity> trilha = trilhaRepository.findAllByAtivo(pageRequest, Ativo.S);
 
             List<TrilhaDTO> trilhaDTOList = trilha.getContent().stream()
                     .map(itemEntretenimentoEntity -> objectMapper.convertValue(itemEntretenimentoEntity, TrilhaDTO.class))
@@ -117,7 +118,7 @@ public class TrilhaService {
         }
         if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<TrilhaEntity> trilhaEntityPage = trilhaRepository.findByIdTrilha(idTrilha,pageRequest);
+            Page<TrilhaEntity> trilhaEntityPage = trilhaRepository.findByIdTrilhaAndAtivo(idTrilha, pageRequest, Ativo.S);
             TrilhaEntity trilha = findById(idTrilha);
             List<RankingDTO> listRankingAlunos = trilha.getAlunos()
                     .stream()

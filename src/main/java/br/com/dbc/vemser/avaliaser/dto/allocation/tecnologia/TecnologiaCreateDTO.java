@@ -12,8 +12,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TecnologiaCreateDTO {
+
     @NotNull(message = "Campo não pode ser nulo")
-    @NotBlank(message = "Campo não pode estar em branco")
+//    @NotBlank(message = "Campo não pode estar em branco")
     @Schema(description = "Nome da tecnologia", example = "JAVA")
     private String nome;
 }

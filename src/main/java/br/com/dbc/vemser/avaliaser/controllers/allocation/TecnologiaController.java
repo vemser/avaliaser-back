@@ -10,12 +10,10 @@ import br.com.dbc.vemser.avaliaser.services.allocation.TecnologiaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 
 @RestController
@@ -28,24 +26,26 @@ public class TecnologiaController implements TecnologiaInterfaceController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/tecnologia-busca")
-    public PageDTO<TecnologiaDTO> buscar(@RequestParam String nomeTecnologia,
-                                         @RequestParam int page,
-                                         @RequestParam int size) {
-        return tecnologiaService.buscarPorTecnologia(nomeTecnologia, PageRequest.of(page, size));
+    public ResponseEntity<PageDTO<TecnologiaDTO>> buscar(@RequestParam(required = false) String nomeTecnologia,
+                                                         Integer page, Integer size) throws RegraDeNegocioException {
+        log.info("Buscando Tecnologias...");
+        PageDTO<TecnologiaDTO> tecnologia = tecnologiaService.buscarPorTecnologia(nomeTecnologia, page, size);
+        log.info("Retorno de tecnologias em lista paginada, realizado com sucesso!");
+        return new ResponseEntity<>(tecnologia, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<TecnologiaDTO> create(@RequestBody @Valid TecnologiaCreateDTO tecnologia) {
         log.info("Criando Tecnologia...");
         TecnologiaDTO tecnologiaDTO = tecnologiaService.create(tecnologia);
-        log.info("tecnologia Criada!!");
+        log.info("Tecnologia Criada!!");
         return new ResponseEntity<>(tecnologiaDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{idTecnologia}")
-    public ResponseEntity<TecnologiaDTO> findByIdTecnologia(@PathVariable("idTecnologia") Integer idTecnologia){
+    public ResponseEntity<TecnologiaDTO> BuscarTecnologiaPorId(@PathVariable("idTecnologia") Integer idTecnologia) throws RegraDeNegocioException {
         log.info("Buscando Tecnologia...");
-        TecnologiaDTO enderecoDTO = objectMapper.convertValue(tecnologiaService.findByIdTecnologia(idTecnologia), TecnologiaDTO.class);
+        TecnologiaDTO enderecoDTO = objectMapper.convertValue(tecnologiaService.findByIdDTO(idTecnologia), TecnologiaDTO.class);
         log.info("Tecnologia encontrada!");
         return new ResponseEntity<>(enderecoDTO, HttpStatus.OK);
     }

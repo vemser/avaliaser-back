@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class AtividadeService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AtividadeEntity> atividadeEntity = atividadeRepository.findAll(pageRequest);
+            Page<AtividadeEntity> atividadeEntity = atividadeRepository.findAllByAtivo(Ativo.S,pageRequest);
             List<AtividadeDTO> atividadeDTOList = atividadeEntity.getContent()
                     .stream()
                     .map(this::converterAtividadeDTO)
@@ -121,8 +122,8 @@ public class AtividadeService {
     }
 
     public AtividadeEntity buscarPorIdAtividade(Integer idAtividade) throws RegraDeNegocioException {
-        return atividadeRepository.findById(idAtividade)
-                .orElseThrow(() -> new RegraDeNegocioException("Atividade não encontrada."));
+        return atividadeRepository.findByIdAtividadeAndAtivo(idAtividade, Ativo.S)
+                .orElseThrow(() -> new RegraDeNegocioException("Atividade não encontrada. Insira um Id Valido!"));
     }
 
     public AtividadeDTO save(AtividadeEntity atividadeEntity) {

@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 public interface TecnologiaRepository extends JpaRepository<TecnologiaEntity, Integer> {
-    Page<TecnologiaEntity> findByNomeContainingIgnoreCase(String nomeTecnologia, Pageable pageable);
+    Page<TecnologiaEntity> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
     Set<TecnologiaEntity> findAllByNomeIn(List<String> tecnologias);
 
