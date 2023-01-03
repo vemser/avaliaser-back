@@ -26,7 +26,7 @@ public class ClienteController implements ClienteInterfaceController {
     private final ClienteService clienteService;
 
     @Override
-    public ResponseEntity<ClienteDTO> salvar(@Valid @RequestBody ClienteCreateDTO clienteCreate) {
+    public ResponseEntity<ClienteDTO> salvar(@Valid @RequestBody ClienteCreateDTO clienteCreate) throws RegraDeNegocioException {
         log.info("Adicionando o Cliente...");
         ClienteDTO cliente = clienteService.salvar(clienteCreate);
         log.info("Cliente adicionado com sucesso!");

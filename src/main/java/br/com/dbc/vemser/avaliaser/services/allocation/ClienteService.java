@@ -8,6 +8,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ClienteEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.exceptions.BancoDeDadosException;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,10 +29,14 @@ public class ClienteService {
     private final ObjectMapper objectMapper;
 
 
-    public ClienteDTO salvar(ClienteCreateDTO clienteCreate) {
-        ClienteEntity clienteEntity = converterEntity(clienteCreate);
-        clienteEntity.setAtivo(Ativo.S);
-        return converterEmDTO(clienteRepository.save(clienteEntity));
+    public ClienteDTO salvar(ClienteCreateDTO clienteCreate) throws RegraDeNegocioException {
+        try {
+            ClienteEntity clienteEntity = converterEntity(clienteCreate);
+            clienteEntity.setAtivo(Ativo.S);
+            return converterEmDTO(clienteRepository.save(clienteEntity));
+        } catch (Exception e){
+            throw new RegraDeNegocioException("Email já cadastrado!");
+        }
     }
 
     public PageDTO<ClienteDTO> listar(Integer page, Integer size) throws RegraDeNegocioException {
@@ -125,12 +130,19 @@ public class ClienteService {
     }
 
     public ClienteDTO editar(Integer idCliente, ClienteCreateDTO clienteCreate) throws RegraDeNegocioException {
-        this.findById(idCliente);
-        ClienteEntity clienteEntity = converterEntity(clienteCreate);
-        clienteEntity.setIdCliente(idCliente);
-        clienteEntity.setAtivo(findById(idCliente).getAtivo());
-        clienteEntity = clienteRepository.save(clienteEntity);
-        return converterEmDTO(clienteEntity);
+       try {
+            this.findById(idCliente);
+            ClienteEntity clienteEntity = converterEntity(clienteCreate);
+            clienteEntity.setIdCliente(idCliente);
+            clienteEntity.setAtivo(findById(idCliente).getAtivo());
+            if(!clienteEntity.getEmail().equals(clienteCreate.getEmail())){
+                clienteEntity.setEmail(clienteCreate.getEmail());
+            }
+           clienteEntity = clienteRepository.save(clienteEntity);
+            return converterEmDTO(clienteEntity);
+        } catch (Exception e){
+           throw new RegraDeNegocioException("Email já cadastrado no sistema");
+       }
     }
 
     public void deletar(Integer idCliente) throws RegraDeNegocioException {
