@@ -15,12 +15,10 @@ import java.util.Optional;
 @Repository
 public interface ProgramaRepository extends JpaRepository<ProgramaEntity, Integer> {
 
-    Optional<ProgramaEntity> findByNomeContainingIgnoreCase(String nome);
-
     @Query(value = "select p from Programa p where p.situacao = 3 " , countQuery = "select count(p)  from Programa p where p.situacao = 3")
     Page<ProgramaEntity> findAllProgramasAbertos(Pageable pageable);
 
-    ProgramaEntity findByIdProgramaAndSituacao(Integer idPrograma, Situacao situacao);
+    Page<ProgramaEntity> findAllByNomeContainingIgnoreCaseAndSituacao(String nome, Pageable pageable, Situacao situacao);
 
-    Page<ProgramaEntity> findAllByNomeContainingIgnoreCase(String nome, Pageable pageabl);
+    ProgramaEntity findByIdProgramaAndSituacao(Integer idPrograma, Situacao situacao);
 }
