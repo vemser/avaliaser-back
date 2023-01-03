@@ -54,6 +54,26 @@ public class ClienteService {
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
+    public PageDTO<ClienteDTO> listarInativos(Integer page, Integer size) throws RegraDeNegocioException {
+        if (size < 0 || page < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            Page<ClienteEntity> paginaRepository = clienteRepository.findAllByAtivo(Ativo.N,pageRequest);
+
+            List<ClienteDTO> clienteDTOList = getClienteDTOS(paginaRepository);
+
+            return new PageDTO<>(paginaRepository.getTotalElements(),
+                    paginaRepository.getTotalPages(),
+                    page,
+                    size,
+                    clienteDTOList);
+        }
+        List<ClienteDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
+    }
+
     @NotNull
     private List<ClienteDTO> getClienteDTOS(Page<ClienteEntity> paginaRepository) {
         List<ClienteDTO> clienteDTOList = paginaRepository.getContent().stream()
@@ -119,9 +139,21 @@ public class ClienteService {
         clienteRepository.save(clienteEntity);
     }
 
+    public ClienteDTO reativarCliente (Integer idCliente) throws RegraDeNegocioException {
+        ClienteEntity clienteEntity = findByIdInativos(idCliente);
+        clienteEntity.setAtivo(Ativo.S);
+        ClienteEntity cliente = clienteRepository.save(clienteEntity);
+        return converterEmDTO(cliente);
+    }
+
     public ClienteEntity findById(Integer id) throws RegraDeNegocioException {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Cliente não encontrado"));
+    }
+
+    public ClienteEntity findByIdInativos(Integer id) throws RegraDeNegocioException {
+        return clienteRepository.findByIdClienteAndAndAtivo(id, Ativo.N)
+                .orElseThrow(() -> new RegraDeNegocioException("Cliente inativo não encontrado"));
     }
 
     public ClienteEntity findByEmail(String email) throws RegraDeNegocioException {
