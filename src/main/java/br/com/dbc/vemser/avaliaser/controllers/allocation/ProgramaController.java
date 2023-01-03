@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -42,7 +43,9 @@ public class ProgramaController implements ProgramaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, String nome) throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(@RequestParam Integer page,
+                                                              @RequestParam Integer size,
+                                                              @RequestParam String nome) throws RegraDeNegocioException {
         return ResponseEntity.ok(programaService.listarPorNome(page, size, nome));
     }
 

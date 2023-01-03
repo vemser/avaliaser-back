@@ -16,6 +16,8 @@ public interface ClienteRepository extends JpaRepository<ClienteEntity, Integer>
 
     ClienteEntity findByEmailIgnoreCaseAndAtivo(String email, Ativo ativo);
     Page<ClienteEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+
+    Optional<ClienteEntity> findByIdClienteAndAndAtivo(Integer id, Ativo ativo);
 //    Page<ClienteEntity> findAllByIdClienteAndAtivo(Integer idCliente, Ativo ativo, Pageable pageable);
     Page<ClienteEntity> findAllByEmailContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
     Page<ClienteEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);

@@ -22,7 +22,7 @@ public interface ClienteInterfaceController {
             }
     )
     @PostMapping
-    ResponseEntity<ClienteDTO> salvar(@Valid @RequestBody ClienteCreateDTO clienteCreate);
+    ResponseEntity<ClienteDTO> salvar(@Valid @RequestBody ClienteCreateDTO clienteCreate) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar pagina de clientes", description = "Lista uma pagina de clientes")
     @ApiResponses(

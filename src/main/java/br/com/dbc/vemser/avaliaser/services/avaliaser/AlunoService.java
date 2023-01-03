@@ -64,7 +64,10 @@ public class AlunoService {
             alunoEntity.setTrilha(trilhaService.findById(alunoCreateDTO.getIdTrilha()));
             if(alunoCreateDTO.getTecnologias().size() > 0){
                 for(Integer tecnologia: alunoCreateDTO.getTecnologias()){
-                    alunoEntity.getTecnologia().add(tecnologiaService.findByIdTecnologia(tecnologia));
+                    TecnologiaEntity tecnologiaEntity = tecnologiaService.findByIdTecnologia(tecnologia);
+                    if (!(tecnologiaEntity == null)) {
+                        alunoEntity.getTecnologia().add(tecnologiaEntity);
+                    }
                 }
             }
             alunoEntity.setAtivo(Ativo.S);
@@ -94,7 +97,10 @@ public class AlunoService {
             if(alunoAtualizado.getTecnologias().size() > 0){
                 aluno.getTecnologia().clear();
                 for(Integer tecnologia: alunoAtualizado.getTecnologias()){
-                    aluno.getTecnologia().add(tecnologiaService.findByIdTecnologia(tecnologia));
+                    TecnologiaEntity tecnologiaEntity = tecnologiaService.findByIdTecnologia(tecnologia);
+                    if (!(tecnologiaEntity == null)) {
+                        aluno.getTecnologia().add(tecnologiaEntity);
+                    }
                 }
             }
             if (!aluno.getEmail().equals(alunoAtualizado.getEmail())) {
