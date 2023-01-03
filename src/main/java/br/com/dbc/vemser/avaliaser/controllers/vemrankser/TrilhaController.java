@@ -39,7 +39,7 @@ public class TrilhaController implements TrilhaControllerInterface {
 
     @PutMapping("/update/{idTrilha}")
     public ResponseEntity<TrilhaDTO> update(@PathVariable(name = "idTrilha") Integer idTrilha,
-                                            @RequestBody TrilhaCreateDTO trilha) throws RegraDeNegocioException {
+                                            @Valid @RequestBody TrilhaCreateDTO trilha) throws RegraDeNegocioException {
         return new ResponseEntity<>(trilhaService.updateTrilha(idTrilha, trilha), HttpStatus.OK);
 
     }
