@@ -37,7 +37,7 @@ public interface TrilhaControllerInterface {
     )
     @PutMapping
     ResponseEntity<TrilhaDTO> update(@PathVariable(name = "idTrilha") Integer idTrilha,
-                                     @RequestBody TrilhaCreateDTO trilha) throws RegraDeNegocioException;
+                                     @Valid @RequestBody TrilhaCreateDTO trilha) throws RegraDeNegocioException;
     @Operation(summary = "Pega a lista de alunos na trilha pela pontuação", description = "Resgata a lista de alunos na trilha pela pontuacao no banco de dados")
     @ApiResponses(
             value = {
