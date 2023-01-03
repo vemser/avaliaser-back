@@ -3,9 +3,11 @@ package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,7 +21,6 @@ public interface TecnologiaInterfaceController {
             }
     )
     @GetMapping
-    PageDTO<TecnologiaDTO> buscar(@RequestParam String nomeTecnologia,
-                                  @RequestParam int page,
-                                  @RequestParam int size);
+    ResponseEntity<PageDTO<TecnologiaDTO>> buscar(@RequestParam(required = false) String nomeTecnologia,
+                                                  Integer page, Integer size) throws RegraDeNegocioException;
 }
