@@ -9,9 +9,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class TrilhaCreateDTO {
 
-    @Schema(description = "Nome", example = "Backend")
-    @NotBlank
     @NotNull
+    @Schema(description = "Nome", example = "Backend")
     private String nome;
     @Schema(description = "Descricao da trilha", example = "Especialidade com a parte mais logica e regra de négocios")
     private String descricao;

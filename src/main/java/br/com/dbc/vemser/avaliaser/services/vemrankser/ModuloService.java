@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
+import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
@@ -41,6 +42,7 @@ public class ModuloService {
 
 
     public ModuloDTO criar(ModuloCreateDTO modulo) throws RegraDeNegocioException {
+        verificarDatas(modulo);
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
         moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
         TrilhaEntity trilhaEntity = trilhaService.findById(modulo.getIdTrilha());
@@ -56,7 +58,9 @@ public class ModuloService {
     }
 
     public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
+        verificarDatas(moduloCreateDTO);
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
+
         moduloEntity.setNome(moduloCreateDTO.getNome());
         moduloEntity.setDataInicio(moduloCreateDTO.getDataInicio());
         moduloEntity.setDataFim(moduloCreateDTO.getDataFim());
@@ -160,7 +164,11 @@ public class ModuloService {
                         .collect(Collectors.toList()));
 
     }
-
+    private static void verificarDatas(ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
+        if (moduloCreateDTO.getDataInicio().isAfter(moduloCreateDTO.getDataFim())) {
+            throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
+        }
+    }
 
 
 }

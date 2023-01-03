@@ -72,7 +72,7 @@ public class AtividadeController {
             }
     )
     @GetMapping("/listar-paginado")
-    public ResponseEntity<AtividadePaginacaoDTO<AtividadeDTO>> listarAtividadePaginado(@RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "5") Integer size) throws RegraDeNegocioException {
+    public ResponseEntity<AtividadePaginacaoDTO<AtividadeDTO>> listarAtividadePaginado(@RequestParam Integer page, @RequestParam Integer size) throws RegraDeNegocioException {
         return ResponseEntity.ok(atividadeService.listarAtividades(page, size));
     }
 
