@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,19 @@ import java.util.stream.Collectors;
 public class TecnologiaService {
     private final TecnologiaRepository tecnologiaRepository;
     private final ObjectMapper objectMapper;
+
+    public PageDTO<TecnologiaDTO> list(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<TecnologiaEntity> paginaDoRepositorio = tecnologiaRepository.findAll(pageRequest);
+        List<TecnologiaDTO> tecnologiaDTOList = paginaDoRepositorio.getContent().stream()
+                .map(tecnologia -> objectMapper.convertValue(tecnologia, TecnologiaDTO.class))
+                .toList();
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                tecnologiaDTOList);
+    }
 
     public TecnologiaDTO create(TecnologiaCreateDTO tecnologiaCreate) {
         TecnologiaEntity tecnologiaEntity = converteEmEntity(tecnologiaCreate);
@@ -82,11 +96,13 @@ public class TecnologiaService {
     }
 
     public TecnologiaEntity findByIdTecnologia(Integer idTecnologia) throws RegraDeNegocioException {
-        return tecnologiaRepository.findById(idTecnologia).orElseThrow(() -> new RegraDeNegocioException("Tecnologia não encontrado."));
+        Optional<TecnologiaEntity> tecnologia = tecnologiaRepository.findById(idTecnologia);
+        return tecnologia.orElse(null);
     }
 
     public TecnologiaDTO findByIdDTO (Integer id) throws RegraDeNegocioException{
-        TecnologiaEntity tecnologia = findByIdTecnologia(id);
+        TecnologiaEntity tecnologia = tecnologiaRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Tecnologia não encontrado"));
         return converterEmDTO(tecnologia);
     }
 }

@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,11 +19,14 @@ public class AtividadeCreateDTO {
     private String titulo;
 
     @NotNull
+    @Min(1)
+    @Max(10)
     @Schema(description = "Peso da atividade", example = "2")
     private Integer pesoAtividade;
 
-    @Schema(description = "Data de início da atividade", example = "15/02/2023")
+    @NotNull
     @FutureOrPresent
+    @Schema(description = "Data de início da atividade", example = "15/02/2023")
     private LocalDateTime dataCriacao;
 
     @NotNull
@@ -36,6 +37,7 @@ public class AtividadeCreateDTO {
     @Schema(description = "Descrição da atividade", example = "Uma lista de exercicios de Java")
     private String descricao;
 
+    @NotNull(message = "Nome instrutor não pode ser nulo!")
     @Schema(description = "Nome do instrutor", example = "Rafa")
     private String nomeInstrutor;
 
