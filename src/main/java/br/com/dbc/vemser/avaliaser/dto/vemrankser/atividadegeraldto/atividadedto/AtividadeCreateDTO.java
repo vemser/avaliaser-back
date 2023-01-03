@@ -38,6 +38,7 @@ public class AtividadeCreateDTO {
     private String descricao;
 
     @NotNull(message = "Nome instrutor não pode ser nulo!")
+    @NotBlank(message = "Nome instrutor não pode estar em branco!")
     @Schema(description = "Nome do instrutor", example = "Rafa")
     private String nomeInstrutor;
 

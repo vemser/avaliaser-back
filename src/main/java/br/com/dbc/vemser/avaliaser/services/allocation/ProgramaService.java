@@ -53,6 +53,24 @@ public class ProgramaService {
 
     }
 
+    public PageDTO<ProgramaDTO> listarProgramasFechados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (pagina < 0 || tamanho < 0) {
+            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<ProgramaEntity> programasAbertos = programaRepository.findAllBySituacao(Situacao.FECHADO, pageRequest);
+
+            List<ProgramaDTO> clientePagina = programasAbertos.getContent().stream()
+                    .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
+                    .toList();
+            return new PageDTO<>(programasAbertos.getTotalElements(), programasAbertos.getTotalPages(), pagina, tamanho, clientePagina);
+        }
+        List<ProgramaDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+
+    }
+
     public PageDTO<ProgramaDTO> listarPorNome(Integer pagina, Integer tamanho, String nome) throws RegraDeNegocioException {
         if (pagina < 0 || tamanho < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
@@ -85,7 +103,9 @@ public class ProgramaService {
 //        );
 //    }
     public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndSituacao(idPrograma, Situacao.ABERTO);
+
+        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndSituacao(idPrograma, Situacao.ABERTO)
+                .orElseThrow(()-> new RegraDeNegocioException("Não foi possivel localizar este programa!"));
         return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
 
@@ -97,6 +117,8 @@ public class ProgramaService {
         }
         return programaRepository.findAllById(ids);
     }
+
+
 
     public ProgramaDTO editar(Integer idPrograma, ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
         verificarDatas(programaCreate);

@@ -18,7 +18,9 @@ public interface ProgramaRepository extends JpaRepository<ProgramaEntity, Intege
     @Query(value = "select p from Programa p where p.situacao = 3 " , countQuery = "select count(p)  from Programa p where p.situacao = 3")
     Page<ProgramaEntity> findAllProgramasAbertos(Pageable pageable);
 
+    Page<ProgramaEntity> findAllBySituacao(Situacao situacao,Pageable pageable);
+
     Page<ProgramaEntity> findAllByNomeContainingIgnoreCaseAndSituacao(String nome, Pageable pageable, Situacao situacao);
 
-    ProgramaEntity findByIdProgramaAndSituacao(Integer idPrograma, Situacao situacao);
+    Optional<ProgramaEntity> findByIdProgramaAndSituacao(Integer idPrograma, Situacao situacao);
 }

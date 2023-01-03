@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -40,6 +37,10 @@ public class ProgramaController implements ProgramaInterfaceController {
     @Override
     public ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer page, Integer size) throws RegraDeNegocioException {
         return ResponseEntity.ok(programaService.listar(page, size));
+    }
+    @GetMapping("/listar-programas-fechados")
+    public ResponseEntity<PageDTO<ProgramaDTO>> listarProgramasFechados(Integer page, Integer size) throws RegraDeNegocioException {
+        return ResponseEntity.ok(programaService.listarProgramasFechados(page, size));
     }
 
     @Override
