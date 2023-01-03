@@ -14,16 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TokenService {
 
-    private static final String CARGO = "CARGOS";
+    private static final String CARGO = "cargos";
 
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration.login}")
-    private Integer login;
-
-    @Value("${jwt.expiration.recuperacao}")
-    private Integer recuperacao;
 
     public UsernamePasswordAuthenticationToken isValid(String token) {
         if (token == null) {
@@ -38,6 +33,8 @@ public class TokenService {
                 .getBody();
 
         String idUsuario = keys.get(Claims.ID, String.class);
+
+//        String login = keys.get("username", String.class);
 
         List<String> cargosUsuario = keys.get(CARGO, List.class);
 
