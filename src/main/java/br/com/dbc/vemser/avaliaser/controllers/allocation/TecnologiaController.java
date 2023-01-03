@@ -24,6 +24,11 @@ import javax.validation.Valid;
 public class TecnologiaController implements TecnologiaInterfaceController {
     private final TecnologiaService tecnologiaService;
 
+    @GetMapping
+    public ResponseEntity<PageDTO<TecnologiaDTO>> list(Integer pagina, Integer tamanho) {
+        return new ResponseEntity<>(tecnologiaService.list(pagina, tamanho), HttpStatus.OK);
+    }
+
     @GetMapping("/tecnologia-busca")
     public ResponseEntity<PageDTO<TecnologiaDTO>> buscar(@RequestParam(required = false) String nomeTecnologia,
                                                          Integer page, Integer size) throws RegraDeNegocioException {

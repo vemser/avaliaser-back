@@ -31,6 +31,19 @@ public class TecnologiaService {
     private final TecnologiaRepository tecnologiaRepository;
     private final ObjectMapper objectMapper;
 
+    public PageDTO<TecnologiaDTO> list(Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<TecnologiaEntity> paginaDoRepositorio = tecnologiaRepository.findAll(pageRequest);
+        List<TecnologiaDTO> tecnologiaDTOList = paginaDoRepositorio.getContent().stream()
+                .map(tecnologia -> objectMapper.convertValue(tecnologia, TecnologiaDTO.class))
+                .toList();
+        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                paginaDoRepositorio.getTotalPages(),
+                pagina,
+                tamanho,
+                tecnologiaDTOList);
+    }
+
     public TecnologiaDTO create(TecnologiaCreateDTO tecnologiaCreate) {
         TecnologiaEntity tecnologiaEntity = converteEmEntity(tecnologiaCreate);
         tecnologiaRepository.save(tecnologiaEntity);
