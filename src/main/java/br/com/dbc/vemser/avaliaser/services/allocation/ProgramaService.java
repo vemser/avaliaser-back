@@ -6,11 +6,14 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.VagaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ProgramaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +34,8 @@ public class ProgramaService {
         verificarDatas(programaCreate);
 
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
-        programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
+        programaEntity.setSituacao(programaCreate.getSituacao());
+        programaEntity.setAtivo(Ativo.S);
 
         return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
     }
@@ -102,6 +106,9 @@ public class ProgramaService {
         if (!programaEntity.getDataInicio().equals(programaEdicao.getDataInicio())) {
             programaEntity.setDataInicio(programaEdicao.getDataInicio());
         }
+        if (programaEdicao.getSituacao().equals(Situacao.FECHADO)) {
+            fecharPrograma(idPrograma);
+        }
         programaEntity.setDataFim(programaEdicao.getDataFim());
 
         programaRepository.save(programaEntity);
@@ -110,7 +117,7 @@ public class ProgramaService {
 
     public void desativar(Integer idPrograma) throws RegraDeNegocioException {
         ProgramaEntity programaEntity = findById(idPrograma);
-        programaEntity.setSituacao(Situacao.FECHADO);
+        programaEntity.setAtivo(Ativo.N);
         programaRepository.save(programaEntity);
     }
 
@@ -139,5 +146,11 @@ public class ProgramaService {
         if(programaEdicaoDTO.getDataFim().isBefore(programaEdicaoDTO.getDataInicio())) {
             throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
         }
+    }
+
+    public void fecharPrograma(Integer idPrograma) throws RegraDeNegocioException {
+        ProgramaEntity programa = findById(idPrograma);
+        programa.setSituacao(Situacao.FECHADO);
+            programaRepository.save(programa);
     }
 }

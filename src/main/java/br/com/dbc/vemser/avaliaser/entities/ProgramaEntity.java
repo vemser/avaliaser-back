@@ -45,6 +45,10 @@ public class ProgramaEntity {
     @Enumerated(EnumType.ORDINAL)
     private Situacao situacao;
 
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
+
     @JsonIgnore
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)
     private Set<AlunoEntity> alunos = new HashSet<>();

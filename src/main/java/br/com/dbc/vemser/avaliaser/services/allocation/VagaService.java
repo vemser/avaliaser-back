@@ -38,10 +38,11 @@ public class VagaService {
         verificarDatas(vagaCreate);
         ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
-        vagaCreate.setSituacao(Situacao.ABERTO);
         VagaEntity vagaEntity = converterEntity(vagaCreate);
         vagaEntity.setCliente(cliente);
         vagaEntity.getPrograma().add(programa);
+        vagaEntity.setSituacao(vagaCreate.getSituacao());
+        vagaEntity.setAtivo(Ativo.S);
         vagaEntity.setDataCriacao(LocalDate.now());
         vagaEntity = vagaRepository.save(vagaEntity);
         verificarClienteInativo(vagaEntity);
@@ -153,7 +154,8 @@ public class VagaService {
 
     public void deletar(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        vagaRepository.delete(vaga);
+        vaga.setAtivo(Ativo.N);
+        vagaRepository.save(vaga);
     }
 
     public VagaEntity findById(Integer idVaga) throws RegraDeNegocioException {
