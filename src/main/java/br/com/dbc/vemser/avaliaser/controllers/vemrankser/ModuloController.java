@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.controllers.vemrankser;
 
+import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +28,13 @@ import java.util.List;
 public class ModuloController {
 
     private final ModuloService moduloService;
+
+    @GetMapping("/listar-id-nome")
+    public ResponseEntity<PageDTO<ModuloDTO>> listbyname(@RequestParam(required = false) String nomeModulo,@RequestParam(required = false) Integer idModulo, Integer pagina, Integer tamanho
+                                                         ) throws RegraDeNegocioException {
+        PageDTO<ModuloDTO> modulo = moduloService.listByName(idModulo, nomeModulo, pagina, tamanho);
+        return new ResponseEntity<>(modulo, HttpStatus.OK);
+    }
 
     @Operation(summary = "Editar Modulo", description = "Editar modulos")
     @ApiResponses(

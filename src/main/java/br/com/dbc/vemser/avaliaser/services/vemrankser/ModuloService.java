@@ -1,11 +1,12 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
-import br.com.dbc.vemser.avaliaser.dto.allocation.vaga.VagaCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
+import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
@@ -17,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +40,25 @@ public class ModuloService {
     private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
 
+    public PageDTO<ModuloDTO> listByName(Integer idModulo, String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            Page<ModuloEntity> paginaDoRepositorio = filtrarModulos(idModulo, nome, pagina, tamanho);
+            List<ModuloDTO> moduloDTOS = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterEmDTO)
+                    .toList();
+
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    moduloDTOS);
+        }
+        List<ModuloDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    }
 
     public ModuloDTO criar(ModuloCreateDTO modulo) throws RegraDeNegocioException {
         verificarDatas(modulo);
@@ -168,6 +187,15 @@ public class ModuloService {
         if (moduloCreateDTO.getDataInicio().isAfter(moduloCreateDTO.getDataFim())) {
             throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
         }
+    }
+    private Page<ModuloEntity> filtrarModulos(Integer idModulo, String nome, Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (!(idModulo == null)) {
+            return moduloRepository.findAllByIdModulo(pageRequest, idModulo);
+        } else if (!(nome == null)) {
+            return moduloRepository.findAllByNomeContainingIgnoreCase(pageRequest, nome);
+        }
+        return moduloRepository.findAll(pageRequest);
     }
 
 
