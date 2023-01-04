@@ -1,11 +1,13 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.entities.pk.AtividadeAlunoPK;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +20,13 @@ public class AtividadeAlunoEntity {
     @Column(name = "nota")
     private Integer nota;
     @Column(name = "link")
-    private String Link;
+    private String link;
+
+    @Column(name = "data_entrega")
+    private LocalDateTime dataEntrega;
+
+    @Column(name = "situacao")
+    private Situacao situacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idAluno")

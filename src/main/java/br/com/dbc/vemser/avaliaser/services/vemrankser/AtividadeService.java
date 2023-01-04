@@ -6,15 +6,19 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.ModuloAtividadeDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.AtividadeAlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AtividadeEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.repositories.vemrankser.AtividadeAlunoRepository;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.AtividadeRepository;
 import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
@@ -27,16 +31,14 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class AtividadeService {
 
     private final AtividadeRepository atividadeRepository;
+    private final AtividadeAlunoRepository atividadeAlunoRepository;
     private final ModuloService moduloService;
     private final AlunoService alunoService;
     private final ProgramaService programaService;
@@ -65,7 +67,7 @@ public class AtividadeService {
         verificarDatas(atividadeCreateDTO);
         AtividadeEntity atividadeEntity = objectMapper.convertValue(atividadeCreateDTO, AtividadeEntity.class);
         atividadeEntity.setPrograma(programaService.findById(atividadeCreateDTO.getIdPrograma()));
-        atividadeEntity.setSituacao(Situacao.ABERTO);
+//        atividadeEntity.setSituacao(Situacao.ABERTO);
         atividadeEntity.setAtivo(Ativo.S);
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
@@ -80,6 +82,20 @@ public class AtividadeService {
         }
         atividadeRepository.save(atividadeEntity);
         return converterAtividadeDTO(atividadeEntity);
+    }
+
+    public AtividadeEntregaDTO entregarAtividade(AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) {
+        AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(atividadeEntregaCreateDTO.getIdAluno(), atividadeEntregaCreateDTO.getIdAtividade()).get();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+
+        atividadeAlunoEntity.setNota(0);
+        atividadeAlunoEntity.setLink(atividadeAlunoEntity.getLink());
+        atividadeAlunoEntity.setDataEntrega(now);
+        atividadeAlunoEntity.setSituacao(Situacao.ENTREGUE);
+
+        atividadeAlunoRepository.save(atividadeAlunoEntity);
+
+        return objectMapper.convertValue(atividadeAlunoEntity, AtividadeEntregaDTO.class);
     }
 
     public AtividadeDTO atualizarAtividade(Integer idAtividade, AtividadeCreateDTO atividadeAtualizar) throws RegraDeNegocioException {

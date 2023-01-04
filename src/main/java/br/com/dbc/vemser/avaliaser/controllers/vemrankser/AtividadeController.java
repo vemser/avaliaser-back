@@ -2,6 +2,8 @@ package br.com.dbc.vemser.avaliaser.controllers.vemrankser;
 
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
@@ -46,6 +48,20 @@ public class AtividadeController {
         log.info("Atividade criada com sucesso!");
 
         return new ResponseEntity<>(atividadeDTO, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Entregar Atividade", description = "Entregar Atividade no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Entrega com sucesso"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PutMapping("/entregar/{idAluno}{idAtividade}")
+    public ResponseEntity<AtividadeEntregaDTO> entregarAtividade(@PathVariable(name = "idAluno") Integer idAluno, @PathVariable(name = "idAtividade") Integer idAtividade, @RequestBody AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(atividadeService.entregarAtividade(atividadeEntregaCreateDTO), HttpStatus.OK);
+
     }
 
     @Operation(summary = "Atualizar Atividade", description = "Atualizar Ativade no banco de dados")
