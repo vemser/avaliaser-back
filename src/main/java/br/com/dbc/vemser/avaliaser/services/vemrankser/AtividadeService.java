@@ -89,7 +89,7 @@ public class AtividadeService {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
         atividadeAlunoEntity.setNota(0);
-        atividadeAlunoEntity.setLink(atividadeAlunoEntity.getLink());
+        atividadeAlunoEntity.setLink(atividadeEntregaCreateDTO.getLink());
         atividadeAlunoEntity.setDataEntrega(now);
         atividadeAlunoEntity.setSituacao(Situacao.ENTREGUE);
 

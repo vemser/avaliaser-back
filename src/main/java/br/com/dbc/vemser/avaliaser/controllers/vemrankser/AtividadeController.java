@@ -58,8 +58,8 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/entregar/{idAluno}{idAtividade}")
-    public ResponseEntity<AtividadeEntregaDTO> entregarAtividade(@PathVariable(name = "idAluno") Integer idAluno, @PathVariable(name = "idAtividade") Integer idAtividade, @RequestBody AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
+    @PutMapping("/entregar")
+    public ResponseEntity<AtividadeEntregaDTO> entregarAtividade(@RequestBody AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(atividadeService.entregarAtividade(atividadeEntregaCreateDTO), HttpStatus.OK);
 
     }

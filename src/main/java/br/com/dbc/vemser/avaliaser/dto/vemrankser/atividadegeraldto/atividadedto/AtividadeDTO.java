@@ -20,7 +20,7 @@ public class AtividadeDTO {
     private Integer pesoAtividade;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataEntrega;
-    private Situacao situacao;
+//    private Situacao situacao;
     private Ativo ativo;
     private ProgramaDTO programa;
     private List<AtividadeAlunoDTO> alunos;
