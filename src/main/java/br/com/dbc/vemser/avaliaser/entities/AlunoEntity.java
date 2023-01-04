@@ -88,4 +88,8 @@ public class AlunoEntity {
     )
     private Set<TecnologiaEntity> tecnologia = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id_aluno", referencedColumnName = "id_aluno")
+    private Set<ReservaAlocacaoEntity> reservaAlocacao;
 }

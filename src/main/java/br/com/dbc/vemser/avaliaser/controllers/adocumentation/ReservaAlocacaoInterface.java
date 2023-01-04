@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoEditarDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,18 +58,18 @@ public interface ReservaAlocacaoInterface {
             }
     )
     @PutMapping("/{idReservaAlocacao}")
-    ResponseEntity<ReservaAlocacaoDTO> editar(@Valid @RequestBody ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO,
+    ResponseEntity<ReservaAlocacaoDTO> editar(@Valid @RequestBody ReservaAlocacaoEditarDTO reservaAlocacaoEditarDTO,
                                               @PathVariable(name = "idReservaAlocacao") Integer idReservaAlocacao) throws RegraDeNegocioException;
 
-    @Operation(summary = "Deletar Reserva alocação", description = "Deleta  Reserva alocação do banco de dados")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "204", description = "Reserva alocação Deletada com sucesso"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @DeleteMapping("/{idReservaAlocacao}")
-    ResponseEntity<Void> deletar(@PathVariable(name = "idReservaAlocacao") Integer idReservaAlocacao) throws RegraDeNegocioException;
+//    @Operation(summary = "Deletar Reserva alocação", description = "Deleta  Reserva alocação do banco de dados")
+//    @ApiResponses(
+//            value = {
+//                    @ApiResponse(responseCode = "204", description = "Reserva alocação Deletada com sucesso"),
+//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+//                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
+//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+//            }
+//    )
+//    @DeleteMapping("/{idReservaAlocacao}")
+//    ResponseEntity<Void> deletar(@PathVariable(name = "idReservaAlocacao") Integer idReservaAlocacao) throws RegraDeNegocioException;
 }

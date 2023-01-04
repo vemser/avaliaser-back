@@ -4,6 +4,7 @@ package br.com.dbc.vemser.avaliaser.controllers.allocation;
 import br.com.dbc.vemser.avaliaser.controllers.adocumentation.ReservaAlocacaoInterface;
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao.ReservaAlocacaoEditarDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.allocation.ReservaAlocacaoService;
@@ -46,19 +47,19 @@ public class ReservaAlocacaoController implements ReservaAlocacaoInterface {
     }
 
     @Override
-    public ResponseEntity<ReservaAlocacaoDTO> editar(@Valid @RequestBody ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO,
+    public ResponseEntity<ReservaAlocacaoDTO> editar(@Valid @RequestBody ReservaAlocacaoEditarDTO reservaAlocacaoEditarDTO,
                                                      @PathVariable(name = "idReservaAlocacao") Integer idReservaAlocacao) throws RegraDeNegocioException {
         log.info("Editando Reserva alocação...");
-        ReservaAlocacaoDTO reservaAlocacaoDTO = reservaAlocacaoService.editar(idReservaAlocacao, reservaAlocacaoCreateDTO);
+        ReservaAlocacaoDTO reservaAlocacaoDTO = reservaAlocacaoService.editar(idReservaAlocacao, reservaAlocacaoEditarDTO);
         log.info("Reserva alocação editado com sucesso!");
         return new ResponseEntity<>(reservaAlocacaoDTO, HttpStatus.CREATED);
     }
 
-    @Override
-    public ResponseEntity<Void> deletar(Integer idReservaAlocacao) throws  RegraDeNegocioException {
-        reservaAlocacaoService.deletar(idReservaAlocacao);
-        log.info("Reserva alocação deletada com sucesso");
-        return ResponseEntity.noContent().build();
-    }
+//    @Override
+//    public ResponseEntity<Void> deletar(Integer idReservaAlocacao) throws  RegraDeNegocioException {
+//        reservaAlocacaoService.deletar(idReservaAlocacao);
+//        log.info("Reserva alocação deletada com sucesso");
+//        return ResponseEntity.noContent().build();
+//    }
 
 }

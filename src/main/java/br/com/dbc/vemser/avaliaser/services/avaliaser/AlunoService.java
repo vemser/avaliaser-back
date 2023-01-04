@@ -162,9 +162,9 @@ public class AlunoService {
     }
 
     public AlunoEntity alterarStatusAluno(Integer idAluno,
-                                          ReservaAlocacaoCreateDTO reservaAlocacaoCreateDTO) throws RegraDeNegocioException {
+                                          Situacao situacao) throws RegraDeNegocioException {
         AlunoEntity alunoEntity = findById(idAluno);
-        alunoEntity.setSituacao(reservaAlocacaoCreateDTO.getSituacao());
+        alunoEntity.setSituacao(situacao);
         return alunoRepository.save(alunoEntity);
     }
 
@@ -191,6 +191,10 @@ public class AlunoService {
                 throw new RegraDeNegocioException("Aluno não está disponivel!");
             }
         }
+    }
+
+    public void salvarAlteracoesAluno(AlunoEntity aluno){
+        alunoRepository.save(aluno);
     }
 
 

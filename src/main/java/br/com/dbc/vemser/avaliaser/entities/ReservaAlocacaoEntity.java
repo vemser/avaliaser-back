@@ -29,17 +29,8 @@ public class ReservaAlocacaoEntity {
     @Column(name = "motivo")
     private String motivo;
 
-    @Column(name = "data_reserva")
-    private LocalDate dataReserva;
-
-    @Column(name = "data_alocacao")
-    private LocalDate dataAlocacao;
-
-    @Column(name = "data_cancelamento")
-    private LocalDate dataCancelamento;
-
-    @Column(name = "data_finalizacao")
-    private LocalDate dataFinalizado;
+    @Column(name = "descricao")
+    private String descricao;
 
     @Column(name = "situacao")
     @Enumerated(EnumType.ORDINAL)

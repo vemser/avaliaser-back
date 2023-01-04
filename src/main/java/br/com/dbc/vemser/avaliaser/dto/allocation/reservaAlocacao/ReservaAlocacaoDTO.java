@@ -24,15 +24,6 @@ public class ReservaAlocacaoDTO {
     private AlunoDTO aluno;
     @Schema(description = "situacao do programa", example = "ABERTO")
     private Situacao situacao;
-    @Schema(example = "Motivo relacionado a qualquer alteração da situação do Aluno")
-    private String motivo;
-    @Schema(description = "Data reserva ", example = "2022-12-22")
-    private LocalDate dataReserva;
-    @Schema(description = "Data alocação ", example = "2022-12-24")
-    private LocalDate dataAlocacao;
-    @Schema(description = "Data cancelamento", example = "2022-12-26")
-    private LocalDate dataCancelamento;
-    @Schema(description = "Data de finalização", example = "2022-12-26")
-    private LocalDate dataFinalizado;
+    private String descricao;
 
 }

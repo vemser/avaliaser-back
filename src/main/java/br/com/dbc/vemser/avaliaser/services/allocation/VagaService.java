@@ -172,14 +172,23 @@ public class VagaService {
         return vagaRepository.findByNome(nome).orElseThrow(() -> new RegraDeNegocioException("Vaga não encontrada!"));
     }
 
-    public void alterarQuantidadeDeVagas(Integer idVaga) throws RegraDeNegocioException {
+    public void alterarQuantidadeDeVagas(Integer idVaga, boolean adicionar) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
         verificarClienteInativo(vaga);
-        if (vaga.getQuantidade() > 0) {
-            vaga.setQuantidade(vaga.getQuantidade() - 1);
-            vagaRepository.save(vaga);
-        } else {
-            throw new RegraDeNegocioException("Quantidades de Vagas foram prenchidas!");
+        if(adicionar == true){
+            if (vaga.getQuantidade() > 0 && !(vaga.getQuantidade() <= 0)) {
+                vaga.setQuantidade(vaga.getQuantidade() - 1);
+                vagaRepository.save(vaga);
+            } else {
+                throw new RegraDeNegocioException("Quantidades de Vagas foram prenchidas!");
+            }
+        }else{
+            if (vaga.getQuantidade() >= 0) {
+                vaga.setQuantidade(vaga.getQuantidade() + 1);
+                vagaRepository.save(vaga);
+            } else {
+                throw new RegraDeNegocioException("Não foi possivel alterar a quantidade de vagas.");
+            }
         }
     }
 
@@ -206,15 +215,17 @@ public class VagaService {
     public void adicionarQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
         vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() + 1);
+        alterarQuantidadeDeVagas(idVaga, true);
         vagaRepository.save(vaga);
     }
 
     public void removerQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        if (vaga.getQuantidadeAlocados() != null){
+        if (vaga.getQuantidadeAlocados() != null && !(vaga.getQuantidadeAlocados() <= 0)){
             vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() - 1);
+            alterarQuantidadeDeVagas(idVaga, false);
         }else {
-            throw new RegraDeNegocioException("Quantidades de alocados null!");
+            throw new RegraDeNegocioException("Quantidade de alocados não pode ficar menor que zero!");
         }
         vagaRepository.save(vaga);
     }
