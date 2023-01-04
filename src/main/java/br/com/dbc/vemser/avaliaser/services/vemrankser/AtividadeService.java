@@ -62,14 +62,14 @@ public class AtividadeService {
     }
 
     public AtividadeDTO createAtividade(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
-        verificarDatas(atividadeCreateDTO);
+
         AtividadeEntity atividadeEntity = objectMapper.convertValue(atividadeCreateDTO, AtividadeEntity.class);
         atividadeEntity.setPrograma(programaService.findById(atividadeCreateDTO.getIdPrograma()));
         atividadeEntity.setSituacao(Situacao.ABERTO);
         atividadeEntity.setAtivo(Ativo.S);
-
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         atividadeEntity.setDataCriacao(now);
+        verificarDatas(atividadeCreateDTO, atividadeEntity);
         atividadeEntity.setDataEntrega(atividadeCreateDTO.getDataEntrega());
 
         for (Integer modulos : atividadeCreateDTO.getModulos()) {
@@ -84,7 +84,7 @@ public class AtividadeService {
 
     public AtividadeDTO atualizarAtividade(Integer idAtividade, AtividadeCreateDTO atividadeAtualizar) throws RegraDeNegocioException {
         AtividadeEntity atividadeRecuperada = buscarPorIdAtividade(idAtividade);
-        verificarDatas(atividadeAtualizar);
+        verificarDatas(atividadeAtualizar, atividadeRecuperada);
         atividadeRecuperada.setTitulo(atividadeAtualizar.getTitulo());
         atividadeRecuperada.setDescricao(atividadeAtualizar.getDescricao());
         atividadeRecuperada.setDataEntrega(atividadeAtualizar.getDataEntrega());
@@ -148,8 +148,8 @@ public class AtividadeService {
         return atividadeDTO;
     }
 
-    private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
-        if (atividadeCreateDTO.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {
+    private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO, AtividadeEntity atividadeEntity) throws RegraDeNegocioException {
+        if (atividadeEntity.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {
             throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
         }
     }

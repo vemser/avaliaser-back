@@ -58,7 +58,7 @@ public class VagaController implements VagaInterfaceController {
 
     @Override
     public ResponseEntity<Void> deletar(Integer idVaga) throws RegraDeNegocioException {
-        vagaService.deletar(idVaga);
+        vagaService.fecharVaga(idVaga);
         log.info("Vaga deletado com sucesso");
         return ResponseEntity.noContent().build();
     }
