@@ -111,10 +111,9 @@ public class VagaService {
 
     public VagaDTO editar(Integer idVaga, VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
         verificarDatas(vagaCreate);
-        VagaEntity vagaEntity1 = findById(idVaga);
 
         if (vagaCreate.getSituacao().equals(Situacao.FECHADO)) {
-            fecharVaga(vagaEntity1);
+            fecharVaga(idVaga);
         }
         VagaEntity vagaEntity = objectMapper.convertValue(vagaCreate, VagaEntity.class);
 
@@ -196,7 +195,8 @@ public class VagaService {
         }
     }
 
-    public void fecharVaga(VagaEntity vaga) {
+    public void fecharVaga(Integer idVaga) throws RegraDeNegocioException {
+        VagaEntity vaga = findById(idVaga);
         if (vaga.getQuantidade() == 0) {
             vaga.setSituacao(Situacao.FECHADO);
             vagaRepository.save(vaga);

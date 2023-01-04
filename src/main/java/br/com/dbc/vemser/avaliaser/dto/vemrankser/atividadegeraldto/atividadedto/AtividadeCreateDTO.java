@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +24,6 @@ public class AtividadeCreateDTO {
     @Max(10)
     @Schema(description = "Peso da atividade", example = "2")
     private Integer pesoAtividade;
-
-    @NotNull
-    @FutureOrPresent
-    @Schema(description = "Data de início da atividade", example = "15/02/2023")
-    private LocalDateTime dataCriacao;
 
     @NotNull
     @FutureOrPresent
