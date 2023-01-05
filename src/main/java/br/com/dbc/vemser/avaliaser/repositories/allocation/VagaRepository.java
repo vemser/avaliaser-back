@@ -16,7 +16,11 @@ import java.util.Optional;
 @Repository
 public interface VagaRepository extends JpaRepository<VagaEntity, Integer> {
 
-    List<VagaEntity> findBySituacaoAndAtivo(Situacao situacao, Ativo ativo);
+    Page<VagaEntity> findBySituacaoAndAtivo(Pageable pageable, Situacao situacao, Ativo ativo);
+
+    Page<VagaEntity> findByIdVagaAndAtivo(Pageable pageable, Integer id, Ativo ativo);
+
+    Page<VagaEntity> findAllByAtivo(Pageable pageable, Ativo ativo);
 
     Page<VagaEntity> findAllByNomeContainingIgnoreCaseAndAtivo(Pageable pageable, String nome, Ativo ativo);
 

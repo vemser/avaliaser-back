@@ -25,7 +25,7 @@ public class ProgramaEdicaoDTO {
     @Schema(description = "Descrição do programa", example = "Programa de formação profissional trilha Backend Vem Ser DBC 10º edição.")
     private String descricao;
 
-    @NotBlank(message = "situacao não pode ser vazio ou nulo.")
+    @NotNull(message = "situacao não pode ser vazio ou nulo.")
     @Schema(description = "situacao do programa", example = "ABERTO")
     private Situacao situacao;
 

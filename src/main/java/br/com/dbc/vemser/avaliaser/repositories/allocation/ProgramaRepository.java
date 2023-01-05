@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface ProgramaRepository extends JpaRepository<ProgramaEntity, Integer> {
     Page<ProgramaEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
-    Optional<ProgramaEntity> findByIdProgramaAndAtivo(Ativo ativo, Integer id);
+    Optional<ProgramaEntity> findByIdProgramaAndAtivo(Integer id, Ativo ativo);
     Optional<ProgramaEntity> findAllByAtivo(Ativo ativo);
-    Page<ProgramaEntity> findAllByNomeContainingIgnoreCaseAndAtivo(Ativo ativo, String nome, Pageable pageable);
+    Page<ProgramaEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
 }

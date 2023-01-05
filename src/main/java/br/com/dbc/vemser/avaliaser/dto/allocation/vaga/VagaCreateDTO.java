@@ -32,20 +32,20 @@ public class VagaCreateDTO {
     private Integer idPrograma;
 
     @NotNull(message = "situacao não pode ser nulo.")
-    @Schema(description = "situacao da vaga", example = "ATIVO")
+    @Schema(description = "situacao da vaga", example = "ABERTO")
     private Situacao situacao;
 
-    @Schema(description = "Data abertura vaga", example = "2022-12-20")
+    @Schema(description = "Data abertura vaga", example = "2024-12-20")
     @FutureOrPresent
     private LocalDate dataAbertura;
 
-    @Schema(description = "Data fechamento vaga", example = "2022-12-26")
+    @Schema(description = "Data fechamento vaga", example = "2024-12-26")
     @FutureOrPresent
     private LocalDate dataFechamento;
 
 
     @NotNull(message = "Id cliente não pode ser vazio ou nulo.")
-    @Schema(description = "Id do cliente", example = "16")
+    @Schema(description = "Id do cliente", example = "1")
     private Integer idCliente;
 
 }
