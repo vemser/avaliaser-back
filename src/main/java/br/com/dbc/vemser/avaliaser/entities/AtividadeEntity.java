@@ -44,9 +44,6 @@ public class AtividadeEntity {
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;
 
-    @Column(name = "situacao")
-    private Situacao situacao;
-
     @Column(name = "descricao")
     private String descricao;
 
