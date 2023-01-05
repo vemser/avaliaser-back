@@ -19,13 +19,12 @@ public class ProgramaCreateDTO {
     @Schema(description = "Nome do programa", example = "VemSer 10ed")
     private String nome;
 
-    @NotBlank(message = "situacao não pode ser vazio ou nulo.")
+    @NotNull(message = "situacao não pode ser vazio ou nulo.")
     @Schema(description = "situacao do programa", example = "ABERTO")
     private Situacao situacao;
 
     @Schema(description = "Descrição do programa", example = "Programa de formação profissional trilha Backend Vem Ser DBC 10º edição.")
     private String descricao;
-
 
     @Schema(description = "Data de abertura programa", example = "2023-02-23")
     @NotNull

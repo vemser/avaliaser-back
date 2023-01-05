@@ -66,7 +66,7 @@ public class ProgramaService {
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<ProgramaEntity> paginaRepository = programaRepository
-                    .findAllByNomeContainingIgnoreCaseAndAtivo(Ativo.S, nome.trim().replaceAll("\\s+", " "), pageRequest);
+                    .findAllByNomeContainingIgnoreCaseAndAtivo(nome.trim().replaceAll("\\s+", " "),Ativo.S, pageRequest);
 
             List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
                     .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
@@ -81,7 +81,7 @@ public class ProgramaService {
 
     public ProgramaDTO buscarProgramaPorId(Integer idPrograma) throws RegraDeNegocioException {
 
-        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndAtivo(Ativo.S,idPrograma)
+        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndAtivo(idPrograma,Ativo.S)
                 .orElseThrow(()-> new RegraDeNegocioException("Não foi possivel localizar este programa!"));
         return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
@@ -107,9 +107,7 @@ public class ProgramaService {
         if (!programaEntity.getDataInicio().equals(programaEdicao.getDataInicio())) {
             programaEntity.setDataInicio(programaEdicao.getDataInicio());
         }
-        if (programaEdicao.getSituacao().equals(Situacao.FECHADO)) {
-            fecharPrograma(idPrograma);
-        }
+        programaEntity.setSituacao(programaEdicao.getSituacao());
         programaEntity.setDataFim(programaEdicao.getDataFim());
 
         ProgramaEntity programaSalvo = programaRepository.save(programaEntity);
@@ -123,7 +121,7 @@ public class ProgramaService {
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
-        return programaRepository.findByIdProgramaAndAtivo(Ativo.S, id)
+        return programaRepository.findByIdProgramaAndAtivo(id, Ativo.S)
                 .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
     }
 

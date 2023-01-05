@@ -67,10 +67,4 @@ public class ProgramaController implements ProgramaInterfaceController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/fechar-programa")
-    public ResponseEntity<ProgramaDTO> fecharPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        ProgramaDTO programa = programaService.fecharPrograma(idPrograma);
-        log.info("Programa desativado com sucesso");
-        return new ResponseEntity<>(programa, HttpStatus.OK);
-    }
 }

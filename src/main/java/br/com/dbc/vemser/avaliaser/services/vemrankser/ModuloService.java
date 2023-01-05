@@ -94,7 +94,7 @@ public class ModuloService {
 
     public void desativar(Integer id) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
-        moduloEntity.setAtivo(Ativo.valueOf("N"));
+        moduloEntity.setAtivo(Ativo.N);
         moduloRepository.save(moduloEntity);
     }
 

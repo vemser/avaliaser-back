@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,18 +35,8 @@ public class VagaController implements VagaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<PageDTO<VagaDTO>> listar(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        return ResponseEntity.ok(vagaService.listar(pagina, tamanho));
-    }
-
-    @Override
-    public ResponseEntity<PageDTO<VagaDTO>> listarPoId(Integer idVaga) throws RegraDeNegocioException {
-        return ResponseEntity.ok(vagaService.listarPorId(idVaga));
-    }
-
-    @Override
-    public ResponseEntity<PageDTO<VagaDTO>> listarPorNome(Integer pagina, Integer tamanho, String nome) throws RegraDeNegocioException {
-        return ResponseEntity.ok(vagaService.listarPorNome(pagina, tamanho, nome));
+    public ResponseEntity<PageDTO<VagaDTO>> listarPorNome(Integer idVaga, String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return ResponseEntity.ok(vagaService.listByName(idVaga,nome, pagina, tamanho));
     }
 
     @Override
@@ -58,15 +49,10 @@ public class VagaController implements VagaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<Void> deletar(Integer idVaga) throws RegraDeNegocioException {
+    public ResponseEntity<Void> desativar(Integer idVaga) throws RegraDeNegocioException {
         vagaService.desativar(idVaga);
-        log.info("Vaga deletado com sucesso");
+        log.info("Vaga desativada com sucesso");
         return ResponseEntity.noContent().build();
     }
-@PutMapping("/fechar-vaga")
-    public ResponseEntity<VagaDTO> fecharVaga(Integer idVaga) throws RegraDeNegocioException {
-        VagaDTO vaga = vagaService.fecharVaga(idVaga);
-        log.info("Vaga fechada com sucesso");
-        return new ResponseEntity<>(vaga, HttpStatus.CREATED);
-    }
+
 }
