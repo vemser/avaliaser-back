@@ -13,11 +13,14 @@ import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.VagaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,13 +80,15 @@ public class VagaService {
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         vagaEntity.setCliente(cliente);
         vagaEntity.getPrograma().add(programa);
+        vagaEntity.setQuantidade(vagaCreate.getQuantidade());
+        vagaEntity.setNome(vagaCreate.getNome());
         vagaEntity.setSituacao(vagaCreate.getSituacao());
         vagaEntity.setDataAbertura(vagaCreate.getDataAbertura());
         vagaEntity.setDataFechamento(vagaCreate.getDataFechamento());
         vagaEntity.setAtivo(Ativo.S);
         vagaEntity = vagaRepository.save(vagaEntity);
 
-        return converterEmDTO(vagaRepository.save(vagaEntity));
+        return converterEmDTO(vagaEntity);
     }
 
     public VagaDTO converterEmDTO(VagaEntity vagaEntity) {
