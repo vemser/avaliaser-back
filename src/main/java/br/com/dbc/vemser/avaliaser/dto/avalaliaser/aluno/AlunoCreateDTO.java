@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno;
 
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,8 +46,8 @@ public class AlunoCreateDTO {
     private String email;
 
     @NotNull(message = "Situação não pode ficar nulo.")
-    @Schema(example = "ALOCADO")
-    private Situacao situacao;
+    @Schema(example = "DISPONIVEL")
+    private SituacaoReserva situacao;
 
     @NotNull(message = "Descrição não pode ser nulo.")
     @NotBlank(message = "Descrição não pode ficar em branco.")
