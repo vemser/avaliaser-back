@@ -65,4 +65,12 @@ public class FeedBackController implements OperationControllerFeedBack {
         log.info("Alteração de dados de FeedBack realizada com sucesso!");
         return new ResponseEntity<>(feedBackDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/desativar-feedback/{idFeedBack}")
+    public ResponseEntity<FeedBackDTO> desativarFeed(@PathVariable("idFeedBack") Integer idFeedBack) throws RegraDeNegocioException {
+        log.info("Desativando FeedBack...");
+        feedbackService.desativarFeed(idFeedBack);
+        log.info("FeedBack desativado com sucesso!");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

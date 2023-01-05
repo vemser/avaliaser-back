@@ -106,7 +106,7 @@ public class ModuloService {
 
     }
 
-    private ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
+    public ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
         return new ModuloDTO(moduloEntity.getIdModulo(),
                 moduloEntity.getNome(),
                 moduloEntity.getAtivo(),

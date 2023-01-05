@@ -24,10 +24,11 @@ public class EditarFeedBackDTO {
     @NotBlank(message = "Descrição não pode ficar em branco.")
     @Schema(example = "Texto descritivo")
     private String descricao;
+    @NotNull(message = "Nome instrutor responsável não pode ser nulo.")
+    @NotBlank(message = "Nome do instrutor responsável não pode ser nulo.")
+    @Schema(example = "Carlos Alberto")
+    private String nomeInstrutor;
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
     private Tipo situacao;
-    @NotNull(message = "Data não pode ser nula.")
-    @Schema(example = "2022-12-01")
-    private LocalDate data;
 }

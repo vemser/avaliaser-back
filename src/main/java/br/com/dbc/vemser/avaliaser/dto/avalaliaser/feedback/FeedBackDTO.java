@@ -23,12 +23,9 @@ public class FeedBackDTO {
     private String descricao;
     @Schema(example = "POSITIVO")
     private Tipo situacao;
-    private LocalDate data;
     @Schema(example = "Carlos Alberto")
     private String nomeInstrutor;
     private AlunoDTO alunoDTO;
-    private ProgramaDTO programaDTO;
-    private TrilhaDTO trilhaDTO;
     private ModuloDTO moduloDTO;
 
 }
