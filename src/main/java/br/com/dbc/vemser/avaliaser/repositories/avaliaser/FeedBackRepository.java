@@ -11,9 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Integer> {
+    Optional<FeedBackEntity> findByIdFeedBackAndAtivo(Integer idAluno, Ativo ativo);
     Page<FeedBackEntity> findAllByAtivo(Pageable pageable, Ativo ativo);
 
     Page<FeedBackEntity> findAllByIdAlunoAndAtivo(Integer idAluno, Ativo ativo, Pageable pageable);
 
-    Optional<FeedBackEntity> findByIdFeedBackAndAtivo(Integer idAluno, Ativo ativo);
+    Page<FeedBackEntity> findByIdFeedBackAndAtivo(Integer idAluno, Ativo ativo, Pageable pageable);
+
+    Page<FeedBackEntity> findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
 }

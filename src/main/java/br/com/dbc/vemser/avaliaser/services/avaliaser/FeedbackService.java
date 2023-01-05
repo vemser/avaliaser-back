@@ -1,10 +1,10 @@
 package br.com.dbc.vemser.avaliaser.services.avaliaser;
 
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
@@ -29,14 +29,14 @@ public class FeedbackService {
     private final ModuloService moduloService;
     private final ObjectMapper objectMapper;
 
-    public PageDTO<FeedBackDTO> listarFeedBackPaginados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+
+    public PageDTO<FeedBackDTO> listarFeedBackPaginados(Integer idFeedBack, Integer idAluno, String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (tamanho > 0) {
-            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findAllByAtivo(pageRequest, Ativo.S);
-            List<FeedBackDTO> feedbackList = paginaDoRepositorio.getContent().stream()
+            Page<FeedBackEntity> paginaDoRepositorio = filtrarFeed(idFeedBack, idAluno, nome, pagina, tamanho);
+            List<FeedBackDTO> feedBackDTOS = paginaDoRepositorio.getContent().stream()
                     .map(this::converterParaFeedbackDTO)
                     .toList();
 
@@ -44,36 +44,10 @@ public class FeedbackService {
                     paginaDoRepositorio.getTotalPages(),
                     pagina,
                     tamanho,
-                    feedbackList
-            );
+                    feedBackDTOS);
         }
         List<FeedBackDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
-    }
-
-    public PageDTO<FeedBackDTO> listarFeedBackPorAlunoPaginados(Integer id, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        alunoService.findById(id);
-        if (tamanho < 0 || pagina < 0) {
-            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
-        }
-
-        if (tamanho > 0) {
-            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findAllByIdAlunoAndAtivo(id, Ativo.S, pageRequest);
-            List<FeedBackDTO> feedbackList = paginaDoRepositorio.getContent().stream()
-                    .map(this::converterParaFeedbackDTO)
-                    .toList();
-
-            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                    paginaDoRepositorio.getTotalPages(),
-                    pagina,
-                    tamanho,
-                    feedbackList
-            );
-        }
-        List<FeedBackDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
-
     }
 
     public FeedBackDTO cadastrarFeedBack(FeedBackCreateDTO feedBackCreateDTO) throws RegraDeNegocioException {
@@ -122,6 +96,19 @@ public class FeedbackService {
     public FeedBackDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
         FeedBackEntity feedBackEntity = findById(id);
         return converterParaFeedbackDTO(feedBackEntity);
+    }
+
+    private Page<FeedBackEntity> filtrarFeed(Integer idFeedBack, Integer idAluno, String nome, Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (!(idAluno == null)) {
+            return feedBackRepository.findAllByIdAlunoAndAtivo(idAluno, Ativo.S,pageRequest);
+        }else if (!(idFeedBack == null)){
+            return feedBackRepository.findByIdFeedBackAndAtivo(idFeedBack, Ativo.S, pageRequest);
+        }
+        else if (!(nome == null)) {
+            return feedBackRepository.findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(nome, Ativo.S,pageRequest);
+        }
+        return feedBackRepository.findAllByAtivo(pageRequest,Ativo.S);
     }
 
     public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback)  {

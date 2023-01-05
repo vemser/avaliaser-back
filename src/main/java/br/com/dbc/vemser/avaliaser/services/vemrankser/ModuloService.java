@@ -178,7 +178,7 @@ public class ModuloService {
         } else if (!(nome == null)) {
             return moduloRepository.findAllByNomeContainingIgnoreCaseAndAtivo(pageRequest, nome, Ativo.S);
         }
-        return moduloRepository.findAll(pageRequest);
+        return moduloRepository.findAllByAtivo(Ativo.S,pageRequest);
     }
 
 

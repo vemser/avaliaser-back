@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -21,23 +22,10 @@ public interface OperationControllerFeedBack {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(Integer page, Integer size) throws RegraDeNegocioException;
-
-    @Operation(summary = "Listar feedbacks Cadastrados por Aluno", description = "Realiza a listagem de todos os feedbacks já cadastrados no sistema, filtrados por Aluno.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
-            @ApiResponse(responseCode = "400", description = "Feedbacks não localizados, verifique se o ID inserido está correto."),
-            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-    })
-    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPorAlunoPaginado(@PathVariable(required = false, name = "idAluno") Integer idAluno, Integer page, Integer size) throws RegraDeNegocioException;
-
-    @Operation(summary = "Busca feedbacks por Id", description = "Realiza busca de feedbacks cadastrados por ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Feedback não localizado, verifique se o ID inserido está correto."),
-            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-    })
-    ResponseEntity<FeedBackDTO> buscarFeedBackPorId(@PathVariable("idFeedBack") Integer idFeedBack) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(@RequestParam(required = false)Integer idFeedback,
+                                                                @RequestParam(required = false)Integer idAluno,
+                                                                @RequestParam(required = false)String nome,
+                                                                Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualiza dados de feedbacks por ID", description = "Realiza a busca de feedbacks por ID, e realiza alteração de dados deste acompanhamentos: idAluno,Descrição,Status.")
     @ApiResponses(value = {
