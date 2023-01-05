@@ -29,12 +29,6 @@ public class ModuloEntity {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "data_inicio")
-    private LocalDate dataInicio;
-
-    @Column(name = "data_fim")
-    private LocalDate dataFim;
-
     @Column(name = "ativo")
     @Enumerated(EnumType.ORDINAL)
     private Ativo ativo;
