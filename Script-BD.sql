@@ -30,6 +30,7 @@ CREATE TABLE VAGA (
   data_fechamento DATE,
   data_criacao DATE NOT NULL,
   situacao CHAR(1) NOT NULL,
+  ativo CHAR(1) NOT NULL,
   PRIMARY KEY (id_vaga),
   CONSTRAINT FK_VAGA_CLIENTE
     FOREIGN KEY (id_cliente)
@@ -50,6 +51,7 @@ CREATE TABLE PROGRAMA (
   data_inicio DATE NOT NULL,
   data_fim DATE NOT NULL,
   situacao CHAR(1) NOT NULL,
+  ativo CHAR(1) NOT NULL,
   descricao VARCHAR2(2000),
   PRIMARY KEY (id_programa)
 );
@@ -127,21 +129,20 @@ CREATE TABLE VAGA_PROGRAMA (
 );
 
 CREATE TABLE ATIVIDADE (
-  id_atividade NUMBER,
-  titulo VARCHAR2(255) NOT NULL,
-  data_criacao DATE NOT NULL,
-  data_entrega DATE NOT NULL,
-  nome_instrutor VARCHAR2(255),
-  situacao CHAR(1) NOT NULL,
-  ativo CHAR(1) NOT NULL,
-  descricao VARCHAR2(2000) NOT NULL,
-  peso_atividade NUMBER(10) NOT NULL,
-  link VARCHAR2(255),
-  id_programa NUMBER NOT NULL,
-  PRIMARY KEY (id_atividade),
-  CONSTRAINT FK_ATIV_PROG
-    FOREIGN KEY (id_programa)
-      REFERENCES PROGRAMA(id_programa)
+id_atividade NUMBER,
+ titulo VARCHAR2(255) NOT NULL,
+data_criacao DATE NOT NULL,
+data_entrega DATE NOT NULL,
+nome_instrutor VARCHAR2(255),
+ativo CHAR(1) NOT NULL,
+descricao VARCHAR2(2000) NOT NULL,
+peso_atividade NUMBER(10) NOT NULL,
+link VARCHAR2(255),
+id_programa NUMBER NOT NULL,
+PRIMARY KEY (id_atividade),
+CONSTRAINT FK_ATIV_PROG
+FOREIGN KEY (id_programa)
+ REFERENCES PROGRAMA(id_programa)
 );
 
 CREATE TABLE MODULO_ATIVIDADE (
@@ -210,13 +211,11 @@ CREATE TABLE ALUNO_TECNOLOGIA (
 CREATE TABLE RESERVA_ALOCACAO (
   id_reserva_alocacao NUMBER,
   motivo VARCHAR2(2000) NOT NULL,
-  data_reserva DATE,
-  data_alocacao DATE,
-  data_cancelamento DATE,
-  data_finalizacao DATE,
   situacao CHAR(1) NOT NULL,
   id_aluno NUMBER,
   id_vaga NUMBER,
+  ativo CHAR(1) NOT NULL,
+  descricao VARCHAR2(512),
   PRIMARY KEY (id_reserva_alocacao),
   CONSTRAINT FK_RESERVA_ALOC_ALUNO
     FOREIGN KEY (id_aluno)
@@ -253,16 +252,18 @@ CREATE TABLE TRILHA_MODULO (
 );
 
 CREATE TABLE ATIVIDADE_ALUNO (
-  id_aluno NUMBER NOT NULL,
-  id_atividade NUMBER NOT NULL,
-  nota NUMBER,
-  link VARCHAR2(2500),
-  CONSTRAINT FK_ATIVIDADE_ALUNO
-    FOREIGN KEY (id_aluno)
-      REFERENCES ALUNO(id_aluno),
-  CONSTRAINT FK_ATIV_ALUNO_ATIV
-    FOREIGN KEY (id_atividade)
-      REFERENCES ATIVIDADE(id_atividade)
+id_aluno NUMBER NOT NULL,
+ id_atividade NUMBER NOT NULL,
+nota NUMBER,
+link VARCHAR2(2500),
+data_entrega DATE NOT NULL,
+situacao CHAR(1) NOT NULL,
+CONSTRAINT FK_ATIVIDADE_ALUNO
+FOREIGN KEY (id_aluno)
+REFERENCES ALUNO(id_aluno),
+CONSTRAINT FK_ATIV_ALUNO_ATIV
+FOREIGN KEY (id_atividade)
+REFERENCES ATIVIDADE(id_atividade)
 );
 
 CREATE SEQUENCE SEQ_RESERVA_ALOCACAO
