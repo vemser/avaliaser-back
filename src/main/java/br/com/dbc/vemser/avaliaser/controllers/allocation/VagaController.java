@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,8 +59,14 @@ public class VagaController implements VagaInterfaceController {
 
     @Override
     public ResponseEntity<Void> deletar(Integer idVaga) throws RegraDeNegocioException {
-        vagaService.fecharVaga(idVaga);
+        vagaService.desativar(idVaga);
         log.info("Vaga deletado com sucesso");
         return ResponseEntity.noContent().build();
+    }
+@PutMapping("/fechar-vaga")
+    public ResponseEntity<VagaDTO> fecharVaga(Integer idVaga) throws RegraDeNegocioException {
+        VagaDTO vaga = vagaService.fecharVaga(idVaga);
+        log.info("Vaga fechada com sucesso");
+        return new ResponseEntity<>(vaga, HttpStatus.CREATED);
     }
 }

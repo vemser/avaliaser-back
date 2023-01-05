@@ -191,9 +191,9 @@ public class ModuloService {
     private Page<ModuloEntity> filtrarModulos(Integer idModulo, String nome, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idModulo == null)) {
-            return moduloRepository.findAllByIdModulo(pageRequest, idModulo);
+            return moduloRepository.findAllByIdModuloAndAtivo(pageRequest, idModulo, Ativo.S);
         } else if (!(nome == null)) {
-            return moduloRepository.findAllByNomeContainingIgnoreCase(pageRequest, nome);
+            return moduloRepository.findAllByNomeContainingIgnoreCaseAndAtivo(pageRequest, nome, Ativo.S);
         }
         return moduloRepository.findAll(pageRequest);
     }

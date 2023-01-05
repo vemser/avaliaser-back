@@ -12,8 +12,8 @@ import java.util.Optional;
 
 public interface ModuloRepository extends JpaRepository<ModuloEntity, Integer> {
 
-    Page<ModuloEntity> findAllByNomeContainingIgnoreCase(Pageable pageable, String nome);
-    Page<ModuloEntity> findAllByIdModulo(Pageable pageable, Integer id);
+    Page<ModuloEntity> findAllByNomeContainingIgnoreCaseAndAtivo(Pageable pageable, String nome, Ativo ativo);
+    Page<ModuloEntity> findAllByIdModuloAndAtivo(Pageable pageable, Integer id, Ativo ativo);
     Optional<ModuloEntity> findByIdModuloAndAtivo(Integer idModulo, Ativo ativo);
     Page<ModuloEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
 
