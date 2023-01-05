@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -43,7 +44,7 @@ public class AlunoEntity {
 
     @Column(name = "situacao")
     @Enumerated(EnumType.ORDINAL)
-    private Situacao situacao;
+    private SituacaoReserva situacao;
 
     @Column(name = "descricao")
     private String descricao;

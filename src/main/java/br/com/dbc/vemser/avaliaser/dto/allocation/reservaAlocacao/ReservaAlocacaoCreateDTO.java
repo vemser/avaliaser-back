@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao;
 
 
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,5 @@ public class ReservaAlocacaoCreateDTO {
     private String descricao;
     @NotNull(message = "Campo não pode ser nulo")
     @Schema(description = "Status Alocação Aluno", example = "RESERVADO")
-    private Situacao situacao;
+    private SituacaoReserva situacao;
 }

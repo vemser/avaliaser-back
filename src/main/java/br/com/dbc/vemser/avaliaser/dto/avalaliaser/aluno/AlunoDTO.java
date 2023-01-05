@@ -3,7 +3,7 @@ package br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,8 +27,8 @@ public class AlunoDTO {
     private String email;
     @Schema(example = "(11)98888-1234")
     private String telefone;
-    @Schema(example = "ALOCADO")
-    private Situacao situacao;
+    @Schema(example = "DISPONIVEL")
+    private SituacaoReserva situacao;
     @Schema(example = "Descrição breve do aluno")
     private String descricao;
     @Schema(example = "100")
