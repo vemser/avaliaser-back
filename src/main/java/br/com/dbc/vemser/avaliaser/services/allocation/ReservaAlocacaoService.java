@@ -82,27 +82,27 @@ public class ReservaAlocacaoService {
         }
     }
 
-    public PageDTO<ReservaAlocacaoDTO> filtrar(Integer page, Integer size, String nomeAluno, String nomeVaga) throws RegraDeNegocioException {
+    public PageDTO<ReservaAlocacaoDTO> filtrar(Integer page, Integer size, String nome) throws RegraDeNegocioException {
         if (size < 0 || page < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (size > 0) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+            if(nome == null){
+                nome = "";
+            }
+            PageRequest pageRequest = PageRequest.of(page, size);
 
-        nomeAluno = nomeAluno != null ? "%" + nomeAluno + "%" : null;
-        nomeVaga = nomeVaga != null ? "%" + nomeVaga + "%" : null;
+            Page<ReservaAlocacaoEntity> reservaAlocacaoEntityPage = reservaAlocacaoRepository
+                    .findAllByAluno_NomeContainingIgnoreCaseOrVaga_Cliente_NomeContainingIgnoreCaseOrVaga_NomeContainingIgnoreCase(nome, nome, nome, pageRequest);
 
+            List<ReservaAlocacaoDTO> reservaAlocacaoDTOList = getReservaAlocacaoDTOS(reservaAlocacaoEntityPage);
 
-        Page<ReservaAlocacaoEntity> reservaAlocacaoEntityPage = reservaAlocacaoRepository
-                .findAllByFiltro(pageRequest, nomeAluno, nomeVaga);
+            return new PageDTO<>(reservaAlocacaoEntityPage.getTotalElements(),
+                    reservaAlocacaoEntityPage.getTotalPages(),
+                    page,
+                    size,
+                    reservaAlocacaoDTOList);
 
-        List<ReservaAlocacaoDTO> reservaAlocacaoDTOList = getReservaAlocacaoDTOS(reservaAlocacaoEntityPage);
-
-        return new PageDTO<>(reservaAlocacaoEntityPage.getTotalElements(),
-                reservaAlocacaoEntityPage.getTotalPages(),
-                page,
-                size,
-                reservaAlocacaoDTOList);
         }
         List<ReservaAlocacaoDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, size, listaVazia);

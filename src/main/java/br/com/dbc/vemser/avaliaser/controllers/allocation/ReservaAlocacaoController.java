@@ -34,9 +34,10 @@ public class ReservaAlocacaoController implements ReservaAlocacaoInterface {
     }
 
     @Override
-    public ResponseEntity<PageDTO<ReservaAlocacaoDTO>> filtrar(Integer pagina, Integer tamanho, String nomeAluno, String nomeVaga) throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<ReservaAlocacaoDTO>> filtrar(Integer pagina, Integer tamanho,
+                                                               @RequestParam(name = "nome", required = false) String nome) throws RegraDeNegocioException {
         log.info("Listando Reservas e Alocações...");
-        PageDTO<ReservaAlocacaoDTO> listagem = reservaAlocacaoService.filtrar(pagina, tamanho, nomeAluno, nomeVaga);
+        PageDTO<ReservaAlocacaoDTO> listagem = reservaAlocacaoService.filtrar(pagina, tamanho, nome);
         log.info("Listagem realizada com sucesso.");
         return ResponseEntity.ok(listagem);
     }
