@@ -4,11 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="3" author="lucas">
+    <changeSet id="4" author="noah">
         <sql dbms="oracle">
-            ALTER TABLE atividade_aluno MODIFY data_entrega DATE NULL;
-            ALTER TABLE atividade_aluno MODIFY situacao CHAR(1) NULL;
-
+            ALTER TABLE FEEDBACK ADD DATA DATE NOT NULL;
         </sql>
     </changeSet>
 </databaseChangeLog>
