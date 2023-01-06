@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -123,6 +125,27 @@ public class AlunoService {
         AlunoEntity aluno = findById(id);
         aluno.setAtivo(Ativo.N);
         alunoRepository.save(aluno);
+    }
+    public PageDTO<AlunoDTO> listarDisponiveis(Integer page, Integer size) throws RegraDeNegocioException {
+        if (page < 0 || size < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            Page<AlunoEntity> paginaRepository = alunoRepository.findAllBySituacao(pageRequest, SituacaoReserva.DISPONIVEL);
+
+            List<AlunoDTO> alunoDTOList = paginaRepository.getContent().stream()
+                    .map(this::converterAlunoDTO)
+                    .collect(Collectors.toList());
+
+            return new PageDTO<>(paginaRepository.getTotalElements(),
+                    paginaRepository.getTotalPages(),
+                    page,
+                    size,
+                    alunoDTOList);
+        }
+        List<AlunoDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
     private Page<AlunoEntity> filtrarAlunos(Integer idAluno, String nome, String email, Integer pagina, Integer tamanho) {

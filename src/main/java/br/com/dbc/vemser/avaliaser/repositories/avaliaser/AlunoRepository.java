@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.repositories.avaliaser;
 
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,7 @@ public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
     //    Optional<AlunoEntity> findByAtivoAndIdAluno(Ativo ativo, Integer idUsuario);
 //
     Page<AlunoEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+    Page<AlunoEntity> findAllBySituacao(Pageable pageable, SituacaoReserva situacao);
 
     Page<AlunoEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
 

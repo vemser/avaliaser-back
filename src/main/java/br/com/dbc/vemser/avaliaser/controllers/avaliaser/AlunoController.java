@@ -34,6 +34,10 @@ public class AlunoController implements OperationControllerAluno {
         log.info("Retorno de dados de Aluno em lista paginada, realizado com sucesso!");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }
+    @Override
+    public ResponseEntity<PageDTO<AlunoDTO>> disponiveis(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return ResponseEntity.ok(alunoService.listarDisponiveis(pagina, tamanho));
+    }
 
     @GetMapping("/{idAluno}")
     public ResponseEntity<AlunoDTO> buscarAlunoPorId(@PathVariable Integer idAluno) throws RegraDeNegocioException {
