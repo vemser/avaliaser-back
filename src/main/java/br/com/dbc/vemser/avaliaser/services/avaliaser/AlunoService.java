@@ -52,7 +52,10 @@ public class AlunoService {
     }
 
     public AlunoDTO findByEmail(String email) throws RegraDeNegocioException {
-        AlunoEntity alunoEntity = alunoRepository.findByEmailContainingIgnoreCase(email)
+        if(!email.contains("@")){
+            email = email + "@dbccompany.com.br";
+        }
+        AlunoEntity alunoEntity = alunoRepository.findByEmail(email)
                 .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado!"));
         return converterAlunoDTO(alunoEntity);
     }
