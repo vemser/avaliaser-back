@@ -6,6 +6,6 @@ import lombok.Data;
 public class AtividadeEntregaCreateDTO {
 
     private Integer idAtividade;
-    private Integer idAluno;
+    private String email;
     private String link;
 }
