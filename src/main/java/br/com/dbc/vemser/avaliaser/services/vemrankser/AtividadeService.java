@@ -197,9 +197,6 @@ public class AtividadeService {
                     return atividadeMuralAlunoDTO;
                 })
                 .toList();
-        if (atividadeMuralAlunoDTOS.isEmpty()) {
-            throw new RegraDeNegocioException("Atividade ou aluno inválido. ");
-        }
 
         return new PageDTO<>(atividadeAlunoEntities.getTotalElements(),
                 atividadeAlunoEntities.getTotalPages(),
