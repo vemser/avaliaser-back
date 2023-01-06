@@ -71,14 +71,8 @@ public class FeedbackService {
 
     public FeedBackDTO editarFeedBack(Integer id, EditarFeedBackDTO editarFeedBackDTO) throws RegraDeNegocioException {
         FeedBackEntity feedBackEntity = findById(id);
-        AlunoEntity alunoEntity = alunoService.findById(editarFeedBackDTO.getIdAluno());
-        ModuloEntity moduloEntity = moduloService.buscarPorIdModulo(editarFeedBackDTO.getIdModulo());
-        feedBackEntity.setAlunoEntity(alunoEntity);
-        feedBackEntity.setModuloEntity(moduloEntity);
         feedBackEntity.setDescricao(editarFeedBackDTO.getDescricao());
         feedBackEntity.setSituacao(editarFeedBackDTO.getSituacao());
-        feedBackEntity.setNomeInstrutor(editarFeedBackDTO.getNomeInstrutor());
-        feedBackEntity.setData(editarFeedBackDTO.getData());
         feedBackEntity.setAtivo(Ativo.S);
         FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackRepository.save(feedBackEntity));
         return feedBackDTO;

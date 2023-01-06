@@ -14,23 +14,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class EditarFeedBackDTO {
-    @NotNull(message = "Campo Id Aluno não pode ser nulo.")
-    @Schema(example = "1")
-    private Integer idAluno;
-    @NotNull(message = "Campo Id Modulo não pode ser nulo.")
-    @Schema(example = "1")
-    private Integer idModulo;
+
     @NotNull(message = "Descrição não pode ser nulo.")
     @NotBlank(message = "Descrição não pode ficar em branco.")
     @Schema(example = "Texto descritivo")
     private String descricao;
-    @NotNull(message = "Nome instrutor responsável não pode ser nulo.")
-    @NotBlank(message = "Nome do instrutor responsável não pode ser nulo.")
-    @Schema(example = "Carlos Alberto")
-    private String nomeInstrutor;
-    @NotNull(message = "Data não pode ser nula.")
-    @Schema(example = "2023-12-01")
-    private LocalDate data;
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
     private Tipo situacao;
