@@ -17,17 +17,7 @@ public class ModuloCreateDTO {
     @Schema(description = "nome do modulo", example = "OOP")
     private String nome;
 
-    @NotNull(message = "Campo não pode estar ser nulo!")
-    @Schema(description = "Data inicial do modulo ", example = "26/11/2022")
-    @FutureOrPresent
-    private LocalDate dataInicio;
-
-    @NotNull(message = "Campo não pode estar ser nulo!")
-    @Schema(description = "Data para o fim do modulo ", example = "30/11/2022")
-    @FutureOrPresent
-    private LocalDate dataFim;
-
-    @NotNull(message = "Campo não pode estar em branco ou nulo!")
+       @NotNull(message = "Campo não pode estar em branco ou nulo!")
     private Integer idTrilha;
 
     @NotNull(message = "Campo não pode estar em branco ou nulo!")

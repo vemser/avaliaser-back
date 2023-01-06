@@ -6,10 +6,8 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliarDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeAlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.ModuloAtividadeDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.*;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
@@ -36,6 +34,7 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,14 +67,14 @@ public class AtividadeService {
     }
 
     public AtividadeDTO createAtividade(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
-        verificarDatas(atividadeCreateDTO);
+
         AtividadeEntity atividadeEntity = objectMapper.convertValue(atividadeCreateDTO, AtividadeEntity.class);
         atividadeEntity.setPrograma(programaService.findById(atividadeCreateDTO.getIdPrograma()));
 //        atividadeEntity.setSituacao(Situacao.ABERTO);
         atividadeEntity.setAtivo(Ativo.S);
-
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         atividadeEntity.setDataCriacao(now);
+        verificarDatas(atividadeCreateDTO, atividadeEntity);
         atividadeEntity.setDataEntrega(atividadeCreateDTO.getDataEntrega());
 
         for (Integer modulos : atividadeCreateDTO.getModulos()) {
@@ -84,16 +83,24 @@ public class AtividadeService {
         for (Integer alunos : atividadeCreateDTO.getAlunos()) {
             atividadeEntity.getAlunos().add(alunoService.findById(alunos));
         }
-        atividadeRepository.save(atividadeEntity);
+        atividadeEntity = atividadeRepository.save(atividadeEntity);
+
+        for (Integer alunos : atividadeCreateDTO.getAlunos()) {
+            AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(alunos, atividadeEntity.getIdAtividade()).get();
+            atividadeAlunoEntity.setSituacao(Situacao.PENDENTE);
+            atividadeAlunoRepository.save(atividadeAlunoEntity);
+        }
+
         return converterAtividadeDTO(atividadeEntity);
     }
 
-    public AtividadeEntregaDTO entregarAtividade(AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) {
-        AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(atividadeEntregaCreateDTO.getIdAluno(), atividadeEntregaCreateDTO.getIdAtividade()).get();
+    public AtividadeEntregaDTO entregarAtividade(AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
+        AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(atividadeEntregaCreateDTO.getIdAluno(), atividadeEntregaCreateDTO.getIdAtividade())
+                .orElseThrow(() -> new RegraDeNegocioException("Atividade não encontrada."));
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
         atividadeAlunoEntity.setNota(0);
-        atividadeAlunoEntity.setLink(atividadeAlunoEntity.getLink());
+        atividadeAlunoEntity.setLink(atividadeEntregaCreateDTO.getLink());
         atividadeAlunoEntity.setDataEntrega(now);
         atividadeAlunoEntity.setSituacao(Situacao.ENTREGUE);
 
@@ -104,7 +111,7 @@ public class AtividadeService {
 
     public AtividadeDTO atualizarAtividade(Integer idAtividade, AtividadeCreateDTO atividadeAtualizar) throws RegraDeNegocioException {
         AtividadeEntity atividadeRecuperada = buscarPorIdAtividade(idAtividade);
-        verificarDatas(atividadeAtualizar);
+        verificarDatas(atividadeAtualizar, atividadeRecuperada);
         atividadeRecuperada.setTitulo(atividadeAtualizar.getTitulo());
         atividadeRecuperada.setDescricao(atividadeAtualizar.getDescricao());
         atividadeRecuperada.setDataEntrega(atividadeAtualizar.getDataEntrega());
@@ -210,12 +217,41 @@ public class AtividadeService {
     }
 
 
-    private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
-        if (atividadeCreateDTO.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {
+    private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO, AtividadeEntity atividadeEntity) throws RegraDeNegocioException {
+        if (atividadeEntity.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {
             throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
         }
     }
 
+    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, Integer idAluno, Situacao situacao) throws RegraDeNegocioException {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_IdAlunoAndSituacao(pageRequest, idAluno, situacao);
+
+        List<AtividadeMuralAlunoDTO> atividadeMuralAlunoDTOS = atividadeAlunoEntities.getContent()
+                .stream()
+                .map(atividadeAlunoEntity-> {
+                    AtividadeEntity atividadeEntity = atividadeAlunoEntity.getAtividade();
+                    AtividadeMuralAlunoDTO atividadeMuralAlunoDTO = objectMapper.convertValue(atividadeEntity, AtividadeMuralAlunoDTO.class);
+                    atividadeMuralAlunoDTO.setDataEntregaAluno(atividadeAlunoEntity.getDataEntrega());
+                    atividadeMuralAlunoDTO.setDataEntregaLimite(atividadeEntity.getDataEntrega());
+                    atividadeMuralAlunoDTO.setLink(atividadeAlunoEntity.getLink());
+                    atividadeMuralAlunoDTO.setSituacao(atividadeAlunoEntity.getSituacao());
+                    atividadeMuralAlunoDTO.setNota(atividadeAlunoEntity.getNota());
+                    atividadeMuralAlunoDTO.setPrograma(objectMapper.convertValue(atividadeEntity.getPrograma(), ProgramaDTO.class));
+
+                    return atividadeMuralAlunoDTO;
+                })
+                .toList();
+        if (atividadeMuralAlunoDTOS.isEmpty()) {
+            throw new RegraDeNegocioException("Atividade ou aluno inválido. ");
+        }
+
+        return new PageDTO<>(atividadeAlunoEntities.getTotalElements(),
+                atividadeAlunoEntities.getTotalPages(),
+                pagina,
+                tamanho,
+                atividadeMuralAlunoDTOS);
+    }
 
 //    public AtividadeDTO colocarAtividadeComoConcluida(Integer idAtividade) throws RegraDeNegocioException {
 //        AtividadeEntity atividadeEntity = buscarPorIdAtividade(idAtividade);

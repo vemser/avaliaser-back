@@ -22,10 +22,6 @@ public class ModuloDTO  {
     private Integer idModulo;
     @Schema(description = "nome do modulo", example = "OOP")
     private String nome;
-    @Schema(description = "Data inicial do modulo ", example = "26/11/2022")
-    private LocalDate dataInicio;
-    @Schema(description = "Data para o fim do modulo ", example = "30/11/2022")
-    private LocalDate dataFim;
     @Schema(description = "Status do modulo", example = "ATIVO")
     private Ativo ativo;
     private TrilhaDTO trilhaDTO;

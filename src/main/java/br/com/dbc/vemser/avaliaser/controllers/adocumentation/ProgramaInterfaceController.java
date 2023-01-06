@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,7 +67,7 @@ public interface ProgramaInterfaceController {
             }
     )
     @PutMapping("/{idPrograma}")
-    ResponseEntity<ProgramaDTO> editar(@Valid @RequestBody ProgramaCreateDTO programaCreate,
+    ResponseEntity<ProgramaDTO> editar(@Valid @RequestBody ProgramaEdicaoDTO programaEdicaoDTO,
                                        @PathVariable(name = "idPrograma") Integer idPrograma) throws RegraDeNegocioException;
 
     @Operation(summary = "Desativar programa", description = "Desativar o programa no banco de dados")

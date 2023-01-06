@@ -6,11 +6,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class AtividadeEntregaDTO extends AtividadeEntregaCreateDTO{
+public class AtividadeEntregaDTO {
 
-    private Integer idAtividade;
-    private Integer idAluno;
-    private String texto;
+    private String link;
     private Integer nota;
     private LocalDateTime dataEntrega;
     private Situacao situacao;

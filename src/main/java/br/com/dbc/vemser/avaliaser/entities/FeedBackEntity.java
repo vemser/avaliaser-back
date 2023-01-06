@@ -1,11 +1,14 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.Tipo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -33,6 +36,13 @@ public class FeedBackEntity {
 
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;
+
+    @Column(name = "data")
+    private LocalDate data;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

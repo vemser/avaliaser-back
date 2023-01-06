@@ -20,8 +20,6 @@ public class FeedBackCreateDTO {
     private Integer idAluno;
     @Schema(example = "1")
     private Integer idModulo;
-//    @Column(name = "Trilha")
-//    private Stack stack;
     @NotNull(message = "Nome instrutor responsável não pode ser nulo.")
     @NotBlank(message = "Nome do instrutor responsável não pode ser nulo.")
     @Schema(example = "Carlos Alberto")
@@ -31,13 +29,11 @@ public class FeedBackCreateDTO {
     @Schema(example = "Texto descritivo")
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")
-    @Schema(example = "ATIVO")
+    @Schema(example = "POSITIVO")
     private Tipo situacao;
     @NotNull(message = "Data não pode ser nula.")
-    @Schema(example = "2022-12-01")
+    @Schema(example = "2023-12-01")
     private LocalDate data;
-//    @NotBlank(message = "Nome não pode ser vazio ou nulo.")
-//    @Schema(description = "Nome do programa", example = "VemSer 11° edição")
-//    private String programa;
+
 
 }

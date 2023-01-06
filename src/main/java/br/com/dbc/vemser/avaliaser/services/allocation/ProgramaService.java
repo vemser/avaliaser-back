@@ -3,13 +3,17 @@ package br.com.dbc.vemser.avaliaser.services.allocation;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.VagaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ProgramaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,9 +34,11 @@ public class ProgramaService {
         verificarDatas(programaCreate);
 
         ProgramaEntity programaEntity = objectMapper.convertValue(programaCreate, ProgramaEntity.class);
-        programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
+        programaEntity.setSituacao(programaCreate.getSituacao());
+        programaEntity.setAtivo(Ativo.S);
+        ProgramaEntity programaSalvo = programaRepository.save(programaEntity);
+        return objectMapper.convertValue(programaSalvo, ProgramaDTO.class);
 
-        return objectMapper.convertValue(programaRepository.save(programaEntity), ProgramaDTO.class);
     }
 
     public PageDTO<ProgramaDTO> listar(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
@@ -41,25 +47,7 @@ public class ProgramaService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<ProgramaEntity> programasAbertos = programaRepository.findAllProgramasAbertos(pageRequest);
-
-            List<ProgramaDTO> clientePagina = programasAbertos.getContent().stream()
-                    .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
-                    .toList();
-            return new PageDTO<>(programasAbertos.getTotalElements(), programasAbertos.getTotalPages(), pagina, tamanho, clientePagina);
-        }
-        List<ProgramaDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
-
-    }
-
-    public PageDTO<ProgramaDTO> listarProgramasFechados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        if (pagina < 0 || tamanho < 0) {
-            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
-        }
-        if (tamanho > 0) {
-            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<ProgramaEntity> programasAbertos = programaRepository.findAllBySituacao(Situacao.FECHADO, pageRequest);
+            Page<ProgramaEntity> programasAbertos = programaRepository.findAllByAtivo(Ativo.S, pageRequest);
 
             List<ProgramaDTO> clientePagina = programasAbertos.getContent().stream()
                     .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
@@ -78,7 +66,7 @@ public class ProgramaService {
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
             Page<ProgramaEntity> paginaRepository = programaRepository
-                    .findAllByNomeContainingIgnoreCaseAndSituacao(nome.trim().replaceAll("\\s+", " "), pageRequest, Situacao.ABERTO);
+                    .findAllByNomeContainingIgnoreCaseAndAtivo(nome.trim().replaceAll("\\s+", " "),Ativo.S, pageRequest);
 
             List<ProgramaDTO> clientePagina = paginaRepository.getContent().stream()
                     .map(x -> objectMapper.convertValue(x, ProgramaDTO.class))
@@ -91,20 +79,9 @@ public class ProgramaService {
     }
 
 
-//    public PageDTO<ProgramaDTO> listarPorId(Integer idPrograma) throws RegraDeNegocioException {
-//        List<ProgramaDTO> list = List.of(objectMapper.convertValue(buscarProgramaId(idPrograma), ProgramaDTO.class));
-//        Page<ProgramaDTO> page = new PageImpl<>(list);
-//
-//        return new PageDTO<>(page.getTotalElements(),
-//                page.getTotalPages(),
-//                0,
-//                1,
-//                list
-//        );
-//    }
-    public ProgramaDTO pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
+    public ProgramaDTO buscarProgramaPorId(Integer idPrograma) throws RegraDeNegocioException {
 
-        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndSituacao(idPrograma, Situacao.ABERTO)
+        ProgramaEntity programaEntity = programaRepository.findByIdProgramaAndAtivo(idPrograma,Ativo.S)
                 .orElseThrow(()-> new RegraDeNegocioException("Não foi possivel localizar este programa!"));
         return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
     }
@@ -120,28 +97,31 @@ public class ProgramaService {
 
 
 
-    public ProgramaDTO editar(Integer idPrograma, ProgramaCreateDTO programaCreate) throws RegraDeNegocioException {
-        verificarDatas(programaCreate);
+    public ProgramaDTO editar(Integer idPrograma, ProgramaEdicaoDTO programaEdicao) throws RegraDeNegocioException {
+        verificarDatasEdicao(programaEdicao);
 
         ProgramaEntity programaEntity = findById(idPrograma);
-        programaEntity.setSituacao(Situacao.valueOf(programaCreate.getSituacao()));
-        programaEntity.setNome(programaCreate.getNome());
-        programaEntity.setDescricao(programaCreate.getDescricao());
-        programaEntity.setDataInicio(programaCreate.getDataInicio());
-        programaEntity.setDataFim(programaCreate.getDataFim());
+        programaEntity.setNome(programaEdicao.getNome());
+        programaEntity.setDescricao(programaEdicao.getDescricao());
+        programaEntity.setDataInicio(programaEdicao.getDataInicio());
+        if (!programaEntity.getDataInicio().equals(programaEdicao.getDataInicio())) {
+            programaEntity.setDataInicio(programaEdicao.getDataInicio());
+        }
+        programaEntity.setSituacao(programaEdicao.getSituacao());
+        programaEntity.setDataFim(programaEdicao.getDataFim());
 
-        programaRepository.save(programaEntity);
-        return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
+        ProgramaEntity programaSalvo = programaRepository.save(programaEntity);
+        return objectMapper.convertValue(programaSalvo, ProgramaDTO.class);
     }
 
     public void desativar(Integer idPrograma) throws RegraDeNegocioException {
         ProgramaEntity programaEntity = findById(idPrograma);
-        programaEntity.setSituacao(Situacao.FECHADO);
+        programaEntity.setAtivo(Ativo.N);
         programaRepository.save(programaEntity);
     }
 
     public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
-        return programaRepository.findById(id)
+        return programaRepository.findByIdProgramaAndAtivo(id, Ativo.S)
                 .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
     }
 
@@ -160,5 +140,17 @@ public class ProgramaService {
         if(programaCreate.getDataFim().isBefore(programaCreate.getDataInicio())) {
             throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
         }
+    }
+    private static void verificarDatasEdicao(ProgramaEdicaoDTO programaEdicaoDTO) throws RegraDeNegocioException {
+        if(programaEdicaoDTO.getDataFim().isBefore(programaEdicaoDTO.getDataInicio())) {
+            throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
+        }
+    }
+
+    public ProgramaDTO fecharPrograma(Integer idPrograma) throws RegraDeNegocioException {
+        ProgramaEntity programa = findById(idPrograma);
+        programa.setSituacao(Situacao.FECHADO);
+        ProgramaEntity programaEntity = programaRepository.save(programa);
+        return converterEmDTO(programaEntity);
     }
 }

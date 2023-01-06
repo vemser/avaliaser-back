@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.repositories.allocation;
 
 
 import br.com.dbc.vemser.avaliaser.entities.VagaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +16,16 @@ import java.util.Optional;
 @Repository
 public interface VagaRepository extends JpaRepository<VagaEntity, Integer> {
 
-    List<VagaEntity> findBySituacao(Situacao situacao);
+    Page<VagaEntity> findBySituacaoAndAtivo(Pageable pageable, Situacao situacao, Ativo ativo);
 
-    Page<VagaEntity> findAllByNomeContainingIgnoreCase(Pageable pageable, String nome);
+    Page<VagaEntity> findByIdVagaAndAtivo(Pageable pageable, Integer id, Ativo ativo);
 
-    Optional<VagaEntity> findByNome(String nome);
+    Page<VagaEntity> findAllByAtivo(Pageable pageable, Ativo ativo);
+
+    Page<VagaEntity> findAllByNomeContainingIgnoreCaseAndAtivo(Pageable pageable, String nome, Ativo ativo);
+
+    Optional<VagaEntity> findByNomeAndAtivo(String nome, Ativo ativo);
+
+    Optional<VagaEntity> findByIdVagaAndAtivo(Integer id, Ativo ativo);
 
 }

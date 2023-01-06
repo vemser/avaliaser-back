@@ -5,13 +5,17 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliarDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeAlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeMuralAlunoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeMuralAlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
+import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.AtividadeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,8 +80,8 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/entregar/{idAluno}{idAtividade}")
-    public ResponseEntity<AtividadeEntregaDTO> entregarAtividade(@PathVariable(name = "idAluno") Integer idAluno, @PathVariable(name = "idAtividade") Integer idAtividade, @RequestBody AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
+    @PutMapping("/entregar")
+    public ResponseEntity<AtividadeEntregaDTO> entregarAtividade(@RequestBody AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(atividadeService.entregarAtividade(atividadeEntregaCreateDTO), HttpStatus.OK);
 
     }
@@ -108,6 +112,23 @@ public class AtividadeController {
     @GetMapping("/listar-paginado")
     public ResponseEntity<AtividadePaginacaoDTO<AtividadeDTO>> listarAtividadePaginado(@RequestParam Integer page, @RequestParam Integer size) throws RegraDeNegocioException {
         return ResponseEntity.ok(atividadeService.listarAtividades(page, size));
+    }
+
+    @Operation(summary = "Listar atividade com paginação por situação", description = "Listar atividade com paginação por situação")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Listar de atividade com paginação por situação, êxito"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-situacao-paginado")
+    public ResponseEntity<PageDTO<AtividadeMuralAlunoDTO>> listarAtividadePorSituacaoPaginado(@RequestParam Integer page,
+                                                                                              @RequestParam Integer size,
+                                                                                              @RequestParam Integer idAluno,
+                                                                                              @RequestParam Situacao situacao
+                                                                                              ) throws RegraDeNegocioException {
+        return ResponseEntity.ok(atividadeService.listarAtividadePorStatus(page, size, idAluno, situacao));
     }
 
 //    @Operation(summary = "Colocar a atividade como concluida", description = "Concluir atividade da turma")

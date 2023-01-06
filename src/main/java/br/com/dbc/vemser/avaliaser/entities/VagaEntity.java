@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -49,6 +50,10 @@ public class VagaEntity {
     @Column(name = "situacao")
     @Enumerated(EnumType.ORDINAL)
     private Situacao situacao;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

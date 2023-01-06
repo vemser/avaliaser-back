@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,17 @@ public interface OperationControllerAluno {
                                                    @RequestParam(required = false) String nome,
                                                    @RequestParam(required = false) String email,
                                                    Integer page, Integer size) throws RegraDeNegocioException;
+    @Operation(summary = "Listar alunos disponiveis para alocação e reserva", description = "Listar alunos disponiveis para alocacao!")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Alunos disponiveis listado com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/disponiveis")
+    ResponseEntity<PageDTO<AlunoDTO>> disponiveis(Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "Busca aluno por Id", description = "Realiza busca de aluno cadastrado por ID.")
     @ApiResponses(value = {

@@ -13,16 +13,17 @@ import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.VagaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,99 +36,61 @@ public class VagaService {
 
 
     public VagaDTO salvar(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
-        verificarDatas(vagaCreate);
+        verificarDataCreate(vagaCreate);
         ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
-        vagaCreate.setSituacao(Situacao.ABERTO);
         VagaEntity vagaEntity = converterEntity(vagaCreate);
         vagaEntity.setCliente(cliente);
         vagaEntity.getPrograma().add(programa);
+        vagaEntity.setSituacao(vagaCreate.getSituacao());
+        vagaEntity.setAtivo(Ativo.S);
         vagaEntity.setDataCriacao(LocalDate.now());
-        vagaEntity = vagaRepository.save(vagaEntity);
-        verificarClienteInativo(vagaEntity);
-        return converterEmDTO(vagaEntity);
+        vagaEntity.setDataAbertura(vagaCreate.getDataAbertura());
+        vagaEntity.setDataFechamento(vagaCreate.getDataFechamento());
+        VagaEntity vagaSalva = vagaRepository.save(vagaEntity);
+        verificarClienteInativo(vagaSalva);
+        return converterEmDTO(vagaSalva);
     }
 
-    public PageDTO<VagaDTO> listar(Integer page, Integer size) throws RegraDeNegocioException {
-        if (size < 0 || page < 0) {
+    public PageDTO<VagaDTO> listByName(Integer idVaga, String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
-        if (size > 0) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<VagaEntity> paginaDoRepositorio = vagaRepository.findAll(pageRequest);
+        if (tamanho > 0) {
+            Page<VagaEntity> paginaDoRepositorio = filtroVaga(idVaga, nome, pagina, tamanho);
+            List<VagaDTO> moduloDTOS = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterEmDTO)
+                    .toList();
 
-        List<VagaDTO> vagas = paginaDoRepositorio.getContent().stream()
-                .map(this::converterEmDTO)
-                .toList();
-
-        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                paginaDoRepositorio.getTotalPages(),
-                page,
-                size,
-                vagas
-        );
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    moduloDTOS);
         }
         List<VagaDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, size, listaVazia);
-    }
-
-
-    public PageDTO<VagaDTO> listarPorId(Integer idVaga) throws RegraDeNegocioException  {
-
-        List<VagaDTO> list = List.of(converterEmDTO(findById(idVaga)));
-        Page<VagaDTO> page = new PageImpl<>(list);
-
-        return new PageDTO<>(page.getTotalElements(),
-                page.getTotalPages(),
-                0,
-                1,
-                list
-        );
-
-    }
-
-    public PageDTO<VagaDTO> listarPorNome(Integer page, Integer size,String nome) throws RegraDeNegocioException {
-        if (size < 0 || page < 0) {
-            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
-        }
-        if (size > 0) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<VagaEntity> paginaDoRepositorio = vagaRepository.findAllByNomeContainingIgnoreCase(pageRequest, nome);
-
-        List<VagaDTO> vagas = paginaDoRepositorio.getContent().stream()
-                .map(this::converterEmDTO)
-                .toList();
-
-        return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                paginaDoRepositorio.getTotalPages(),
-                page,
-                size,
-                vagas
-        );
-        }
-        List<VagaDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, size, listaVazia);
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public VagaDTO editar(Integer idVaga, VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
-        verificarDatas(vagaCreate);
-        VagaEntity vagaEntity1 = findById(idVaga);
-
-        if (vagaCreate.getSituacao().equals(Situacao.FECHADO)) {
-            fecharVaga(vagaEntity1);
-        }
-        VagaEntity vagaEntity = objectMapper.convertValue(vagaCreate, VagaEntity.class);
-
+        verificarDataCreate(vagaCreate);
+        VagaEntity vagaEntity = findById(idVaga);
         ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         vagaEntity.setCliente(cliente);
-        vagaEntity.getPrograma().add(programa);
-        vagaEntity.setIdVaga(idVaga);
-        vagaEntity.setDataCriacao(LocalDate.now());
 
+        vagaEntity.getPrograma().clear();
+        vagaEntity.getPrograma().add(programa);
+
+        vagaEntity.setQuantidade(vagaCreate.getQuantidade());
+        vagaEntity.setNome(vagaCreate.getNome());
+        vagaEntity.setSituacao(vagaCreate.getSituacao());
+        vagaEntity.setDataAbertura(vagaCreate.getDataAbertura());
+        vagaEntity.setDataFechamento(vagaCreate.getDataFechamento());
+        vagaEntity.setAtivo(Ativo.S);
         vagaEntity = vagaRepository.save(vagaEntity);
 
-        return converterEmDTO(vagaRepository.save(vagaEntity));
+        return converterEmDTO(vagaEntity);
     }
 
     public VagaDTO converterEmDTO(VagaEntity vagaEntity) {
@@ -152,37 +115,35 @@ public class VagaService {
         return objectMapper.convertValue(vagaCreateDTO, VagaEntity.class);
     }
 
-    public void deletar(Integer idVaga) throws RegraDeNegocioException {
+    public void desativar(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        vagaRepository.delete(vaga);
+        vaga.setAtivo(Ativo.N);
+        vagaRepository.save(vaga);
     }
 
     public VagaEntity findById(Integer idVaga) throws RegraDeNegocioException {
-        return vagaRepository.findById(idVaga).orElseThrow(() -> new RegraDeNegocioException("Vaga não encontrada!"));
+        return vagaRepository.findByIdVagaAndAtivo(idVaga, Ativo.S).orElseThrow(() -> new RegraDeNegocioException("Vaga não encontrada!"));
     }
 
-    public List<VagaDTO> findAllWithSituacaoAberto() {
-        return vagaRepository.findBySituacao(Situacao.ABERTO)
-                .stream()
-                .map(vagaEntity -> objectMapper.convertValue(vagaEntity, VagaDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    public VagaEntity findByNome(String nome) throws RegraDeNegocioException {
-        return vagaRepository.findByNome(nome).orElseThrow(() -> new RegraDeNegocioException("Vaga não encontrada!"));
-    }
-
-    public void alterarQuantidadeDeVagas(Integer idVaga) throws RegraDeNegocioException {
+    public void alterarQuantidadeDeVagas(Integer idVaga, boolean adicionar) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
         verificarClienteInativo(vaga);
-        if (vaga.getQuantidade() > 0) {
-            vaga.setQuantidade(vaga.getQuantidade() - 1);
-            vagaRepository.save(vaga);
-        } else {
-            throw new RegraDeNegocioException("Quantidades de Vagas foram prenchidas!");
+        if(adicionar == true){
+            if (vaga.getQuantidade() > 0 && !(vaga.getQuantidade() <= 0)) {
+                vaga.setQuantidade(vaga.getQuantidade() - 1);
+                vagaRepository.save(vaga);
+            } else {
+                throw new RegraDeNegocioException("Quantidades de Vagas foram prenchidas!");
+            }
+        }else{
+            if (vaga.getQuantidade() >= 0) {
+                vaga.setQuantidade(vaga.getQuantidade() + 1);
+                vagaRepository.save(vaga);
+            } else {
+                throw new RegraDeNegocioException("Não foi possivel alterar a quantidade de vagas.");
+            }
         }
     }
-
 
     private static void verificarClienteInativo(VagaEntity vaga) throws RegraDeNegocioException {
         if (vaga.getCliente().getAtivo().equals(Ativo.N)) {
@@ -196,34 +157,46 @@ public class VagaService {
         }
     }
 
-    public void fecharVaga(VagaEntity vaga) {
+    public VagaDTO fecharVaga(Integer idVaga) throws RegraDeNegocioException {
+        VagaEntity vaga = findById(idVaga);
         if (vaga.getQuantidade() == 0) {
             vaga.setSituacao(Situacao.FECHADO);
             vagaRepository.save(vaga);
         }
+        return converterEmDTO(vaga);
     }
 
     public void adicionarQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
         vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() + 1);
+        alterarQuantidadeDeVagas(idVaga, true);
         vagaRepository.save(vaga);
     }
 
     public void removerQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        if (vaga.getQuantidadeAlocados() != null){
+        if (vaga.getQuantidadeAlocados() != null && !(vaga.getQuantidadeAlocados() <= 0)){
             vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() - 1);
+            alterarQuantidadeDeVagas(idVaga, false);
         }else {
-            throw new RegraDeNegocioException("Quantidades de alocados null!");
+            throw new RegraDeNegocioException("Quantidade de alocados não pode ficar menor que zero!");
         }
         vagaRepository.save(vaga);
     }
-
-
-
-    private static void verificarDatas(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
+    public void verificarDataCreate(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
         if (vagaCreate.getDataAbertura().isAfter(vagaCreate.getDataFechamento())) {
             throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
         }
+    }
+
+
+    private Page<VagaEntity> filtroVaga(Integer idVaga, String nome, Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (!(idVaga == null)) {
+            return vagaRepository.findByIdVagaAndAtivo(pageRequest, idVaga, Ativo.S);
+        } else if (!(nome == null)) {
+            return vagaRepository.findAllByNomeContainingIgnoreCaseAndAtivo(pageRequest, nome, Ativo.S);
+        }
+        return vagaRepository.findAllByAtivo(pageRequest, Ativo.S);
     }
 }

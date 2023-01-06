@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="maicon">
+        <sql dbms="oracle">
+            CREATE TABLE CLIENTE (
+                                     id_cliente NUMBER,
+                                     nome VARCHAR2(255) NOT NULL,
+                                     email VARCHAR2(255) UNIQUE NOT NULL,
+                                     telefone CHAR(14) NOT NULL,
+                                     situacao CHAR(1) NOT NULL,
+                                     PRIMARY KEY (id_cliente)
+            );
+
+            CREATE TABLE VAGA (
+                                  id_vaga NUMBER,
+                                  id_cliente NUMBER NOT NULL,
+                                  nome VARCHAR2(255) NOT NULL,
+                                  quantidade_vagas NUMBER NOT NULL,
+                                  quantidade_alocados NUMBER,
+                                  data_abertura DATE,
+                                  data_fechamento DATE,
+                                  data_criacao DATE NOT NULL,
+                                  situacao CHAR(1) NOT NULL,
+                                  ativo CHAR(1) NOT NULL,
+                                  PRIMARY KEY (id_vaga),
+                                  CONSTRAINT FK_VAGA_CLIENTE
+                                      FOREIGN KEY (id_cliente)
+                                          REFERENCES CLIENTE(id_cliente)
+            );
+
+            CREATE TABLE TRILHA (
+                                    id_trilha NUMBER,
+                                    nome VARCHAR2(255) NOT NULL,
+                                    descricao VARCHAR2(255),
+                                    ativo CHAR(1) NOT NULL,
+                                    PRIMARY KEY (id_trilha)
+            );
+
+            CREATE TABLE PROGRAMA (
+                                      id_programa NUMBER,
+                                      nome VARCHAR2(255) NOT NULL,
+                                      data_inicio DATE NOT NULL,
+                                      data_fim DATE NOT NULL,
+                                      situacao CHAR(1) NOT NULL,
+                                      ativo CHAR(1) NOT NULL,
+                                      descricao VARCHAR2(2000),
+                                      PRIMARY KEY (id_programa)
+            );
+
+            CREATE TABLE ALUNO (
+                                   id_aluno NUMBER,
+                                   nome VARCHAR2(255) NOT NULL,
+                                   telefone CHAR(14) NOT NULL,
+                                   cidade VARCHAR2(255) NOT NULL,
+                                   estado VARCHAR2(255) NOT NULL,
+                                   email VARCHAR2(255) UNIQUE NOT NULL,
+                                   situacao CHAR(1) NOT NULL,
+                                   descricao VARCHAR2(512),
+                                   pontuacao NUMBER,
+                                   id_trilha NUMBER NOT NULL,
+                                   id_programa NUMBER NOT NULL,
+                                   ativo CHAR(1) NOT NULL,
+                                   PRIMARY KEY (id_aluno),
+                                   CONSTRAINT FK_ALUNO_PROG
+                                       FOREIGN KEY (id_programa)
+                                           REFERENCES PROGRAMA(id_programa),
+                                   CONSTRAINT FK_ALUNO_TRILHA
+                                       FOREIGN KEY (id_trilha)
+                                           REFERENCES TRILHA(id_trilha)
+            );
+
+            CREATE TABLE MODULO (
+                                    id_modulo NUMBER,
+                                    nome VARCHAR2(255) NOT NULL,
+                                    data_inicio DATE NOT NULL,
+                                    data_fim DATE NOT NULL,
+                                    ativo CHAR(1) NOT NULL,
+                                    PRIMARY KEY (id_modulo)
+            );
+
+            CREATE TABLE FEEDBACK (
+                                      id_feedback NUMBER,
+                                      descricao VARCHAR2(2000) NOT NULL,
+                                      situacao CHAR(1) NOT NULL,
+                                      ativo CHAR(1) NOT NULL,
+                                      nome_instrutor VARCHAR2(255) NOT NULL,
+                                      id_aluno NUMBER NOT NULL,
+                                      id_modulo NUMBER NOT NULL,
+                                      PRIMARY KEY (id_feedback),
+                                      CONSTRAINT FK_FEEDBACK_ALUNO
+                                          FOREIGN KEY (id_aluno)
+                                              REFERENCES ALUNO(id_aluno),
+                                      CONSTRAINT FK_FEEDBACK_MODULO
+                                          FOREIGN KEY (id_modulo)
+                                              REFERENCES MODULO(id_modulo)
+            );
+
+            CREATE TABLE ACOMPANHAMENTO (
+                                            id_acompanhamento NUMBER,
+                                            titulo VARCHAR2(255) NOT NULL,
+                                            descricao VARCHAR2(512),
+                                            data_inicio DATE NOT NULL,
+                                            ativo CHAR(1) NOT NULL,
+                                            id_programa NUMBER NOT NULL,
+                                            PRIMARY KEY (id_acompanhamento),
+                                            CONSTRAINT FK_ACOMP_PROG
+                                                FOREIGN KEY (id_programa)
+                                                    REFERENCES PROGRAMA(id_programa)
+            );
+
+            CREATE TABLE VAGA_PROGRAMA (
+                                           id_programa NUMBER,
+                                           id_vaga NUMBER,
+                                           CONSTRAINT FK_VAGA_PROGRAMA
+                                               FOREIGN KEY (id_programa)
+                                                   REFERENCES PROGRAMA(id_programa),
+                                           CONSTRAINT FK_VAGA_PROGRAMA_VAGA
+                                               FOREIGN KEY (id_vaga)
+                                                   REFERENCES VAGA(id_vaga)
+            );
+
+            CREATE TABLE ATIVIDADE (
+                                       id_atividade NUMBER,
+                                       titulo VARCHAR2(255) NOT NULL,
+                                       data_criacao DATE NOT NULL,
+                                       data_entrega DATE NOT NULL,
+                                       nome_instrutor VARCHAR2(255),
+                                       ativo CHAR(1) NOT NULL,
+                                       descricao VARCHAR2(2000) NOT NULL,
+                                       peso_atividade NUMBER(10) NOT NULL,
+                                       link VARCHAR2(255),
+                                       id_programa NUMBER NOT NULL,
+                                       PRIMARY KEY (id_atividade),
+                                       CONSTRAINT FK_ATIV_PROG
+                                           FOREIGN KEY (id_programa)
+                                               REFERENCES PROGRAMA(id_programa)
+            );
+
+            CREATE TABLE MODULO_ATIVIDADE (
+                                              id_atividade NUMBER,
+                                              id_modulo NUMBER,
+                                              PRIMARY KEY (id_atividade, id_modulo),
+                                              CONSTRAINT FK_MODULO_ATIVIDADE
+                                                  FOREIGN KEY (id_atividade)
+                                                      REFERENCES ATIVIDADE(id_atividade),
+                                              CONSTRAINT FK_MODULO_ATIV_MODULO
+                                                  FOREIGN KEY (id_modulo)
+                                                      REFERENCES MODULO(id_modulo)
+            );
+
+            CREATE TABLE AVALIACAO (
+                                       id_avaliacao NUMBER,
+                                       situacao CHAR(1) NOT NULL,
+                                       ativo CHAR(1) NOT NULL,
+                                       descricao VARCHAR2(2000) NOT NULL,
+                                       data_criacao DATE NOT NULL,
+                                       nome_gestao_pessoas VARCHAR2(255) NOT NULL,
+                                       id_acompanhamento NUMBER NOT NULL,
+                                       id_aluno NUMBER NOT NULL,
+                                       id_programa NUMBER NOT NULL,
+                                       PRIMARY KEY (id_avaliacao),
+                                       CONSTRAINT FK_AVAL_PROG
+                                           FOREIGN KEY (id_programa)
+                                               REFERENCES PROGRAMA(id_programa),
+                                       CONSTRAINT FK_AVAL_ALUNO
+                                           FOREIGN KEY (id_aluno)
+                                               REFERENCES ALUNO(id_aluno),
+                                       CONSTRAINT FK_AVAL_ACOMP
+                                           FOREIGN KEY (id_acompanhamento)
+                                               REFERENCES ACOMPANHAMENTO(id_acompanhamento)
+            );
+
+            CREATE TABLE PROGRAMA_MODULO (
+                                             id_modulo NUMBER,
+                                             id_programa NUMBER,
+                                             PRIMARY KEY (id_modulo, id_programa),
+                                             CONSTRAINT FK_PROGRAMA_MODULO
+                                                 FOREIGN KEY (id_programa)
+                                                     REFERENCES PROGRAMA(id_programa),
+                                             CONSTRAINT FK_PROG_MODULO_MODULO
+                                                 FOREIGN KEY (id_modulo)
+                                                     REFERENCES MODULO(id_modulo)
+            );
+
+            CREATE TABLE TECNOLOGIA (
+                                        id_tecnologia NUMBER,
+                                        nome VARCHAR2(255) NOT NULL,
+                                        PRIMARY KEY (id_tecnologia)
+            );
+
+            CREATE TABLE ALUNO_TECNOLOGIA (
+                                              id_tecnologia NUMBER,
+                                              id_aluno NUMBER,
+                                              CONSTRAINT FK_ALUNO_TEC_ALUNO
+                                                  FOREIGN KEY (id_aluno)
+                                                      REFERENCES ALUNO(id_aluno),
+                                              CONSTRAINT FK_ALUNO_TEC
+                                                  FOREIGN KEY (id_tecnologia)
+                                                      REFERENCES TECNOLOGIA(id_tecnologia)
+            );
+
+            CREATE TABLE RESERVA_ALOCACAO (
+                                              id_reserva_alocacao NUMBER,
+                                              motivo VARCHAR2(2000) NOT NULL,
+                                              situacao CHAR(1) NOT NULL,
+                                              id_aluno NUMBER,
+                                              id_vaga NUMBER,
+                                              ativo CHAR(1) NOT NULL,
+                                              descricao VARCHAR2(512),
+                                              PRIMARY KEY (id_reserva_alocacao),
+                                              CONSTRAINT FK_RESERVA_ALOC_ALUNO
+                                                  FOREIGN KEY (id_aluno)
+                                                      REFERENCES ALUNO(id_aluno),
+                                              CONSTRAINT FK_RESERVA_ALOC_VAGA
+                                                  FOREIGN KEY (id_vaga)
+                                                      REFERENCES VAGA(id_vaga)
+            );
+
+            CREATE TABLE COMENTARIO (
+                                        id_comentario NUMBER,
+                                        situacao CHAR(1) NOT NULL,
+                                        comentario VARCHAR2(2000),
+                                        id_aluno NUMBER NOT NULL,
+                                        id_atividade NUMBER NOT NULL,
+                                        PRIMARY KEY (id_comentario),
+                                        CONSTRAINT FK_COMENTARIO_ATIV
+                                            FOREIGN KEY (id_atividade)
+                                                REFERENCES ATIVIDADE(id_atividade),
+                                        CONSTRAINT FK_COMENTARIO_ALUNO
+                                            FOREIGN KEY (id_aluno)
+                                                REFERENCES ALUNO(id_aluno)
+            );
+
+            CREATE TABLE TRILHA_MODULO (
+                                           id_trilha NUMBER,
+                                           id_modulo NUMBER,
+                                           CONSTRAINT FK_TRILHA_MODULO
+                                               FOREIGN KEY (id_trilha)
+                                                   REFERENCES TRILHA(id_trilha),
+                                           CONSTRAINT FK_TRILHA_MODULO_MOD
+                                               FOREIGN KEY (id_modulo)
+                                                   REFERENCES MODULO(id_modulo)
+            );
+
+            CREATE TABLE ATIVIDADE_ALUNO (
+                                             id_aluno NUMBER NOT NULL,
+                                             id_atividade NUMBER NOT NULL,
+                                             nota NUMBER,
+                                             link VARCHAR2(2500),
+                                             data_entrega DATE NOT NULL,
+                                             situacao CHAR(1) NOT NULL,
+                                             CONSTRAINT FK_ATIVIDADE_ALUNO
+                                                 FOREIGN KEY (id_aluno)
+                                                     REFERENCES ALUNO(id_aluno),
+                                             CONSTRAINT FK_ATIV_ALUNO_ATIV
+                                                 FOREIGN KEY (id_atividade)
+                                                     REFERENCES ATIVIDADE(id_atividade)
+            );
+
+            CREATE SEQUENCE SEQ_RESERVA_ALOCACAO
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_CLIENTE
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_PROGRAMA
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_TECNOLOGIA
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_VAGA
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_COMENTARIO
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_TRILHA
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_ATIVIDADE
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_MODULO
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_ACOMPANHAMENTO
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_AVALIACAO
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_FEEDBACK
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+
+            CREATE SEQUENCE SEQ_ALUNO
+                START WITH 1
+                INCREMENT BY 1
+                NOCACHE NOCYCLE;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

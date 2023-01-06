@@ -1,12 +1,12 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
-import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
-import br.com.dbc.vemser.avaliaser.entities.*;
+import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
+import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
@@ -58,7 +58,6 @@ public class ModuloService {
     }
 
     public ModuloDTO criar(ModuloCreateDTO modulo) throws RegraDeNegocioException {
-        verificarDatas(modulo);
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
         moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
         TrilhaEntity trilhaEntity = trilhaService.findById(modulo.getIdTrilha());
@@ -74,12 +73,9 @@ public class ModuloService {
     }
 
     public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
-        verificarDatas(moduloCreateDTO);
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
 
         moduloEntity.setNome(moduloCreateDTO.getNome());
-        moduloEntity.setDataInicio(moduloCreateDTO.getDataInicio());
-        moduloEntity.setDataFim(moduloCreateDTO.getDataFim());
         TrilhaEntity trilhaEntity = trilhaService.findById(moduloCreateDTO.getIdTrilha());
         moduloEntity.setTrilha(trilhaEntity);
         Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService
@@ -91,7 +87,7 @@ public class ModuloService {
 
     public void desativar(Integer id) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
-        moduloEntity.setAtivo(Ativo.valueOf("N"));
+        moduloEntity.setAtivo(Ativo.N);
         moduloRepository.save(moduloEntity);
     }
 
@@ -110,11 +106,9 @@ public class ModuloService {
 
     }
 
-    private ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
+    public ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
         return new ModuloDTO(moduloEntity.getIdModulo(),
                 moduloEntity.getNome(),
-                moduloEntity.getDataInicio(),
-                moduloEntity.getDataFim(),
                 moduloEntity.getAtivo(),
                 trilhaService.converterEmDTO(moduloEntity.getTrilha()),
                 moduloEntity.getProgramas().stream().map(programaService::converterEmDTO)
@@ -163,8 +157,6 @@ public class ModuloService {
         ModuloEntity modulo = buscarPorIdModulo(idModulo);
         ModuloEntity moduloEntity = new ModuloEntity(null,
                 modulo.getNome(),
-                modulo.getDataInicio(),
-                modulo.getDataFim(),
                 modulo.getAtivo(),
                 trilhaService.findById(modulo.getTrilha().getIdTrilha()),
                 new HashSet<>(modulo.getProgramas()));
@@ -172,27 +164,21 @@ public class ModuloService {
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return new ModuloDTO(moduloSalvo.getIdModulo(),
                 moduloSalvo.getNome(),
-                moduloSalvo.getDataInicio(),
-                moduloSalvo.getDataFim(),
                 moduloSalvo.getAtivo(),
                 trilhaService.converterEmDTO(moduloEntity.getTrilha()),
                 modulo.getProgramas().stream().map(programaService::converterEmDTO)
                         .collect(Collectors.toList()));
 
     }
-    private static void verificarDatas(ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
-        if (moduloCreateDTO.getDataInicio().isAfter(moduloCreateDTO.getDataFim())) {
-            throw new RegraDeNegocioException("Data de abertura não pode ser maior que a data de fechamento no cadastro.");
-        }
-    }
+
     private Page<ModuloEntity> filtrarModulos(Integer idModulo, String nome, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idModulo == null)) {
-            return moduloRepository.findAllByIdModulo(pageRequest, idModulo);
+            return moduloRepository.findAllByIdModuloAndAtivo(pageRequest, idModulo, Ativo.S);
         } else if (!(nome == null)) {
-            return moduloRepository.findAllByNomeContainingIgnoreCase(pageRequest, nome);
+            return moduloRepository.findAllByNomeContainingIgnoreCaseAndAtivo(pageRequest, nome, Ativo.S);
         }
-        return moduloRepository.findAll(pageRequest);
+        return moduloRepository.findAllByAtivo(Ativo.S,pageRequest);
     }
 
 

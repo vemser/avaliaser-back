@@ -4,6 +4,7 @@ package br.com.dbc.vemser.avaliaser.controllers.allocation;
 import br.com.dbc.vemser.avaliaser.controllers.adocumentation.ProgramaInterfaceController;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
@@ -38,10 +39,6 @@ public class ProgramaController implements ProgramaInterfaceController {
     public ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer page, Integer size) throws RegraDeNegocioException {
         return ResponseEntity.ok(programaService.listar(page, size));
     }
-    @GetMapping("/listar-programas-fechados")
-    public ResponseEntity<PageDTO<ProgramaDTO>> listarProgramasFechados(Integer page, Integer size) throws RegraDeNegocioException {
-        return ResponseEntity.ok(programaService.listarProgramasFechados(page, size));
-    }
 
     @Override
     public ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(@RequestParam Integer page,
@@ -52,13 +49,13 @@ public class ProgramaController implements ProgramaInterfaceController {
 
     @Override
     public ResponseEntity<ProgramaDTO> pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        return ResponseEntity.ok(programaService.pegarPrograma(idPrograma));
+        return ResponseEntity.ok(programaService.buscarProgramaPorId(idPrograma));
     }
 
     @Override
-    public ResponseEntity<ProgramaDTO> editar(@Valid @RequestBody ProgramaCreateDTO programaCreate, Integer idPrograma) throws RegraDeNegocioException {
+    public ResponseEntity<ProgramaDTO> editar(@Valid @RequestBody ProgramaEdicaoDTO programaEdicaoDTO, Integer idPrograma) throws RegraDeNegocioException {
         log.info("Editando o Programa...");
-        ProgramaDTO programa = programaService.editar(idPrograma, programaCreate);
+        ProgramaDTO programa = programaService.editar(idPrograma, programaEdicaoDTO);
         log.info("Programa editado com sucesso!");
         return new ResponseEntity<>(programa, HttpStatus.CREATED);
     }
@@ -69,4 +66,5 @@ public class ProgramaController implements ProgramaInterfaceController {
         log.info("Programa desativado com sucesso");
         return ResponseEntity.noContent().build();
     }
+
 }
