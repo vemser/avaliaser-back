@@ -38,7 +38,7 @@ public interface ReservaAlocacaoInterface {
     ResponseEntity<ReservaAlocacaoDTO> editar(@Valid @RequestBody ReservaAlocacaoEditarDTO reservaAlocacaoEditarDTO,
                                               @PathVariable(name = "idReservaAlocacao") Integer idReservaAlocacao) throws RegraDeNegocioException;
 
-    @Operation(summary = "Filtra pagina de Reserva alocação", description = "Filtra pagina Reserva alocação")
+    @Operation(summary = "Filtra pagina de Reserva alocação", description = "Filtra pagina Reserva alocação, no campo nome pode ser passado nome do Aluno, nome do Cliente ou nome da Vaga.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Reserva alocação Listadas com sucesso"),
@@ -47,7 +47,8 @@ public interface ReservaAlocacaoInterface {
             }
     )
     @GetMapping
-    ResponseEntity<PageDTO<ReservaAlocacaoDTO>> filtrar(Integer pagina, Integer tamanho, @RequestParam(name = "nomeAluno", required = false) String nomeAluno, @RequestParam(name = "nomeVaga", required = false) String nomeVaga) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<ReservaAlocacaoDTO>> filtrar(Integer pagina, Integer tamanho,
+                                                        @RequestParam(name = "nome", required = false) String nome) throws RegraDeNegocioException;
 
 
 
