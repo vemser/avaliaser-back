@@ -31,5 +31,9 @@ public class FeedBackCreateDTO {
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
     private Tipo situacao;
+    @NotNull(message = "Data não pode ser nula.")
+    @Schema(example = "2023-12-01")
+    private LocalDate data;
+
 
 }
