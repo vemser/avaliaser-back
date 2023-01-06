@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -35,6 +36,9 @@ public class FeedBackEntity {
 
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;
+
+    @Column(name = "data")
+    private LocalDate data;
 
     @Column(name = "ativo")
     @Enumerated(EnumType.ORDINAL)

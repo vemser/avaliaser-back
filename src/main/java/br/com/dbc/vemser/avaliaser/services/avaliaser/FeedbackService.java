@@ -58,6 +58,7 @@ public class FeedbackService {
         feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getNomeInstrutor());
         feedBackEntity.setSituacao(feedBackCreateDTO.getSituacao());
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
+        feedBackEntity.setData(feedBackCreateDTO.getData());
         feedBackEntity.setAtivo(Ativo.S);
         feedBackEntity.setAlunoEntity(alunoEntity);
         feedBackEntity.setModuloEntity(moduloEntity);
@@ -77,6 +78,7 @@ public class FeedbackService {
         feedBackEntity.setDescricao(editarFeedBackDTO.getDescricao());
         feedBackEntity.setSituacao(editarFeedBackDTO.getSituacao());
         feedBackEntity.setNomeInstrutor(editarFeedBackDTO.getNomeInstrutor());
+        feedBackEntity.setData(editarFeedBackDTO.getData());
         feedBackEntity.setAtivo(Ativo.S);
         FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackRepository.save(feedBackEntity));
         return feedBackDTO;
