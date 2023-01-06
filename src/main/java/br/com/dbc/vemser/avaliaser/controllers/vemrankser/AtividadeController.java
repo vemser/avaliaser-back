@@ -1,5 +1,10 @@
 package br.com.dbc.vemser.avaliaser.controllers.vemrankser;
 
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliarDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeAlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
@@ -31,7 +36,20 @@ public class AtividadeController {
 
     private final AtividadeService atividadeService;
 
-
+    @PutMapping("/corrigir-atividade")
+    public ResponseEntity<AtividadeAvaliacaoDTO> update(@RequestParam Integer idAtividade,
+                                                    @RequestParam Integer idAluno,
+                                                    @Valid @RequestBody AtividadeAvaliarDTO atividadeAvaliacaoDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(atividadeService.corrigirAtividade(idAtividade, idAluno, atividadeAvaliacaoDTO), HttpStatus.OK);
+    }
+    @GetMapping("/listar-atividades-filtro")
+    public ResponseEntity<PageDTO<AtividadeDTO>> listarAtividades(@RequestParam(required = false) Integer modulo,
+                                                          @RequestParam(required = false) Integer aluno,
+                                                          @RequestParam(required = false) String atividade,
+                                                          Integer page, Integer size) throws RegraDeNegocioException {
+        PageDTO<AtividadeDTO> atividades = atividadeService.filtrarAtividadesPaginado(modulo, aluno, atividade, page, size);
+        return new ResponseEntity<>(atividades, HttpStatus.OK);
+    }
     @Operation(summary = "Cadastro de atividade", description = "Cadastrar atividade para os módulos")
     @ApiResponses(
             value = {

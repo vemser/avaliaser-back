@@ -2,6 +2,10 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliacaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliarDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeAlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
@@ -163,6 +167,48 @@ public class AtividadeService {
 
         return atividadeDTO;
     }
+
+    public AtividadeAvaliacaoDTO corrigirAtividade(Integer idAluno, Integer idAtividade, AtividadeAvaliarDTO atividadeUpdate) throws RegraDeNegocioException {
+
+        if(atividadeUpdate.getSituacao()!= Situacao.PENDENTE || atividadeUpdate.getSituacao() != Situacao.ENTREGUE || atividadeUpdate.getSituacao() != Situacao.ABERTO){
+            throw new RegraDeNegocioException("Coloque uma situação válida");
+        }
+
+        AtividadeAlunoEntity atividadeRecover = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(idAluno, idAtividade).get();
+
+        atividadeRecover.setNota(atividadeUpdate.getNotaAvalicao());
+        atividadeRecover.setSituacao(atividadeUpdate.getSituacao());
+        atividadeAlunoRepository.save(atividadeRecover);
+        return objectMapper.convertValue(atividadeRecover, AtividadeAvaliacaoDTO.class);
+
+    }
+
+    public PageDTO<AtividadeDTO> filtrarAtividadesPaginado(Integer modulo, Integer aluno, String atividade, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            Page<AtividadeEntity> paginaDoRepositorio = filtrarAtividades(modulo, aluno, atividade, pagina, tamanho);
+            List<AtividadeDTO> atividadeDTOS = paginaDoRepositorio.getContent().stream().map(this::converterAtividadeDTO).toList();
+
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, atividadeDTOS);
+        }
+        List<AtividadeDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    }
+
+    private Page<AtividadeEntity> filtrarAtividades(Integer modulo, Integer aluno, String atividade, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (!(modulo == null)) {
+            return atividadeRepository.findAtividadeEntitiesByModuloId(modulo, pageRequest);
+//        } else if (!(aluno == null)) {
+//            return atividadeRepository.findAllByAlunosContaining(alunoEntity, pageRequest);
+        } else if (!(atividade == null)) {
+            return atividadeRepository.findAllByTituloContainingIgnoreCase(atividade, pageRequest);
+        }
+        return atividadeRepository.findAll(pageRequest);
+    }
+
 
     private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
         if (atividadeCreateDTO.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {
