@@ -75,11 +75,13 @@ public class VagaService {
     public VagaDTO editar(Integer idVaga, VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
         verificarDataCreate(vagaCreate);
         VagaEntity vagaEntity = findById(idVaga);
-
         ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         vagaEntity.setCliente(cliente);
+
+        vagaEntity.getPrograma().clear();
         vagaEntity.getPrograma().add(programa);
+
         vagaEntity.setQuantidade(vagaCreate.getQuantidade());
         vagaEntity.setNome(vagaCreate.getNome());
         vagaEntity.setSituacao(vagaCreate.getSituacao());
