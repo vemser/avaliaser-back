@@ -23,5 +23,7 @@ public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
 
     Page<AlunoEntity> findAllByEmailContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
 
-    Optional<AlunoEntity> findByEmailContainingIgnoreCase(String email);
+    Optional<AlunoEntity> findByEmail(String email);
+
+
 }
