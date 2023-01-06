@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.rankdto.RankingDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -150,6 +152,11 @@ public class TrilhaService {
         if (trilhaEntity.getAtivo().equals(Ativo.valueOf("N"))) {
             throw new RegraDeNegocioException("Trilha desativada!");
         }
+    }
+
+    public TrilhaEntity findByIdTrilha(Integer idTrilha) {
+        Optional<TrilhaEntity> trilha = trilhaRepository.findByIdTrilhaAndAtivo(idTrilha, Ativo.S);
+        return trilha.orElse(null);
     }
 
 

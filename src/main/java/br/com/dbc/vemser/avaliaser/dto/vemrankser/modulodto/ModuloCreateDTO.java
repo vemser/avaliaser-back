@@ -17,11 +17,12 @@ public class ModuloCreateDTO {
     @Schema(description = "nome do modulo", example = "OOP")
     private String nome;
 
-       @NotNull(message = "Campo não pode estar em branco ou nulo!")
-    private Integer idTrilha;
-
     @NotNull(message = "Campo não pode estar em branco ou nulo!")
+    @Schema(example = "[1, 2, 3]")
     private List<Integer> listPrograma;
+
+    @Schema(example = "[1, 2, 3]")
+    private List<Integer> trilha;
 
 
 }
