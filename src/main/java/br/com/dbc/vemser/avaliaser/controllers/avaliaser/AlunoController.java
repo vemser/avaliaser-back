@@ -3,7 +3,9 @@ package br.com.dbc.vemser.avaliaser.controllers.avaliaser;
 import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControllerAluno;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -35,10 +38,19 @@ public class AlunoController implements OperationControllerAluno {
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }
     @Override
-    public ResponseEntity<PageDTO<AlunoDTO>> disponiveis(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        return ResponseEntity.ok(alunoService.listarDisponiveis(pagina, tamanho));
+    public ResponseEntity<PageDTO<AlunoDTO>> disponiveis(Integer page, Integer size) throws RegraDeNegocioException {
+        return ResponseEntity.ok(alunoService.listarDisponiveis(page, size));
     }
 
+    @PostMapping("/filtro")
+    public ResponseEntity<PageDTO<AlunoDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
+                                                                                @RequestParam Integer size,
+                                                                                @Valid @RequestBody AlunoFiltroDTO alunoFiltroDTO) throws RegraDeNegocioException {
+        log.info("Buscando dados de Alunos por ID...");
+        PageDTO<AlunoDTO> aluno = alunoService.listarAlunosAtivoPorProgramaTrilha(alunoFiltroDTO,page,size);
+        log.info("Retorno de dados de Aluno por ID realizado com sucesso!");
+        return new ResponseEntity<>(aluno, HttpStatus.OK);
+    }
     @GetMapping("/{idAluno}")
     public ResponseEntity<AlunoDTO> buscarAlunoPorId(@PathVariable Integer idAluno) throws RegraDeNegocioException {
         log.info("Buscando dados de Alunos por ID...");

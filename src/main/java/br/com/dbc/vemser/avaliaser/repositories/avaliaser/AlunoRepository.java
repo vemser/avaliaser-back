@@ -8,13 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
     //    Optional<AlunoEntity> findByAtivoAndIdAluno(Ativo ativo, Integer idUsuario);
 //
     Page<AlunoEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+
     Page<AlunoEntity> findAllBySituacao(Pageable pageable, SituacaoReserva situacao);
 
     Page<AlunoEntity> findAllByNomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
@@ -23,5 +24,9 @@ public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
 
     Page<AlunoEntity> findAllByEmailContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
 
-    Optional<AlunoEntity> findByEmailContainingIgnoreCase(String email);
+    Page<AlunoEntity> findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(List<Integer> idTrilha,Integer idPrograma,Ativo ativo,Pageable pageable);
+
+//    Optional<AlunoEntity> findByEmailContainingIgnoreCase(String email);
+
+
 }
