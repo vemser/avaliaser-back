@@ -29,4 +29,7 @@ public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
 //    Optional<AlunoEntity> findByEmailContainingIgnoreCase(String email);
 
 
+    Optional<AlunoEntity> findByEmail(String email);
+
+
 }

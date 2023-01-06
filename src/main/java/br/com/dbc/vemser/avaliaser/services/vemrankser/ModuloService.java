@@ -4,8 +4,10 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -59,28 +62,49 @@ public class ModuloService {
 
     public ModuloDTO criar(ModuloCreateDTO modulo) throws RegraDeNegocioException {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
+
         moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
-        TrilhaEntity trilhaEntity = trilhaService.findById(modulo.getIdTrilha());
-        trilhaService.verificarTrilhaDesativada(trilhaEntity);
-        moduloEntityNovo.setTrilha(trilhaEntity);
-        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService
-                .findAllById(modulo.getListPrograma()));
-        moduloEntityNovo.setProgramas(programaEntitySet);
+        if(modulo.getListPrograma().size() > 0){
+            for(Integer programa: modulo.getListPrograma()){
+                ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
+                if (!(programaEntity == null)) {
+                    moduloEntityNovo.getProgramas().add(programaEntity);
+                }
+            }
+        }
+        if(modulo.getTrilha().size() > 0){
+            for(Integer trilha: modulo.getTrilha()){
+                TrilhaEntity trilhaEnt = trilhaService.findByIdTrilha(trilha);
+                if (!(trilhaEnt == null)) {
+                    moduloEntityNovo.getTrilha().add(trilhaEnt);
+                }
+            }
+        }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
-
         return converterEmDTO(moduloSalvo);
-
     }
 
     public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
-
         moduloEntity.setNome(moduloCreateDTO.getNome());
-        TrilhaEntity trilhaEntity = trilhaService.findById(moduloCreateDTO.getIdTrilha());
-        moduloEntity.setTrilha(trilhaEntity);
-        Set<ProgramaEntity> programaEntitySet = new HashSet<>(programaService
-                .findAllById(moduloCreateDTO.getListPrograma()));
-        moduloEntity.setProgramas(programaEntitySet);
+        if(moduloCreateDTO.getListPrograma().size() > 0){
+            moduloEntity.getProgramas().clear();
+                for(Integer programa: moduloCreateDTO.getListPrograma()){
+                    ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
+                    if (!(programaEntity == null)) {
+                        moduloEntity.getProgramas().add(programaEntity);
+                    }
+                }
+            }
+        if(moduloCreateDTO.getTrilha().size() > 0){
+            moduloEntity.getTrilha().clear();
+            for(Integer trilha: moduloCreateDTO.getTrilha()){
+                TrilhaEntity trilhaEnt = trilhaService.findByIdTrilha(trilha);
+                if (!(trilhaEnt == null)) {
+                    moduloEntity.getTrilha().add(trilhaEnt);
+                }
+            }
+        }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
     }
@@ -107,12 +131,18 @@ public class ModuloService {
     }
 
     public ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
-        return new ModuloDTO(moduloEntity.getIdModulo(),
-                moduloEntity.getNome(),
-                moduloEntity.getAtivo(),
-                trilhaService.converterEmDTO(moduloEntity.getTrilha()),
-                moduloEntity.getProgramas().stream().map(programaService::converterEmDTO)
-                        .collect(Collectors.toList()));
+
+        ModuloDTO moduloDTO = objectMapper.convertValue(moduloEntity, ModuloDTO.class);
+        moduloDTO.setIdModulo(moduloEntity.getIdModulo());
+        moduloDTO.setNome(moduloEntity.getNome());
+        moduloDTO.setAtivo(moduloEntity.getAtivo());
+        moduloDTO.setListProgramaDTO(moduloEntity.getProgramas().stream()
+                .map(programaService::converterEmDTO)
+                .collect(Collectors.toList()));
+        moduloDTO.setTrilhaDTO(moduloEntity.getTrilha().stream()
+                .map(trilha -> objectMapper.convertValue(trilha, TrilhaDTO.class))
+                .toList());
+        return moduloDTO;
     }
 
 
@@ -142,7 +172,7 @@ public class ModuloService {
                                           Integer idTrilha) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(idModulo);
         TrilhaEntity trilhaEntity = trilhaService.findById(idTrilha);
-        moduloEntity.setTrilha(trilhaEntity);
+        moduloEntity.getTrilha().add(trilhaEntity);
         moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloEntity);
     }
@@ -158,17 +188,10 @@ public class ModuloService {
         ModuloEntity moduloEntity = new ModuloEntity(null,
                 modulo.getNome(),
                 modulo.getAtivo(),
-                trilhaService.findById(modulo.getTrilha().getIdTrilha()),
+                new HashSet<>(modulo.getTrilha()),
                 new HashSet<>(modulo.getProgramas()));
-
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
-        return new ModuloDTO(moduloSalvo.getIdModulo(),
-                moduloSalvo.getNome(),
-                moduloSalvo.getAtivo(),
-                trilhaService.converterEmDTO(moduloEntity.getTrilha()),
-                modulo.getProgramas().stream().map(programaService::converterEmDTO)
-                        .collect(Collectors.toList()));
-
+        return converterEmDTO(moduloSalvo);
     }
 
     private Page<ModuloEntity> filtrarModulos(Integer idModulo, String nome, Integer pagina, Integer tamanho) {

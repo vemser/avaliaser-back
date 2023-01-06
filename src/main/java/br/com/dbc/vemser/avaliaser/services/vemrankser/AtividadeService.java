@@ -2,13 +2,12 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.*;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AtividadeAlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AtividadeEntity;
@@ -26,11 +25,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +50,7 @@ public class AtividadeService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AtividadeEntity> atividadeEntity = atividadeRepository.findAllByAtivo(Ativo.S,pageRequest);
+            Page<AtividadeEntity> atividadeEntity = atividadeRepository.findAllByAtivo(Ativo.S, pageRequest);
             List<AtividadeDTO> atividadeDTOList = atividadeEntity.getContent()
                     .stream()
                     .map(this::converterAtividadeDTO)
@@ -91,7 +91,8 @@ public class AtividadeService {
     }
 
     public AtividadeEntregaDTO entregarAtividade(AtividadeEntregaCreateDTO atividadeEntregaCreateDTO) throws RegraDeNegocioException {
-        AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(atividadeEntregaCreateDTO.getIdAluno(), atividadeEntregaCreateDTO.getIdAtividade())
+        AlunoDTO aluno = alunoService.findByEmail(atividadeEntregaCreateDTO.getEmail());
+        AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(aluno.getIdAluno(), atividadeEntregaCreateDTO.getIdAtividade())
                 .orElseThrow(() -> new RegraDeNegocioException("Atividade não encontrada."));
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
@@ -183,7 +184,7 @@ public class AtividadeService {
 
         List<AtividadeMuralAlunoDTO> atividadeMuralAlunoDTOS = atividadeAlunoEntities.getContent()
                 .stream()
-                .map(atividadeAlunoEntity-> {
+                .map(atividadeAlunoEntity -> {
                     AtividadeEntity atividadeEntity = atividadeAlunoEntity.getAtividade();
                     AtividadeMuralAlunoDTO atividadeMuralAlunoDTO = objectMapper.convertValue(atividadeEntity, AtividadeMuralAlunoDTO.class);
                     atividadeMuralAlunoDTO.setDataEntregaAluno(atividadeAlunoEntity.getDataEntrega());

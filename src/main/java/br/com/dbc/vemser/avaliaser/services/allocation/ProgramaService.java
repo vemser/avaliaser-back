@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.entities.VagaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -145,6 +147,11 @@ public class ProgramaService {
         if(programaEdicaoDTO.getDataFim().isBefore(programaEdicaoDTO.getDataInicio())) {
             throw new RegraDeNegocioException("A data final do programa não pode ser inferior a data inicial. Tente novamente!");
         }
+    }
+
+    public ProgramaEntity findByIdPrograma(Integer idPrograma) {
+        Optional<ProgramaEntity> programa = programaRepository.findByIdProgramaAndAtivo(idPrograma, Ativo.S);
+        return programa.orElse(null);
     }
 
     public ProgramaDTO fecharPrograma(Integer idPrograma) throws RegraDeNegocioException {

@@ -52,6 +52,15 @@ public class AlunoService {
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
+    public AlunoDTO findByEmail(String email) throws RegraDeNegocioException {
+        if(!email.contains("@")){
+            email = email + "@dbccompany.com.br";
+        }
+        AlunoEntity alunoEntity = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new RegraDeNegocioException("Aluno não encontrado!"));
+        return converterAlunoDTO(alunoEntity);
+    }
+
     public AlunoDTO cadastrarAluno(AlunoCreateDTO alunoCreateDTO) throws RegraDeNegocioException {
         try {
             AlunoEntity alunoEntity = new AlunoEntity();

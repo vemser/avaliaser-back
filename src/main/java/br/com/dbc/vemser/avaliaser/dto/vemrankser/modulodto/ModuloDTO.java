@@ -24,7 +24,7 @@ public class ModuloDTO  {
     private String nome;
     @Schema(description = "Status do modulo", example = "ATIVO")
     private Ativo ativo;
-    private TrilhaDTO trilhaDTO;
+    private List<TrilhaDTO> trilhaDTO;
     private List<ProgramaDTO> listProgramaDTO;
 
 }
