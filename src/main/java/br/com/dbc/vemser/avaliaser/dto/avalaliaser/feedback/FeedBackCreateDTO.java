@@ -16,8 +16,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class FeedBackCreateDTO {
+    @NotNull(message = "Campo Id Aluno não pode ser nulo!")
     @Schema(example = "1")
     private Integer idAluno;
+    @NotNull(message = "Campo Id Modulo não pode ser nulo!")
     @Schema(example = "1")
     private Integer idModulo;
     @NotNull(message = "Nome instrutor responsável não pode ser nulo.")
