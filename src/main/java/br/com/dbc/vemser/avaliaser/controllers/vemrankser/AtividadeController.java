@@ -8,6 +8,7 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeent
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoAtividade;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.AtividadeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,7 +105,7 @@ public class AtividadeController {
     public ResponseEntity<PageDTO<AtividadeMuralAlunoDTO>> listarAtividadePorSituacaoPaginado(@RequestParam Integer page,
                                                                                               @RequestParam Integer size,
                                                                                               @RequestParam String email,
-                                                                                              @RequestParam Situacao situacao
+                                                                                              @RequestParam SituacaoAtividade situacao
     ) throws RegraDeNegocioException {
         return ResponseEntity.ok(atividadeService.listarAtividadePorStatus(page, size, email, situacao));
     }

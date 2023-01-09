@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedt
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoAtividade;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -22,5 +23,5 @@ public class AtividadeMuralAlunoDTO {
     private String link;
     private Integer nota;
     private LocalDateTime dataEntregaLimite;
-    private Situacao situacao;
+    private SituacaoAtividade situacao;
 }

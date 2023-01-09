@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.entities.pk.AtividadeAlunoPK;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoAtividade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class AtividadeAlunoEntity {
     private LocalDateTime dataEntrega;
 
     @Column(name = "situacao")
-    private Situacao situacao;
+    private SituacaoAtividade situacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idAluno")
