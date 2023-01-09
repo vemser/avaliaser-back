@@ -14,6 +14,7 @@ import br.com.dbc.vemser.avaliaser.entities.AtividadeEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoAtividade;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.AtividadeAlunoRepository;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.AtividadeRepository;
@@ -44,7 +45,7 @@ public class AtividadeService {
     private final ObjectMapper objectMapper;
 
 
-    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, String email, Situacao situacao) throws RegraDeNegocioException {
+    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, String email, SituacaoAtividade situacao) throws RegraDeNegocioException {
         if (pagina < 0 || tamanho < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
         }
@@ -54,7 +55,7 @@ public class AtividadeService {
         }
         AlunoDTO alunoDTO = alunoService.findByEmail(email);
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_IdAlunoAndSituacao(pageRequest, alunoDTO.getIdAluno(), situacao);
+        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_AtivoAndAluno_IdAlunoAndSituacao(pageRequest, Ativo.S, alunoDTO.getIdAluno(), situacao);
 
         List<AtividadeMuralAlunoDTO> atividadeMuralAlunoDTOS = atividadeAlunoEntities.getContent()
                 .stream()
@@ -120,7 +121,7 @@ public class AtividadeService {
 
         for (Integer alunos : atividadeCreateDTO.getAlunos()) {
             AtividadeAlunoEntity atividadeAlunoEntity = atividadeAlunoRepository.findByAluno_IdAlunoAndAtividade_IdAtividade(alunos, atividadeEntity.getIdAtividade()).get();
-            atividadeAlunoEntity.setSituacao(Situacao.PENDENTE);
+            atividadeAlunoEntity.setSituacao(SituacaoAtividade.PENDENTE);
             atividadeAlunoRepository.save(atividadeAlunoEntity);
         }
 
@@ -136,7 +137,7 @@ public class AtividadeService {
         atividadeAlunoEntity.setNota(0);
         atividadeAlunoEntity.setLink(atividadeEntregaCreateDTO.getLink());
         atividadeAlunoEntity.setDataEntrega(now);
-        atividadeAlunoEntity.setSituacao(Situacao.ENTREGUE);
+        atividadeAlunoEntity.setSituacao(SituacaoAtividade.ENTREGUE);
 
         atividadeAlunoRepository.save(atividadeAlunoEntity);
 
