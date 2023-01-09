@@ -225,13 +225,13 @@ public class AlunoService {
         }
     }
 
-    public PageDTO<AlunoDTO> listarAlunosAtivoPorProgramaTrilha(AlunoFiltroDTO alunoFiltro, Integer page, Integer size) throws RegraDeNegocioException {
+    public PageDTO<AlunoDTO> listarAlunosAtivoPorProgramaTrilha(Integer idPrograma,List<Integer> idTrilhas, Integer page, Integer size) throws RegraDeNegocioException {
         if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(alunoFiltro.getIdTrilhas(), alunoFiltro.getIdPrograma(), Ativo.S, pageRequest);
+            Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(idTrilhas, idPrograma, Ativo.S, pageRequest);
             List<AlunoDTO> aluno = paginaDoRepositorio.getContent().stream()
                     .map(this::converterAlunoDTO)
                     .toList();

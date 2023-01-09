@@ -42,12 +42,13 @@ public class AlunoController implements OperationControllerAluno {
         return ResponseEntity.ok(alunoService.listarDisponiveis(page, size));
     }
 
-    @PostMapping("/filtro")
+    @GetMapping("/alunos-ativos-por-programa/{idPrograma}")
     public ResponseEntity<PageDTO<AlunoDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
                                                                                 @RequestParam Integer size,
-                                                                                @Valid @RequestBody AlunoFiltroDTO alunoFiltroDTO) throws RegraDeNegocioException {
+                                                                                @PathVariable Integer idPrograma,
+                                                                                @RequestParam List<Integer> idTrilhas) throws RegraDeNegocioException {
         log.info("Buscando dados de Alunos por ID...");
-        PageDTO<AlunoDTO> aluno = alunoService.listarAlunosAtivoPorProgramaTrilha(alunoFiltroDTO,page,size);
+        PageDTO<AlunoDTO> aluno = alunoService.listarAlunosAtivoPorProgramaTrilha(idPrograma,idTrilhas,page,size);
         log.info("Retorno de dados de Aluno por ID realizado com sucesso!");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }

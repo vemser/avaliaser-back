@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.repositories.avaliaser;
 
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
@@ -25,7 +26,7 @@ public interface AlunoRepository extends JpaRepository<AlunoEntity, Integer> {
 
     Page<AlunoEntity> findAllByEmailContainingIgnoreCaseAndAtivo(String email, Ativo ativo, Pageable pageable);
 
-    Page<AlunoEntity> findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(List<Integer> idTrilha,Integer idPrograma,Ativo ativo,Pageable pageable);
+    Page<AlunoEntity> findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(List<Integer> idTrilha, Integer idPrograma, Ativo ativo, Pageable pageable);
 
 //    Optional<AlunoEntity> findByEmailContainingIgnoreCase(String email);
 

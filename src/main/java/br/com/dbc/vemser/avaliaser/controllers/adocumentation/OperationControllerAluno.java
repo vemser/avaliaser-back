@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 public interface OperationControllerAluno {
 
@@ -45,6 +46,20 @@ public interface OperationControllerAluno {
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
     ResponseEntity<AlunoDTO> buscarAlunoPorId(@PathVariable Integer idAluno) throws RegraDeNegocioException;
+    @Operation(summary = "Listar alunos ativos por programa e trilha", description = "Listar alunos alunos ativos por programa e trilha!")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Alunos ativos listado com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "404", description = "Não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/alunos-ativos-por-programa/{idPrograma}")
+     ResponseEntity<PageDTO<AlunoDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
+                                                                                @RequestParam Integer size,
+                                                                                @PathVariable Integer idPrograma,
+                                                                                @RequestParam List<Integer> idTrilhas) throws RegraDeNegocioException;
 
 
     @Operation(summary = "Atualiza dados de aluno por ID", description = "Realiza a busca de aluno por ID, e realiza alteração de dados deste aluno: nome, email, stack.")
