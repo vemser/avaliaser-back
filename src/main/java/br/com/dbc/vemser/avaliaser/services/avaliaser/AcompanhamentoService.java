@@ -2,7 +2,7 @@ package br.com.dbc.vemser.avaliaser.services.avaliaser;
 
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.EditarAcompanhamentoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
@@ -49,6 +49,49 @@ public class AcompanhamentoService {
         }
         List<AcompanhamentoDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    }
+
+    public PageDTO<AcompanhamentoFiltroDTO> listarAcompanhamentosPorNomePrograma(String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByProgramaNome(nome, pageRequest);
+            List<AcompanhamentoFiltroDTO> acompanhamento = paginaDoRepositorio.getContent().stream()
+                    .map(acompanhamentoEntity -> objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoFiltroDTO.class))
+                    .toList();
+
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    acompanhamento
+            );
+        }
+        List<AcompanhamentoFiltroDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    }
+    public PageDTO<AcompanhamentoDTO> listarAcompanhamentosAtivoPorTitulo(String titulo, Integer page, Integer size) throws RegraDeNegocioException {
+        if (page < 0 || size < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByTituloLikeIgnoreCaseAndAtivo(titulo, Ativo.S, pageRequest);
+            List<AcompanhamentoDTO> acompanhamentoDTOS = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterEmDTO)
+                    .toList();
+
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    page,
+                    size,
+                    acompanhamentoDTOS);
+        }
+        List<AcompanhamentoDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
+
     }
 
     public AcompanhamentoDTO create(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
