@@ -44,6 +44,43 @@ public class AtividadeService {
     private final ObjectMapper objectMapper;
 
 
+    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, String email, Situacao situacao) throws RegraDeNegocioException {
+        if (pagina < 0 || tamanho < 0) {
+            throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
+        }
+        if (tamanho > 0) {
+        if (!email.contains("@")) {
+            email += "@dbccompany.com.br";
+        }
+        AlunoDTO alunoDTO = alunoService.findByEmail(email);
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_IdAlunoAndSituacao(pageRequest, alunoDTO.getIdAluno(), situacao);
+
+        List<AtividadeMuralAlunoDTO> atividadeMuralAlunoDTOS = atividadeAlunoEntities.getContent()
+                .stream()
+                .map(atividadeAlunoEntity -> {
+                    AtividadeEntity atividadeEntity = atividadeAlunoEntity.getAtividade();
+                    AtividadeMuralAlunoDTO atividadeMuralAlunoDTO = objectMapper.convertValue(atividadeEntity, AtividadeMuralAlunoDTO.class);
+                    atividadeMuralAlunoDTO.setDataEntregaAluno(atividadeAlunoEntity.getDataEntrega());
+                    atividadeMuralAlunoDTO.setDataEntregaLimite(atividadeEntity.getDataEntrega());
+                    atividadeMuralAlunoDTO.setLink(atividadeAlunoEntity.getLink());
+                    atividadeMuralAlunoDTO.setSituacao(atividadeAlunoEntity.getSituacao());
+                    atividadeMuralAlunoDTO.setNota(atividadeAlunoEntity.getNota());
+                    atividadeMuralAlunoDTO.setPrograma(objectMapper.convertValue(atividadeEntity.getPrograma(), ProgramaDTO.class));
+
+                    return atividadeMuralAlunoDTO;
+                })
+                .toList();
+
+        return new PageDTO<>(atividadeAlunoEntities.getTotalElements(),
+                atividadeAlunoEntities.getTotalPages(),
+                pagina,
+                tamanho,
+                atividadeMuralAlunoDTOS);
+        }
+        List<AtividadeMuralAlunoDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    }
     public AtividadePaginacaoDTO<AtividadeDTO> listarAtividades(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (pagina < 0 || tamanho < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
@@ -178,36 +215,7 @@ public class AtividadeService {
         }
     }
 
-    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, String email, Situacao situacao) throws RegraDeNegocioException {
-        if (!email.contains("@")) {
-            email += "@dbccompany.com.br";
-        }
-        AlunoDTO alunoDTO = alunoService.findByEmail(email);
-        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_IdAlunoAndSituacao(pageRequest, alunoDTO.getIdAluno(), situacao);
 
-        List<AtividadeMuralAlunoDTO> atividadeMuralAlunoDTOS = atividadeAlunoEntities.getContent()
-                .stream()
-                .map(atividadeAlunoEntity -> {
-                    AtividadeEntity atividadeEntity = atividadeAlunoEntity.getAtividade();
-                    AtividadeMuralAlunoDTO atividadeMuralAlunoDTO = objectMapper.convertValue(atividadeEntity, AtividadeMuralAlunoDTO.class);
-                    atividadeMuralAlunoDTO.setDataEntregaAluno(atividadeAlunoEntity.getDataEntrega());
-                    atividadeMuralAlunoDTO.setDataEntregaLimite(atividadeEntity.getDataEntrega());
-                    atividadeMuralAlunoDTO.setLink(atividadeAlunoEntity.getLink());
-                    atividadeMuralAlunoDTO.setSituacao(atividadeAlunoEntity.getSituacao());
-                    atividadeMuralAlunoDTO.setNota(atividadeAlunoEntity.getNota());
-                    atividadeMuralAlunoDTO.setPrograma(objectMapper.convertValue(atividadeEntity.getPrograma(), ProgramaDTO.class));
-
-                    return atividadeMuralAlunoDTO;
-                })
-                .toList();
-
-        return new PageDTO<>(atividadeAlunoEntities.getTotalElements(),
-                atividadeAlunoEntities.getTotalPages(),
-                pagina,
-                tamanho,
-                atividadeMuralAlunoDTOS);
-    }
 
 //    public AtividadeDTO colocarAtividadeComoConcluida(Integer idAtividade) throws RegraDeNegocioException {
 //        AtividadeEntity atividadeEntity = buscarPorIdAtividade(idAtividade);
