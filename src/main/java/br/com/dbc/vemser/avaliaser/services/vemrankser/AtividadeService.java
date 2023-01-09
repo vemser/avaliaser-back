@@ -2,21 +2,14 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeavaliadadto.AtividadeAvaliarDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.*;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
-import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-import br.com.dbc.vemser.avaliaser.entities.AtividadeAlunoEntity;
-import br.com.dbc.vemser.avaliaser.entities.AtividadeEntity;
-import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
+import br.com.dbc.vemser.avaliaser.entities.*;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -30,11 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -175,6 +166,18 @@ public class AtividadeService {
         return atividadeDTO;
     }
 
+    private AtividadeFiltroDTO converterAtividadeFiltroDTO(AtividadeEntity atividade) {
+        AtividadeFiltroDTO atividadeFiltroDTO = objectMapper.convertValue(atividade, AtividadeFiltroDTO.class);
+        atividadeFiltroDTO.setAtividade(objectMapper.convertValue(atividade, AtividadeDTO.class));
+        atividadeFiltroDTO.setAluno(objectMapper.convertValue(atividade.getAlunos(), AlunoDTO.class));
+        List<AtividadeAlunoDTO> listAlunos = atividade.getAlunos()
+                .stream()
+                .map(alunoEntity -> objectMapper.convertValue(alunoEntity, AtividadeAlunoDTO.class)).toList();
+        atividadeDTO.setAlunos(listAlunos);
+
+        return atividadeDTO;
+    }
+
     public AtividadeAvaliacaoDTO corrigirAtividade(Integer idAluno, Integer idAtividade, AtividadeAvaliarDTO atividadeUpdate) throws RegraDeNegocioException {
 
         if(atividadeUpdate.getSituacao()!= Situacao.PENDENTE || atividadeUpdate.getSituacao() != Situacao.ENTREGUE || atividadeUpdate.getSituacao() != Situacao.ABERTO){
@@ -190,32 +193,27 @@ public class AtividadeService {
 
     }
 
-    public PageDTO<AtividadeDTO> filtrarAtividadesPaginado(Integer modulo, Integer aluno, String atividade, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+    public PageDTO<AtividadeFiltroDTO> filtrarAtividadesPaginado(Integer modulo, Integer aluno, Integer atividade, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (tamanho > 0) {
-            Page<AtividadeEntity> paginaDoRepositorio = filtrarAtividades(modulo, aluno, atividade, pagina, tamanho);
-            List<AtividadeDTO> atividadeDTOS = paginaDoRepositorio.getContent().stream().map(this::converterAtividadeDTO).toList();
+            Page<AtividadeAlunoEntity> paginaDoRepositorio = filtrarAtividades(modulo, aluno, atividade, pagina, tamanho);
+            List<AtividadeFiltroDTO> atividadeAlunoEntities = paginaDoRepositorio.getContent().stream().map(this::converterAtividadeFiltroDTO).toList();
 
-            return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, atividadeDTOS);
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, atividadeAlunoEntities);
         }
-        List<AtividadeDTO> listaVazia = new ArrayList<>();
+        List<AtividadeFiltroDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
-    private Page<AtividadeEntity> filtrarAtividades(Integer modulo, Integer aluno, String atividade, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+    private Page<AtividadeAlunoEntity> filtrarAtividades(Integer modulo, Integer aluno, Integer atividade, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(modulo == null)) {
-            return atividadeRepository.findAtividadeEntitiesByModuloId(modulo, pageRequest);
-//        } else if (!(aluno == null)) {
-//            return atividadeRepository.findAllByAlunosContaining(alunoEntity, pageRequest);
-        } else if (!(atividade == null)) {
-            return atividadeRepository.findAllByTituloContainingIgnoreCase(atividade, pageRequest);
+            return atividadeAlunoRepository.findByFiltro(modulo, aluno, atividade, pageRequest);
         }
-        return atividadeRepository.findAll(pageRequest);
+        return atividadeAlunoRepository.findAll(pageRequest);
     }
-
 
     private static void verificarDatas(AtividadeCreateDTO atividadeCreateDTO, AtividadeEntity atividadeEntity) throws RegraDeNegocioException {
         if (atividadeEntity.getDataCriacao().isAfter(atividadeCreateDTO.getDataEntrega())) {

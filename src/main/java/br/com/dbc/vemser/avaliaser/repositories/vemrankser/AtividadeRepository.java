@@ -20,16 +20,5 @@ public interface AtividadeRepository extends JpaRepository<AtividadeEntity, Inte
 
     Optional<AtividadeEntity> findByIdAtividadeAndAtivo(Integer id, Ativo ativo);
     Page<AtividadeEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
-    Page<AtividadeEntity> findAllByModulosContaining(ModuloEntity idModulo, Pageable pageable);
-    Page<AtividadeEntity> findAllByAlunosContaining(AlunoEntity idAluno, Pageable pageable);
-    Page<AtividadeEntity> findAllByTituloContainingIgnoreCase(String nome, Pageable pageable);
-
-    @Query("SELECT obj " +
-            "FROM ATIVIDADE obj " +
-            "JOIN MODULO_ATIVIDADE ma ON ma.idModuloAtividade.idAtividade = obj.idAtividade " +
-            "WHERE ma.idModuloAtividade.idModulo = :modulo"
-    )
-    Page<AtividadeEntity> findAtividadeEntitiesByModuloId(Integer modulo, Pageable pageable);
-
 
 }

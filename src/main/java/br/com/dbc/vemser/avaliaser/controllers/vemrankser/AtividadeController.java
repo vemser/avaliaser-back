@@ -15,6 +15,7 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeent
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
+import br.com.dbc.vemser.avaliaser.entities.AtividadeAlunoEntity;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.AtividadeService;
@@ -47,11 +48,11 @@ public class AtividadeController {
         return new ResponseEntity<>(atividadeService.corrigirAtividade(idAtividade, idAluno, atividadeAvaliacaoDTO), HttpStatus.OK);
     }
     @GetMapping("/listar-atividades-filtro")
-    public ResponseEntity<PageDTO<AtividadeDTO>> listarAtividades(@RequestParam(required = false) Integer modulo,
+    public ResponseEntity<PageDTO<AtividadeAlunoEntity>> listarAtividades(@RequestParam(required = false) Integer modulo,
                                                           @RequestParam(required = false) Integer aluno,
-                                                          @RequestParam(required = false) String atividade,
+                                                          @RequestParam(required = false) Integer atividade,
                                                           Integer page, Integer size) throws RegraDeNegocioException {
-        PageDTO<AtividadeDTO> atividades = atividadeService.filtrarAtividadesPaginado(modulo, aluno, atividade, page, size);
+        PageDTO<AtividadeAlunoEntity> atividades = atividadeService.filtrarAtividadesPaginado(modulo, aluno, atividade, page, size);
         return new ResponseEntity<>(atividades, HttpStatus.OK);
     }
     @Operation(summary = "Cadastro de atividade", description = "Cadastrar atividade para os módulos")
