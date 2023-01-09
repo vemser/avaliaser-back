@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.services.avaliaser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
@@ -97,13 +98,13 @@ public class FeedbackService {
         return converterParaFeedbackDTO(feedBackEntity);
     }
 
-    public List<FeedBackDTO> findUsuarios(String usuario) {
+    public List<UsuarioDTO> findUsuarios(String usuario) {
         Set<FeedBackEntity> feedBackDTOS = feedBackRepository.findAllByNomeInstrutorContainsIgnoreCase(usuario);
         if (feedBackDTOS.isEmpty() || feedBackDTOS == null) {
             return Collections.emptyList();
         }
         return feedBackDTOS.stream()
-                .map(feedBackEntity -> converterParaFeedbackDTO(feedBackEntity))
+                .map(feedBackEntity -> new UsuarioDTO(feedBackEntity.getNomeInstrutor()))
                 .toList();
     }
 

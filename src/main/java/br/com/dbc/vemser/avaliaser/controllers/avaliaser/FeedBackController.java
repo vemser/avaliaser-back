@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControlle
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.FeedbackService;
@@ -63,8 +64,8 @@ public class FeedBackController implements OperationControllerFeedBack {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/encontrar-usuarios")
-    public ResponseEntity<List<FeedBackDTO>> findUsuarios(@RequestBody String usuario) {
+    @GetMapping("/find-usuarios")
+    public ResponseEntity<List<UsuarioDTO>> findUsuarios(@RequestParam String usuario) {
         return new ResponseEntity<>(feedbackService.findUsuarios(usuario), HttpStatus.OK);
     }
 }
