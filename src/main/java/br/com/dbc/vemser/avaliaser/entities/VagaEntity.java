@@ -2,7 +2,7 @@ package br.com.dbc.vemser.avaliaser.entities;
 
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,7 +49,7 @@ public class VagaEntity {
 
     @Column(name = "situacao")
     @Enumerated(EnumType.ORDINAL)
-    private Situacao situacao;
+    private SituacaoVagaPrograma situacaoVagaPrograma;
 
     @Column(name = "ativo")
     @Enumerated(EnumType.ORDINAL)

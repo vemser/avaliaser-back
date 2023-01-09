@@ -1,13 +1,11 @@
 package br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback;
 
-import br.com.dbc.vemser.avaliaser.enums.Stack;
-import br.com.dbc.vemser.avaliaser.enums.Tipo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -32,7 +30,7 @@ public class FeedBackCreateDTO {
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
-    private Tipo situacao;
+    private TipoAvaliacao situacao;
     @NotNull(message = "Data não pode ser nula.")
     @Schema(example = "2023-12-01")
     private LocalDate data;

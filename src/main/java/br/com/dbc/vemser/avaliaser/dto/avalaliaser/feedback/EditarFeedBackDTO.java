@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback;
 
-import br.com.dbc.vemser.avaliaser.enums.Tipo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +20,5 @@ public class EditarFeedBackDTO {
     private String descricao;
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
-    private Tipo situacao;
+    private TipoAvaliacao situacao;
 }

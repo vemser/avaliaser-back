@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.programa;
 
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class ProgramaCreateDTO {
 
     @NotNull(message = "situacao não pode ser vazio ou nulo.")
     @Schema(description = "situacao do programa", example = "ABERTO")
-    private Situacao situacao;
+    private SituacaoVagaPrograma situacaoVagaPrograma;
 
     @Schema(description = "Descrição do programa", example = "Programa de formação profissional trilha Backend Vem Ser DBC 10º edição.")
     private String descricao;

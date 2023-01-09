@@ -2,7 +2,6 @@ package br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedt
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.SituacaoAtividade;
 import lombok.Data;
 

@@ -3,8 +3,7 @@ package br.com.dbc.vemser.avaliaser.dto.allocation.programa;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +22,7 @@ public class ProgramaDTO {
     @Schema(example = "Programa de formação profissional trilha Backend Vem Ser DBC 10º edição.")
     private String descricao;
     @Schema(description = "situacao do programa", example = "ABERTO")
-    private Situacao situacao;
+    private SituacaoVagaPrograma situacaoVagaPrograma;
     @Schema(description = "Data de abertura programa", example = "2023-02-23")
     private LocalDate dataInicio;
     @Schema(description = "Data de termino do programa", example = "2023-06-23")
