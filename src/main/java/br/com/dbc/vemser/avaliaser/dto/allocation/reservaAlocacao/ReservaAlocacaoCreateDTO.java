@@ -1,7 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.reservaAlocacao;
 
 
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.SituacaoReserva;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -9,11 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @Getter
 @Setter

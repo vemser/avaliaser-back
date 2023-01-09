@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao;
 
-import br.com.dbc.vemser.avaliaser.enums.Tipo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,6 +21,6 @@ public class EditarAvaliacaoDTO {
     private String descricao;
     @NotNull(message = "Situação não pode ser nulo.")
     @Schema(example = "POSITIVO")
-    private Tipo situacao;
+    private TipoAvaliacao situacao;
 
 }

@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +32,7 @@ public class ComentarioEntity {
     private String comentario;
 
     @Column(name = "situacao")
-    private Situacao situacao;
+    private TipoAvaliacao situacao;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

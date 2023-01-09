@@ -9,18 +9,15 @@ import br.com.dbc.vemser.avaliaser.entities.ClienteEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
 import br.com.dbc.vemser.avaliaser.entities.VagaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.VagaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +39,7 @@ public class VagaService {
         VagaEntity vagaEntity = converterEntity(vagaCreate);
         vagaEntity.setCliente(cliente);
         vagaEntity.getPrograma().add(programa);
-        vagaEntity.setSituacao(vagaCreate.getSituacao());
+        vagaEntity.setSituacaoVagaPrograma(vagaCreate.getSituacaoVagaPrograma());
         vagaEntity.setAtivo(Ativo.S);
         vagaEntity.setDataCriacao(LocalDate.now());
         vagaEntity.setDataAbertura(vagaCreate.getDataAbertura());
@@ -84,7 +81,7 @@ public class VagaService {
 
         vagaEntity.setQuantidade(vagaCreate.getQuantidade());
         vagaEntity.setNome(vagaCreate.getNome());
-        vagaEntity.setSituacao(vagaCreate.getSituacao());
+        vagaEntity.setSituacaoVagaPrograma(vagaCreate.getSituacaoVagaPrograma());
         vagaEntity.setDataAbertura(vagaCreate.getDataAbertura());
         vagaEntity.setDataFechamento(vagaCreate.getDataFechamento());
         vagaEntity.setAtivo(Ativo.S);
@@ -106,7 +103,7 @@ public class VagaService {
                 vagaEntity.getQuantidade(),
                 quantidade_disponiveis,
                 vagaEntity.getQuantidadeAlocados(),
-                vagaEntity.getSituacao(),
+                vagaEntity.getSituacaoVagaPrograma(),
                 vagaEntity.getDataAbertura(),
                 vagaEntity.getDataFechamento(),
                 vagaEntity.getDataCriacao(),
@@ -136,7 +133,7 @@ public class VagaService {
     }
 
     public void verificarVagaFechada(VagaEntity vaga) throws RegraDeNegocioException {
-        if (vaga.getSituacao().equals(Situacao.FECHADO)) {
+        if (vaga.getSituacaoVagaPrograma().equals(SituacaoVagaPrograma.FECHADO)) {
             throw new RegraDeNegocioException("Vaga Fechada!");
         }
     }
@@ -144,7 +141,7 @@ public class VagaService {
     public VagaDTO fecharVaga(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
         if (vaga.getQuantidade() == 0) {
-            vaga.setSituacao(Situacao.FECHADO);
+            vaga.setSituacaoVagaPrograma(SituacaoVagaPrograma.FECHADO);
             vagaRepository.save(vaga);
         }
         return converterEmDTO(vaga);

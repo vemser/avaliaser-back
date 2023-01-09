@@ -1,14 +1,11 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.cliente;
 
 
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data

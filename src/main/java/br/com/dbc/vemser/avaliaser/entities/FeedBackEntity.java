@@ -1,8 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
-import br.com.dbc.vemser.avaliaser.enums.Tipo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -32,7 +31,7 @@ public class FeedBackEntity {
     private String descricao;
 
     @Column(name = "situacao")
-    private Tipo situacao;
+    private TipoAvaliacao situacao;
 
     @Column(name = "nome_instrutor")
     private String nomeInstrutor;

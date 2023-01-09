@@ -2,7 +2,7 @@ package br.com.dbc.vemser.avaliaser.dto.allocation.vaga;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.cliente.ClienteDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class VagaDTO {
     private Integer quantidade;
     private Integer quantidade_disponiveis;
     private Integer quantidadeAlocados;
-    private Situacao situacao;
+    private SituacaoVagaPrograma situacaoVagaPrograma;
     private LocalDate dataAbertura;
     private LocalDate dataFechamento;
     private LocalDate dataCriacao;

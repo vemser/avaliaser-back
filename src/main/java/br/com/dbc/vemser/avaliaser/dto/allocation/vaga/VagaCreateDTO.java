@@ -1,7 +1,7 @@
 package br.com.dbc.vemser.avaliaser.dto.allocation.vaga;
 
 
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
+import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class VagaCreateDTO {
 
     @NotNull(message = "situacao não pode ser nulo.")
     @Schema(description = "situacao da vaga", example = "ABERTO")
-    private Situacao situacao;
+    private SituacaoVagaPrograma situacaoVagaPrograma;
 
     @Schema(description = "Data abertura vaga", example = "2024-12-20")
     @FutureOrPresent

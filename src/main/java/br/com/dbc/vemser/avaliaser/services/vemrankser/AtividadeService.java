@@ -13,7 +13,6 @@ import br.com.dbc.vemser.avaliaser.entities.AtividadeAlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.AtividadeEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
-import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.enums.SituacaoAtividade;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.AtividadeAlunoRepository;

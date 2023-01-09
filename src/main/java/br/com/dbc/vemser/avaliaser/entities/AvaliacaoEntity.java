@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.dbc.vemser.avaliaser.enums.Tipo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -28,7 +28,7 @@ public class AvaliacaoEntity {
     private Integer idAcompanhamento;
 
     @Column(name = "situacao")
-    private Tipo situacao;
+    private TipoAvaliacao situacao;
 
     @Column(name = "descricao")
     private String descricao;

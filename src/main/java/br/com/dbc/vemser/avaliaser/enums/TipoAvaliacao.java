@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.enums;
 
-public enum Tipo {
+public enum TipoAvaliacao {
     POSITIVO,
     ATENCAO,
 }
