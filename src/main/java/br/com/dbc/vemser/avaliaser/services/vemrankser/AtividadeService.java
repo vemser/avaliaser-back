@@ -178,9 +178,13 @@ public class AtividadeService {
         }
     }
 
-    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, Integer idAluno, Situacao situacao) throws RegraDeNegocioException {
+    public PageDTO<AtividadeMuralAlunoDTO> listarAtividadePorStatus(Integer pagina, Integer tamanho, String email, Situacao situacao) throws RegraDeNegocioException {
+        if (!email.contains("@")) {
+            email += "@dbccompany.com.br";
+        }
+        AlunoDTO alunoDTO = alunoService.findByEmail(email);
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_IdAlunoAndSituacao(pageRequest, idAluno, situacao);
+        Page<AtividadeAlunoEntity> atividadeAlunoEntities = atividadeAlunoRepository.findByAluno_IdAlunoAndSituacao(pageRequest, alunoDTO.getIdAluno(), situacao);
 
         List<AtividadeMuralAlunoDTO> atividadeMuralAlunoDTOS = atividadeAlunoEntities.getContent()
                 .stream()
@@ -197,9 +201,6 @@ public class AtividadeService {
                     return atividadeMuralAlunoDTO;
                 })
                 .toList();
-        if (atividadeMuralAlunoDTOS.isEmpty()) {
-            throw new RegraDeNegocioException("Atividade ou aluno inválido. ");
-        }
 
         return new PageDTO<>(atividadeAlunoEntities.getTotalElements(),
                 atividadeAlunoEntities.getTotalPages(),

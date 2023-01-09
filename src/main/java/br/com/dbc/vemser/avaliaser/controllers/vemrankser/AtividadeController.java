@@ -3,13 +3,10 @@ package br.com.dbc.vemser.avaliaser.controllers.vemrankser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeMuralAlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadedto.AtividadeMuralAlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadeentregardto.AtividadeEntregaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.atividadegeraldto.atividadepagedto.AtividadePaginacaoDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.enums.Situacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.AtividadeService;
@@ -24,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @Validated
@@ -107,10 +103,10 @@ public class AtividadeController {
     @GetMapping("/listar-por-situacao-paginado")
     public ResponseEntity<PageDTO<AtividadeMuralAlunoDTO>> listarAtividadePorSituacaoPaginado(@RequestParam Integer page,
                                                                                               @RequestParam Integer size,
-                                                                                              @RequestParam Integer idAluno,
+                                                                                              @RequestParam String email,
                                                                                               @RequestParam Situacao situacao
-                                                                                              ) throws RegraDeNegocioException {
-        return ResponseEntity.ok(atividadeService.listarAtividadePorStatus(page, size, idAluno, situacao));
+    ) throws RegraDeNegocioException {
+        return ResponseEntity.ok(atividadeService.listarAtividadePorStatus(page, size, email, situacao));
     }
 
 //    @Operation(summary = "Colocar a atividade como concluida", description = "Concluir atividade da turma")
