@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +95,16 @@ public class FeedbackService {
     public FeedBackDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
         FeedBackEntity feedBackEntity = findById(id);
         return converterParaFeedbackDTO(feedBackEntity);
+    }
+
+    public List<FeedBackDTO> findUsuarios(String usuario) {
+        Set<FeedBackEntity> feedBackDTOS = feedBackRepository.findAllByNomeInstrutorContainsIgnoreCase(usuario);
+        if (feedBackDTOS.isEmpty() || feedBackDTOS == null) {
+            return Collections.emptyList();
+        }
+        return feedBackDTOS.stream()
+                .map(feedBackEntity -> converterParaFeedbackDTO(feedBackEntity))
+                .toList();
     }
 
     private Page<FeedBackEntity> filtrarFeed(Integer idFeedBack, Integer idAluno, String nome, Integer pagina, Integer tamanho) {

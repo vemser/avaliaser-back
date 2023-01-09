@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -26,12 +27,12 @@ public class FeedBackController implements OperationControllerFeedBack {
     private final FeedbackService feedbackService;
 
     @GetMapping("/listar-feedback")
-    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(@RequestParam(required = false)Integer idFeedback,
-                                                                       @RequestParam(required = false)Integer idAluno,
-                                                                       @RequestParam(required = false)String nome,
+    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(@RequestParam(required = false) Integer idFeedback,
+                                                                       @RequestParam(required = false) Integer idAluno,
+                                                                       @RequestParam(required = false) String nome,
                                                                        Integer page, Integer size) throws RegraDeNegocioException {
         log.info("Realizando busca de feedbacks...");
-        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(idFeedback,idAluno, nome, page, size);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(idFeedback, idAluno, nome, page, size);
         log.info("Retorno de feedbacks em lista paginada realizado com sucesso!");
         return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
     }
@@ -60,5 +61,10 @@ public class FeedBackController implements OperationControllerFeedBack {
         feedbackService.desativarFeed(idFeedBack);
         log.info("FeedBack desativado com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/encontrar-usuarios")
+    public ResponseEntity<List<FeedBackDTO>> findUsuarios(@RequestBody String usuario) {
+        return new ResponseEntity<>(feedbackService.findUsuarios(usuario), HttpStatus.OK);
     }
 }
