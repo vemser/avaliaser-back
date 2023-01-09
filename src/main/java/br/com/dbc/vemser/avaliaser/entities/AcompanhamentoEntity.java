@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,18 @@ public class AcompanhamentoEntity {
     @Column(name = "descricao")
     private String descricao;
 
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
+
     @Column(name = "data_inicio")
     private LocalDate dataInicio;
 
-    @Column(name = "id_programa", updatable = false, insertable = false)
-    private Integer idPrograma;
+    @Column(name = "data_fim")
+    private LocalDate dataFim;
+
+//    @Column(name = "id_programa", updatable = false, insertable = false)
+//    private Integer idPrograma;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "acompanhamentoEntity")
