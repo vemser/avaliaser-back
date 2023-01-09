@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
@@ -58,7 +59,19 @@ public class FeedbackService {
 
         FeedBackEntity feedBackEntity = new FeedBackEntity();
         AlunoEntity alunoEntity = alunoService.findById(feedBackCreateDTO.getIdAluno());
-        ModuloEntity moduloEntity = moduloService.buscarPorIdModulo(feedBackCreateDTO.getIdModulo());
+        if (feedBackCreateDTO.getModulo().isEmpty()) {
+            throw new RegraDeNegocioException("Modulo não informado.");
+        }
+        for (Integer lista : feedBackCreateDTO.getModulo()) {
+            ModuloEntity moduloEntity = moduloService.findModuloEntityById(lista);
+            if (!(moduloEntity == null)) {
+                feedBackEntity.getModuloEntity().add(moduloEntity);
+            }
+        }
+        if (feedBackEntity.getModuloEntity().isEmpty()) {
+            throw new RegraDeNegocioException("Modulo invalidos.");
+        }
+
         feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getUsuarioLogado());
         feedBackEntity.setSituacao(feedBackCreateDTO.getSituacao());
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
@@ -66,7 +79,6 @@ public class FeedbackService {
         feedBackEntity.setData(now.toLocalDate());
         feedBackEntity.setAtivo(Ativo.S);
         feedBackEntity.setAlunoEntity(alunoEntity);
-        feedBackEntity.setModuloEntity(moduloEntity);
         FeedBackEntity feedBackSalvo = feedBackRepository.save(feedBackEntity);
         FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackSalvo);
 
@@ -123,7 +135,10 @@ public class FeedbackService {
     public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback) {
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(alunoService.converterAlunoDTO(feedback.getAlunoEntity()));
-        feedBackDTO.setModuloDTO(moduloService.converterEmDTO(feedback.getModuloEntity()));
+        List<ModuloDTO> modulos = feedback.getModuloEntity().stream()
+                .map(modulo -> moduloService.converterEmDTO(modulo))
+                .toList();
+        feedBackDTO.setModuloDTO(modulos);
         return feedBackDTO;
     }
 }
