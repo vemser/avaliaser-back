@@ -4,7 +4,6 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
@@ -18,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,10 +56,11 @@ public class FeedbackService {
         FeedBackEntity feedBackEntity = new FeedBackEntity();
         AlunoEntity alunoEntity = alunoService.findById(feedBackCreateDTO.getIdAluno());
         ModuloEntity moduloEntity = moduloService.buscarPorIdModulo(feedBackCreateDTO.getIdModulo());
-        feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getNomeInstrutor());
+        feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getUsuarioLogado());
         feedBackEntity.setSituacao(feedBackCreateDTO.getSituacao());
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
-        feedBackEntity.setData(feedBackCreateDTO.getData());
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        feedBackEntity.setData(now.toLocalDate());
         feedBackEntity.setAtivo(Ativo.S);
         feedBackEntity.setAlunoEntity(alunoEntity);
         feedBackEntity.setModuloEntity(moduloEntity);
@@ -73,7 +75,6 @@ public class FeedbackService {
         FeedBackEntity feedBackEntity = findById(id);
         feedBackEntity.setDescricao(editarFeedBackDTO.getDescricao());
         feedBackEntity.setSituacao(editarFeedBackDTO.getSituacao());
-        feedBackEntity.setAtivo(Ativo.S);
         FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackRepository.save(feedBackEntity));
         return feedBackDTO;
     }
@@ -97,17 +98,16 @@ public class FeedbackService {
     private Page<FeedBackEntity> filtrarFeed(Integer idFeedBack, Integer idAluno, String nome, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idAluno == null)) {
-            return feedBackRepository.findAllByIdAlunoAndAtivo(idAluno, Ativo.S,pageRequest);
-        }else if (!(idFeedBack == null)){
+            return feedBackRepository.findAllByIdAlunoAndAtivo(idAluno, Ativo.S, pageRequest);
+        } else if (!(idFeedBack == null)) {
             return feedBackRepository.findByIdFeedBackAndAtivo(idFeedBack, Ativo.S, pageRequest);
+        } else if (!(nome == null)) {
+            return feedBackRepository.findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(nome, Ativo.S, pageRequest);
         }
-        else if (!(nome == null)) {
-            return feedBackRepository.findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(nome, Ativo.S,pageRequest);
-        }
-        return feedBackRepository.findAllByAtivo(pageRequest,Ativo.S);
+        return feedBackRepository.findAllByAtivo(pageRequest, Ativo.S);
     }
 
-    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback)  {
+    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback) {
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(alunoService.converterAlunoDTO(feedback.getAlunoEntity()));
         feedBackDTO.setModuloDTO(moduloService.converterEmDTO(feedback.getModuloEntity()));
