@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -235,5 +236,27 @@ public class AlunoService {
         alunoRepository.save(aluno);
     }
 
+    public PageDTO<AlunoDTO> listarAlunosAtivoPorProgramaTrilha(AlunoFiltroDTO alunoFiltro, Integer page, Integer size) throws RegraDeNegocioException {
+        if (page < 0 || size < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+        if (size > 0) {
+            PageRequest pageRequest = PageRequest.of(page, size);
+            Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(alunoFiltro.getIdTrilhas(), alunoFiltro.getIdPrograma(), Ativo.S, pageRequest);
+            List<AlunoDTO> aluno = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterAlunoDTO)
+                    .toList();
 
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
+                    paginaDoRepositorio.getTotalPages(),
+                    page,
+                    size,
+                    aluno);
+        }
+        List<AlunoDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, size, listaVazia);
+
+    }
 }
+
+
