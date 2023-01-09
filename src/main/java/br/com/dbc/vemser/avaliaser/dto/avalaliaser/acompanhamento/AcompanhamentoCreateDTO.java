@@ -26,4 +26,6 @@ public class AcompanhamentoCreateDTO {
     @NotNull(message = "Programa não pode ser nulo.")
     private Integer idPrograma;
 
+    private LocalDate dataFim;
+
 }

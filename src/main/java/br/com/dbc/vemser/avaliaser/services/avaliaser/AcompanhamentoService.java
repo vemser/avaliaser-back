@@ -5,8 +5,11 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.Acompanhamento
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.EditarAcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
+import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AcompanhamentoRepository;
+import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -22,6 +26,8 @@ public class AcompanhamentoService {
 
     private final AcompanhamentoRepository acompanhamentoRepository;
     private final ObjectMapper objectMapper;
+
+    private final ProgramaService programaService;
 
     public PageDTO<AcompanhamentoDTO> listarAcompanhamentosPaginados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
@@ -45,27 +51,38 @@ public class AcompanhamentoService {
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
-    public AcompanhamentoDTO cadastrarAcompanhamento(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
-
-        AcompanhamentoEntity acompanhamentoEntity = new AcompanhamentoEntity();
-
-        acompanhamentoEntity.setTitulo(acompanhamentoCreateDTO.getTitulo());
-        acompanhamentoEntity.setDataInicio(acompanhamentoCreateDTO.getDataInicio());
-        acompanhamentoEntity.setDescricao(acompanhamentoCreateDTO.getDescricao());
-
+    public AcompanhamentoDTO create(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
+        ProgramaEntity programaEntity = programaService.findById(acompanhamentoCreateDTO.getIdPrograma());
+        programaService.verificarProgramaFechado(programaEntity);
+        if (acompanhamentoCreateDTO.getDataFim() != null) {
+            verificarDatas(acompanhamentoCreateDTO);
+        }
+        AcompanhamentoEntity acompanhamentoEntity = converterEntity(acompanhamentoCreateDTO, programaEntity);
         AcompanhamentoEntity acompanhamentoSalvo = acompanhamentoRepository.save(acompanhamentoEntity);
 
-        AcompanhamentoDTO acompanhamentoDTO = objectMapper.convertValue(acompanhamentoSalvo, AcompanhamentoDTO.class);
-        acompanhamentoDTO.setIdAcompanhamento(acompanhamentoSalvo.getIdAcompanhamento());
-        return acompanhamentoDTO;
+        return converterEmDTO(acompanhamentoSalvo);
     }
 
-    public AcompanhamentoDTO editarAcompanhamento(EditarAcompanhamentoDTO editarAcompanhamentoDTO, Integer id) throws RegraDeNegocioException {
+    public AcompanhamentoDTO update(AcompanhamentoCreateDTO createDTO, Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);
-        acompanhamentoEntity.setTitulo(editarAcompanhamentoDTO.getTitulo());
-        acompanhamentoEntity.setDescricao(editarAcompanhamentoDTO.getDescricao());
+        ProgramaEntity programaEntity = programaService.findById(createDTO.getIdPrograma());
+        programaService.verificarProgramaFechado(programaEntity);
+        if (createDTO.getDataFim() != null) {
+            verificarDatas(createDTO);
+        }
+        acompanhamentoEntity.setPrograma(programaEntity);
+        acompanhamentoEntity.setTitulo(createDTO.getTitulo());
+        acompanhamentoEntity.setDescricao(createDTO.getDescricao());
+        acompanhamentoEntity.setDataInicio(createDTO.getDataInicio());
+        acompanhamentoEntity.setDataFim(createDTO.getDataFim());
+
+        AcompanhamentoEntity acompanhamentoSave = acompanhamentoRepository.save(acompanhamentoEntity);
+        return converterEmDTO(acompanhamentoSave);
+    }
+    public void desativar(Integer id) throws RegraDeNegocioException {
+        AcompanhamentoEntity acompanhamentoEntity = findById(id);
+        acompanhamentoEntity.setAtivo(Ativo.N);
         acompanhamentoRepository.save(acompanhamentoEntity);
-        return objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoDTO.class);
     }
 
 
@@ -76,9 +93,34 @@ public class AcompanhamentoService {
 
     public AcompanhamentoDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);
-        AcompanhamentoDTO acompanhamentoDTO =
-                objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoDTO.class);
-        return acompanhamentoDTO;
+
+        return converterEmDTO(acompanhamentoEntity);
+    }
+
+    public AcompanhamentoEntity converterEntity(AcompanhamentoCreateDTO createDTO, ProgramaEntity programaEntity) {
+        return new AcompanhamentoEntity(null,
+                createDTO.getTitulo(),
+                createDTO.getDescricao(),
+                Ativo.S,
+                createDTO.getDataInicio(),
+                createDTO.getDataFim(),
+                new HashSet<>(),
+                programaEntity);
+    }
+
+    public AcompanhamentoDTO converterEmDTO(AcompanhamentoEntity acompanhamento) {
+        return new AcompanhamentoDTO(acompanhamento.getIdAcompanhamento(),
+                acompanhamento.getTitulo(),
+                programaService.converterEmDTO(acompanhamento.getPrograma()),
+                acompanhamento.getDataInicio(),
+                acompanhamento.getDataFim(),
+                acompanhamento.getDescricao());
+    }
+
+    private static void verificarDatas(AcompanhamentoCreateDTO createDTO) throws RegraDeNegocioException {
+        if (createDTO.getDataFim().isBefore(createDTO.getDataInicio())) {
+            throw new RegraDeNegocioException("A data final do acompanhamento não pode ser inferior a data inicial. Tente novamente!");
+        }
     }
 
 
