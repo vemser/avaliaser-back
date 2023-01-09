@@ -98,9 +98,13 @@ public class VagaService {
         ClienteDTO clienteDTO = clienteService.converterEmDTO(vagaEntity.getCliente());
         List<ProgramaDTO> programaDTO = vagaEntity.getPrograma().stream()
                 .map(programa -> programaService.converterEmDTO(programa)).toList();
+
+        Integer quantidade_disponiveis = vagaEntity.getQuantidade() - vagaEntity.getQuantidadeAlocados();
+
         VagaDTO vagaDTO = new VagaDTO(vagaEntity.getIdVaga(),
                 vagaEntity.getNome(),
                 vagaEntity.getQuantidade(),
+                quantidade_disponiveis,
                 vagaEntity.getQuantidadeAlocados(),
                 vagaEntity.getSituacao(),
                 vagaEntity.getDataAbertura(),
@@ -123,26 +127,6 @@ public class VagaService {
 
     public VagaEntity findById(Integer idVaga) throws RegraDeNegocioException {
         return vagaRepository.findByIdVagaAndAtivo(idVaga, Ativo.S).orElseThrow(() -> new RegraDeNegocioException("Vaga não encontrada!"));
-    }
-
-    public void alterarQuantidadeDeVagas(Integer idVaga, boolean adicionar) throws RegraDeNegocioException {
-        VagaEntity vaga = findById(idVaga);
-        verificarClienteInativo(vaga);
-        if(adicionar == true){
-            if (vaga.getQuantidade() > 0 && !(vaga.getQuantidade() <= 0)) {
-                vaga.setQuantidade(vaga.getQuantidade() - 1);
-                vagaRepository.save(vaga);
-            } else {
-                throw new RegraDeNegocioException("Quantidades de Vagas foram prenchidas!");
-            }
-        }else{
-            if (vaga.getQuantidade() >= 0) {
-                vaga.setQuantidade(vaga.getQuantidade() + 1);
-                vagaRepository.save(vaga);
-            } else {
-                throw new RegraDeNegocioException("Não foi possivel alterar a quantidade de vagas.");
-            }
-        }
     }
 
     private static void verificarClienteInativo(VagaEntity vaga) throws RegraDeNegocioException {
@@ -168,19 +152,17 @@ public class VagaService {
 
     public void adicionarQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() + 1);
-        alterarQuantidadeDeVagas(idVaga, true);
+        if(vaga.getQuantidadeAlocados() < vaga.getQuantidade()) {
+            vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() + 1);
+        }else{
+            throw new RegraDeNegocioException("Quantidade total de vagas já foram preenchidas!");
+        }
         vagaRepository.save(vaga);
     }
 
     public void removerQuantidadeDeAlocados(Integer idVaga) throws RegraDeNegocioException {
         VagaEntity vaga = findById(idVaga);
-        if (vaga.getQuantidadeAlocados() != null && !(vaga.getQuantidadeAlocados() <= 0)){
-            vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() - 1);
-            alterarQuantidadeDeVagas(idVaga, false);
-        }else {
-            throw new RegraDeNegocioException("Quantidade de alocados não pode ficar menor que zero!");
-        }
+        vaga.setQuantidadeAlocados(vaga.getQuantidadeAlocados() - 1);
         vagaRepository.save(vaga);
     }
     public void verificarDataCreate(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {

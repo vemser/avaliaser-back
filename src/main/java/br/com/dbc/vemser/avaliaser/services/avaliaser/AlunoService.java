@@ -189,11 +189,6 @@ public class AlunoService {
         return alunoDTO;
     }
 
-    public void excluirAlunosTeste(Integer id) throws RegraDeNegocioException {
-        AlunoEntity aluno = findById(id);
-        alunoRepository.delete(aluno);
-    }
-
     public AlunoEntity alterarStatusAluno(Integer idAluno,
                                           SituacaoReserva situacao) throws RegraDeNegocioException {
         AlunoEntity alunoEntity = findById(idAluno);
@@ -224,16 +219,10 @@ public class AlunoService {
         if (situacao.equals(SituacaoReserva.ALOCADO)) {
             alterarStatusAluno(aluno.getIdAluno(), situacao);
             vagaService.adicionarQuantidadeDeAlocados(idVaga);
-        } else {
+        } else if(aluno.getSituacao().equals(SituacaoReserva.ALOCADO) && situacao.equals(SituacaoReserva.CANCELADO)){
             alterarStatusAluno(aluno.getIdAluno(), situacao);
             vagaService.removerQuantidadeDeAlocados(idVaga);
         }
-
-
-    }
-
-    public void salvarAlteracoesAluno(AlunoEntity aluno) {
-        alunoRepository.save(aluno);
     }
 
     public PageDTO<AlunoDTO> listarAlunosAtivoPorProgramaTrilha(AlunoFiltroDTO alunoFiltro, Integer page, Integer size) throws RegraDeNegocioException {
