@@ -11,16 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservaAlocacaoRepository extends JpaRepository<ReservaAlocacaoEntity, Integer> {
 
-    @Query("SELECT obj " +
-            "FROM Reserva_Alocacao obj " +
-            "LEFT JOIN obj.aluno a " +
-            "LEFT JOIN obj.vaga v " +
-            "LEFT JOIN v.cliente c " +
-            "WHERE (:nomeAluno is null or UPPER(a.nome) LIKE UPPER(:nomeAluno)) " +
-            "OR (:nomeVaga is null or UPPER(v.nome) LIKE UPPER(:nomeVaga)) " +
-            "OR (:nomeCliente is null or UPPER(c.nome) LIKE UPPER(:nomeCliente)) " +
-            "ORDER BY a.nome")
-    Page<ReservaAlocacaoEntity> findAllByFiltro(String nomeAluno, String nomeVaga, String nomeCliente, Pageable pageable);
-
     Page<ReservaAlocacaoEntity> findAllByAluno_NomeContainingIgnoreCaseOrVaga_Cliente_NomeContainingIgnoreCaseOrVaga_NomeContainingIgnoreCase(String nomeAluno, String nomeCliente, String nomeVaga, Pageable pageable);
 }
