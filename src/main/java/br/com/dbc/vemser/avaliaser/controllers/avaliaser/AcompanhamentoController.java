@@ -24,14 +24,14 @@ import javax.validation.Valid;
 public class AcompanhamentoController implements OperationControllerAcompanhamento {
     private final AcompanhamentoService acompanhamentoService;
 
-//    @GetMapping("/listar-acompanhamento")
-//    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException {
-//        log.info("Realizando busca de dados em lista...");
-//        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(page, size);
-//        log.info("Retorno de dados em lista paginada realizado com sucesso!");
-//        return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
-//    }
-//
+    @GetMapping("/listar-acompanhamento")
+    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException {
+        log.info("Realizando busca de dados em lista...");
+        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(page, size);
+        log.info("Retorno de dados em lista paginada realizado com sucesso!");
+        return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
+    }
+
     @GetMapping("/buscar-acompanhamento/{idAcompanhamento}")
     public ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@PathVariable("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException {
         log.info("Realizando busca de dados por id...");
