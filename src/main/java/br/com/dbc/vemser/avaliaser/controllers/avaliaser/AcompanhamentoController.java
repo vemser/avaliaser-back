@@ -3,7 +3,6 @@ package br.com.dbc.vemser.avaliaser.controllers.avaliaser;
 import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControllerAcompanhamento;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
@@ -25,19 +24,13 @@ public class AcompanhamentoController implements OperationControllerAcompanhamen
     private final AcompanhamentoService acompanhamentoService;
 
     @GetMapping("/listar-acompanhamento")
-    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(@RequestParam(required = false)Integer idAcompanhamento,
+                                                                            @RequestParam(required = false)String nomePrograma,
+                                                                            @RequestParam(required = false)String tituloAcompanhamento, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         log.info("Realizando busca de dados em lista...");
-        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(page, size);
+        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPaginados(idAcompanhamento,nomePrograma,tituloAcompanhamento,pagina, tamanho);
         log.info("Retorno de dados em lista paginada realizado com sucesso!");
         return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
-    }
-
-    @GetMapping("/buscar-acompanhamento/{idAcompanhamento}")
-    public ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@PathVariable("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException {
-        log.info("Realizando busca de dados por id...");
-        AcompanhamentoDTO acompanhamento = acompanhamentoService.findByIdDTO(idAcompanhamento);
-        log.info("Retorno de dados do usuario por id realizado com sucesso!");
-        return new ResponseEntity<>(acompanhamento, HttpStatus.OK);
     }
 
     @PostMapping(value = "/criar")
@@ -47,22 +40,6 @@ public class AcompanhamentoController implements OperationControllerAcompanhamen
         AcompanhamentoDTO usuarioLogadoDTO = acompanhamentoService.create(acompanhamentoCreateDTO);
         log.info("Acompanhamento cadastrado com sucesso!");
         return new ResponseEntity<>(usuarioLogadoDTO, HttpStatus.OK);
-    }
-
-    @GetMapping("/listar-acompanhamento-por-nome-programa")
-    public ResponseEntity<PageDTO<AcompanhamentoFiltroDTO>> listarAcompanhamentosPorNomePrograma(Integer page, Integer size, String nome) throws RegraDeNegocioException {
-        log.info("Realizando busca de dados em lista...");
-        PageDTO<AcompanhamentoFiltroDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosPorNomePrograma(nome, page, size);
-        log.info("Retorno de dados em lista paginada realizado com sucesso!");
-        return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
-    }
-
-    @GetMapping("/listar-acompanhamento-por-titulo")
-    public ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentosAtivoPorTitulo(String titulo,Integer page, Integer size) throws RegraDeNegocioException {
-        log.info("Realizando busca de dados em lista...");
-        PageDTO<AcompanhamentoDTO> acompanhamentos = acompanhamentoService.listarAcompanhamentosAtivoPorTitulo(titulo, page, size);
-        log.info("Retorno de dados em lista paginada realizado com sucesso!");
-        return new ResponseEntity<>(acompanhamentos, HttpStatus.OK);
     }
 
     @PutMapping(value = "/editar/{idAcompanhamento}")
