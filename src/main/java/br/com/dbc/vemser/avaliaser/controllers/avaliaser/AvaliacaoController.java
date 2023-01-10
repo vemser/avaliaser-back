@@ -5,7 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.EditarAvaliacaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.AvaliacaoService;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +26,14 @@ public class AvaliacaoController implements ControllerAvaliacao {
 
     private final AvaliacaoService avaliacaoService;
 
-    @GetMapping
-    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoesPaginados(@RequestParam Integer page,
-                                                                           @RequestParam Integer size) throws RegraDeNegocioException {
-        log.info("Listando Avaliações...");
-        PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoes(page, size);
-        log.info("Listagem avaliações com sucesso.");
-        return new ResponseEntity<>(lista, HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoesPaginados(@RequestParam Integer page,
+//                                                                           @RequestParam Integer size) throws RegraDeNegocioException {
+//        log.info("Listando Avaliações...");
+//        PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoes(page, size);
+//        log.info("Listagem avaliações com sucesso.");
+//        return new ResponseEntity<>(lista, HttpStatus.OK);
+//    }
 
 //    @GetMapping("/{idAvaliacao}")
 //    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarPorAluno(@PathVariable("idAvaliacao") Integer idAvaliacao,
@@ -61,6 +61,7 @@ public class AvaliacaoController implements ControllerAvaliacao {
         log.info("Editando de Avaliação de Acompanhamento com sucesso.");
         return new ResponseEntity<>(avaliacaoDTO, HttpStatus.OK);
     }
+
     @DeleteMapping(value = "/desativar/{idAvaliacao}")
     public ResponseEntity<Void> desativar(@PathVariable("idAvaliacao") Integer idAvaliacao) throws RegraDeNegocioException {
         log.info("Desativando avaliacao...");
@@ -69,18 +70,36 @@ public class AvaliacaoController implements ControllerAvaliacao {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/listar-avaliacao-por-acompanhamento-aluno-ativo")
-    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoes(@RequestParam(required = false)Integer idAcompanhamento,
-                                                                                            @RequestParam(required = false)String tituloAcompanhamento,
-                                                                                            @RequestParam(required = false)Integer idAluno,
-                                                                                            @RequestParam(required = false) Ativo ativo,
-                                                                                            Integer pagina,
-                                                                                            Integer tamanho) throws RegraDeNegocioException {
+//    @GetMapping("/listar-avaliacao-por-acompanhamento-aluno-ativo")
+//    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoes(@RequestParam(required = false)Integer idAcompanhamento,
+//                                                                                            @RequestParam(required = false)String tituloAcompanhamento,
+//                                                                                            @RequestParam(required = false)Integer idAluno,
+//                                                                                            @RequestParam(required = false) Ativo ativo,
+//                                                                                            Integer pagina,
+//                                                                                            Integer tamanho) throws RegraDeNegocioException {
+//        log.info("Realizando busca de dados em lista...");
+//        PageDTO<AvaliacaoDTO> avaliacoes = avaliacaoService.listarAvaliacaoPorAcompanhamentoAlunoSituacao(idAcompanhamento,
+//                tituloAcompanhamento,
+//                idAluno,
+//                ativo,
+//                pagina,
+//                tamanho);
+//        log.info("Retorno de dados em lista paginada realizado com sucesso!");
+//        return new ResponseEntity<>(avaliacoes, HttpStatus.OK);
+//    }
+
+    @GetMapping("/listar-avaliacao-por-acompanhamento-aluno")
+    public ResponseEntity<PageDTO<AvaliacaoDTO>> filtrarAvaliacao(@RequestParam(required = false) Integer idAvaliacao,
+                                                                  @RequestParam(required = false) TipoAvaliacao tipoAvaliacao,
+                                                                  @RequestParam(required = false) String tituloAcompanhamento,
+                                                                  @RequestParam(required = false) String nomeAluno,
+                                                                  Integer pagina,
+                                                                  Integer tamanho) throws RegraDeNegocioException {
         log.info("Realizando busca de dados em lista...");
-        PageDTO<AvaliacaoDTO> avaliacoes = avaliacaoService.listarAvaliacaoPorAcompanhamentoAlunoSituacao(idAcompanhamento,
+        PageDTO<AvaliacaoDTO> avaliacoes = avaliacaoService.listarAvaliacaoPaginados(idAvaliacao,
+                tipoAvaliacao,
                 tituloAcompanhamento,
-                idAluno,
-                ativo,
+                nomeAluno,
                 pagina,
                 tamanho);
         log.info("Retorno de dados em lista paginada realizado com sucesso!");

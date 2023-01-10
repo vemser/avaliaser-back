@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.EditarAvaliacaoDTO;
 
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,22 +22,14 @@ public interface ControllerAvaliacao {
             @ApiResponse(responseCode = "200", description = "Listagem de avaliações realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoes(@RequestParam(required = false)Integer idAcompanhamento,
-                                                                  @RequestParam(required = false)String tituloAcompanhamento,
-                                                                  @RequestParam(required = false)Integer idAluno,
-                                                                  @RequestParam(required = false) Ativo ativo,
+    @GetMapping("/listar-avaliacao-por-acompanhamento-aluno")
+    ResponseEntity<PageDTO<AvaliacaoDTO>> filtrarAvaliacao(@RequestParam(required = false) Integer idAvaliacao,
+                                                                  @RequestParam(required = false) TipoAvaliacao tipoAvaliacao,
+                                                                  @RequestParam(required = false) String tituloAcompanhamento,
+                                                                  @RequestParam(required = false) String nomeAluno,
                                                                   Integer pagina,
                                                                   Integer tamanho) throws RegraDeNegocioException;
 
-//    @Operation(summary = "Listagem de avaliações por aluno", description = "Realiza listagem de avaliações por aluno.")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Listeagem por aluno com sucesso."),
-//            @ApiResponse(responseCode = "400", description = "Listagem por aluno falhou, verifique se o aluno inserido está correto."),
-//            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-//    })
-//    ResponseEntity<PageDTO<AvaliacaoDTO>> listarPorAluno(@PathVariable("idAvaliacao") Integer idAluno,
-//                                                                 @RequestParam Integer page,
-//                                                                 @RequestParam Integer size);
 
     @Operation(summary = "Cadastrar uma avaliação", description = "Realiza o cadastro de dados da avaliação.")
     @ApiResponses(value = {
