@@ -4,7 +4,9 @@ import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControlle
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.FeedbackService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -26,16 +29,26 @@ public class FeedBackController implements OperationControllerFeedBack {
     private final FeedbackService feedbackService;
 
     @GetMapping("/listar-feedback")
-    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(@RequestParam(required = false)Integer idFeedback,
-                                                                       @RequestParam(required = false)Integer idAluno,
-                                                                       @RequestParam(required = false)String nome,
+    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackPaginado(@RequestParam(required = false) Integer idFeedback,
+                                                                       @RequestParam(required = false) Integer idAluno,
+                                                                       @RequestParam(required = false) String nome,
                                                                        Integer page, Integer size) throws RegraDeNegocioException {
         log.info("Realizando busca de feedbacks...");
-        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(idFeedback,idAluno, nome, page, size);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarFeedBackPaginados(idFeedback, idAluno, nome, page, size);
         log.info("Retorno de feedbacks em lista paginada realizado com sucesso!");
         return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/listar-feedbacks-com-filtro")
+    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackFiltrado(@RequestParam(required = false)Integer idAluno,
+                                                                       @RequestParam(required = false)Integer idTrilha,
+                                                                       @RequestParam(required = false) TipoAvaliacao situacao,
+                                                                       @RequestParam(required = false) String nomeInstrutor,
+                                                                       Integer page, Integer size) throws RegraDeNegocioException {
+
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarPorFiltro(idAluno,idTrilha, situacao, nomeInstrutor, page, size);
+        return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
+    }
 
     @PostMapping(value = "/cadastrar-feedback")
     public ResponseEntity<FeedBackDTO> cadastrarFeedBack(@Valid @RequestBody FeedBackCreateDTO feedBackCreateDTO) throws RegraDeNegocioException {
@@ -60,5 +73,10 @@ public class FeedBackController implements OperationControllerFeedBack {
         feedbackService.desativarFeed(idFeedBack);
         log.info("FeedBack desativado com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/find-usuarios")
+    public ResponseEntity<List<UsuarioDTO>> findUsuarios(@RequestParam String usuario) {
+        return new ResponseEntity<>(feedbackService.findUsuarios(usuario), HttpStatus.OK);
     }
 }

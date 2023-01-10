@@ -7,7 +7,6 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.allocation.TecnologiaService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

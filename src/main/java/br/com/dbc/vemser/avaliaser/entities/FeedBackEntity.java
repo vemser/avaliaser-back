@@ -8,6 +8,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,9 +25,6 @@ public class FeedBackEntity {
     private Integer idFeedBack;
     @Column(name = "id_aluno", insertable = false, updatable = false)
     private Integer idAluno;
-
-    @Column(name = "id_modulo", insertable = false, updatable = false)
-    private Integer idModulo;
 
     @Column(name = "descricao")
     private String descricao;
@@ -50,8 +49,11 @@ public class FeedBackEntity {
     private AlunoEntity alunoEntity;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_modulo", referencedColumnName = "id_modulo")
-    @ToString.Exclude
-    private ModuloEntity moduloEntity;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "FEEDBACK_MODULO",
+            joinColumns = @JoinColumn(name = "id_feedback"),
+            inverseJoinColumns = @JoinColumn(name = "id_modulo")
+    )
+    private Set<ModuloEntity> moduloEntity = new HashSet<>();
 }

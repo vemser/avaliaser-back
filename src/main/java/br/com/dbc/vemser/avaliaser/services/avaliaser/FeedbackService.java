@@ -3,12 +3,14 @@ package br.com.dbc.vemser.avaliaser.services.avaliaser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.FeedBackRepository;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.ModuloService;
@@ -18,8 +20,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -54,14 +60,26 @@ public class FeedbackService {
 
         FeedBackEntity feedBackEntity = new FeedBackEntity();
         AlunoEntity alunoEntity = alunoService.findById(feedBackCreateDTO.getIdAluno());
-        ModuloEntity moduloEntity = moduloService.buscarPorIdModulo(feedBackCreateDTO.getIdModulo());
-        feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getNomeInstrutor());
+        if (feedBackCreateDTO.getModulo().isEmpty()) {
+            throw new RegraDeNegocioException("Modulo não informado.");
+        }
+        for (Integer lista : feedBackCreateDTO.getModulo()) {
+            ModuloEntity moduloEntity = moduloService.findModuloEntityById(lista);
+            if (!(moduloEntity == null)) {
+                feedBackEntity.getModuloEntity().add(moduloEntity);
+            }
+        }
+        if (feedBackEntity.getModuloEntity().isEmpty()) {
+            throw new RegraDeNegocioException("Modulo invalidos.");
+        }
+
+        feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getUsuarioLogado());
         feedBackEntity.setSituacao(feedBackCreateDTO.getSituacao());
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
-        feedBackEntity.setData(feedBackCreateDTO.getData());
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        feedBackEntity.setData(now.toLocalDate());
         feedBackEntity.setAtivo(Ativo.S);
         feedBackEntity.setAlunoEntity(alunoEntity);
-        feedBackEntity.setModuloEntity(moduloEntity);
         FeedBackEntity feedBackSalvo = feedBackRepository.save(feedBackEntity);
         FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackSalvo);
 
@@ -73,7 +91,6 @@ public class FeedbackService {
         FeedBackEntity feedBackEntity = findById(id);
         feedBackEntity.setDescricao(editarFeedBackDTO.getDescricao());
         feedBackEntity.setSituacao(editarFeedBackDTO.getSituacao());
-        feedBackEntity.setAtivo(Ativo.S);
         FeedBackDTO feedBackDTO = converterParaFeedbackDTO(feedBackRepository.save(feedBackEntity));
         return feedBackDTO;
     }
@@ -94,23 +111,49 @@ public class FeedbackService {
         return converterParaFeedbackDTO(feedBackEntity);
     }
 
+    public List<UsuarioDTO> findUsuarios(String usuario) {
+        Set<FeedBackEntity> feedBackDTOS = feedBackRepository.findAllByNomeInstrutorContainsIgnoreCase(usuario);
+        if (feedBackDTOS.isEmpty() || feedBackDTOS == null) {
+            return Collections.emptyList();
+        }
+        return feedBackDTOS.stream()
+                .map(feedBackEntity -> new UsuarioDTO(feedBackEntity.getNomeInstrutor()))
+                .toList();
+    }
+    public PageDTO<FeedBackDTO> listarPorFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findByFiltro(idAluno, idTrilha, situacao, nomeInstrutor, pageRequest);
+            List<FeedBackDTO> feedBackDTOS = paginaDoRepositorio.getContent().stream().map(this::converterParaFeedbackDTO).toList();
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, feedBackDTOS);
+        }
+        List<FeedBackDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
+    }
+
     private Page<FeedBackEntity> filtrarFeed(Integer idFeedBack, Integer idAluno, String nome, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idAluno == null)) {
-            return feedBackRepository.findAllByIdAlunoAndAtivo(idAluno, Ativo.S,pageRequest);
-        }else if (!(idFeedBack == null)){
+            return feedBackRepository.findAllByIdAlunoAndAtivo(idAluno, Ativo.S, pageRequest);
+        } else if (!(idFeedBack == null)) {
             return feedBackRepository.findByIdFeedBackAndAtivo(idFeedBack, Ativo.S, pageRequest);
+        } else if (!(nome == null)) {
+            return feedBackRepository.findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(nome, Ativo.S, pageRequest);
         }
-        else if (!(nome == null)) {
-            return feedBackRepository.findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(nome, Ativo.S,pageRequest);
-        }
-        return feedBackRepository.findAllByAtivo(pageRequest,Ativo.S);
+        return feedBackRepository.findAllByAtivo(pageRequest, Ativo.S);
     }
 
-    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback)  {
+    public FeedBackDTO converterParaFeedbackDTO(FeedBackEntity feedback) {
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(alunoService.converterAlunoDTO(feedback.getAlunoEntity()));
-        feedBackDTO.setModuloDTO(moduloService.converterEmDTO(feedback.getModuloEntity()));
+        List<ModuloDTO> modulos = feedback.getModuloEntity().stream()
+                .map(modulo -> moduloService.converterEmDTO(modulo))
+                .toList();
+        feedBackDTO.setModuloDTO(modulos);
         return feedBackDTO;
     }
 }
