@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Integer> {
     Optional<FeedBackEntity> findByIdFeedBackAndAtivo(Integer idAluno, Ativo ativo);
+
     Page<FeedBackEntity> findAllByAtivo(Pageable pageable, Ativo ativo);
 
     Page<FeedBackEntity> findAllByIdAlunoAndAtivo(Integer idAluno, Ativo ativo, Pageable pageable);
@@ -19,4 +21,6 @@ public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Intege
     Page<FeedBackEntity> findByIdFeedBackAndAtivo(Integer idAluno, Ativo ativo, Pageable pageable);
 
     Page<FeedBackEntity> findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
+
+    Set<FeedBackEntity> findAllByNomeInstrutorContainsIgnoreCase(String nome);
 }

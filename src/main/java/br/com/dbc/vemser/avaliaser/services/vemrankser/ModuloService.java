@@ -7,7 +7,6 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
-import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -64,16 +61,16 @@ public class ModuloService {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
 
         moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
-        if(modulo.getListPrograma().size() > 0){
-            for(Integer programa: modulo.getListPrograma()){
+        if (modulo.getListPrograma().size() > 0) {
+            for (Integer programa : modulo.getListPrograma()) {
                 ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
                 if (!(programaEntity == null)) {
                     moduloEntityNovo.getProgramas().add(programaEntity);
                 }
             }
         }
-        if(modulo.getTrilha().size() > 0){
-            for(Integer trilha: modulo.getTrilha()){
+        if (modulo.getTrilha().size() > 0) {
+            for (Integer trilha : modulo.getTrilha()) {
                 TrilhaEntity trilhaEnt = trilhaService.findByIdTrilha(trilha);
                 if (!(trilhaEnt == null)) {
                     moduloEntityNovo.getTrilha().add(trilhaEnt);
@@ -87,18 +84,18 @@ public class ModuloService {
     public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
         moduloEntity.setNome(moduloCreateDTO.getNome());
-        if(moduloCreateDTO.getListPrograma().size() > 0){
+        if (moduloCreateDTO.getListPrograma().size() > 0) {
             moduloEntity.getProgramas().clear();
-                for(Integer programa: moduloCreateDTO.getListPrograma()){
-                    ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
-                    if (!(programaEntity == null)) {
-                        moduloEntity.getProgramas().add(programaEntity);
-                    }
+            for (Integer programa : moduloCreateDTO.getListPrograma()) {
+                ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
+                if (!(programaEntity == null)) {
+                    moduloEntity.getProgramas().add(programaEntity);
                 }
             }
-        if(moduloCreateDTO.getTrilha().size() > 0){
+        }
+        if (moduloCreateDTO.getTrilha().size() > 0) {
             moduloEntity.getTrilha().clear();
-            for(Integer trilha: moduloCreateDTO.getTrilha()){
+            for (Integer trilha : moduloCreateDTO.getTrilha()) {
                 TrilhaEntity trilhaEnt = trilhaService.findByIdTrilha(trilha);
                 if (!(trilhaEnt == null)) {
                     moduloEntity.getTrilha().add(trilhaEnt);
@@ -128,6 +125,10 @@ public class ModuloService {
         ModuloEntity moduloEntity = buscarPorIdModulo(idModulo);
         return converterEmDTO(moduloEntity);
 
+    }
+
+    public ModuloEntity findModuloEntityById(Integer idModulo) {
+        return moduloRepository.findById(idModulo).get();
     }
 
     public ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
@@ -189,7 +190,8 @@ public class ModuloService {
                 modulo.getNome(),
                 modulo.getAtivo(),
                 new HashSet<>(modulo.getTrilha()),
-                new HashSet<>(modulo.getProgramas()));
+                new HashSet<>(modulo.getProgramas()),
+                new HashSet<>(modulo.getFeedBack()));
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
     }
@@ -201,7 +203,7 @@ public class ModuloService {
         } else if (!(nome == null)) {
             return moduloRepository.findAllByNomeContainingIgnoreCaseAndAtivo(pageRequest, nome, Ativo.S);
         }
-        return moduloRepository.findAllByAtivo(Ativo.S,pageRequest);
+        return moduloRepository.findAllByAtivo(Ativo.S, pageRequest);
     }
 
 

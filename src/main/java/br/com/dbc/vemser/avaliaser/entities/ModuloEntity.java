@@ -40,7 +40,8 @@ public class ModuloEntity {
             joinColumns = @JoinColumn(name = "id_modulo"),
             inverseJoinColumns = @JoinColumn(name = "id_trilha")
     )
-    private Set<TrilhaEntity> trilha = new HashSet<>();;
+    private Set<TrilhaEntity> trilha = new HashSet<>();
+    ;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
@@ -55,10 +56,14 @@ public class ModuloEntity {
 //    @OneToMany(mappedBy = "modulos", fetch = FetchType.LAZY)
 //    private Set<AtividadeEntity> atividades = new HashSet<>();
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_feedback",referencedColumnName = "id_feedback")
-//    private FeedBackEntity feedBack;
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "FEEDBACK_MODULO",
+            joinColumns = @JoinColumn(name = "id_modulo"),
+            inverseJoinColumns = @JoinColumn(name = "id_feedback")
+    )
+    private Set<FeedBackEntity> feedBack = new HashSet<>();
 }
 
 
