@@ -2,17 +2,13 @@ package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,34 +19,9 @@ public interface ControllerAcompanhamento {
             @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
             @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
     })
-    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException;
-
-    @Operation(summary = "Busca acompanhamentos por Id", description = "Realiza busca de acompanhamentos cadastrado por ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Acompanhamento não localizado, verifique se o ID inserido está correto."),
-            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-    })
-    ResponseEntity<AcompanhamentoDTO> buscarAcompanhamentosPorId(@PathVariable("idAcompanhamento") Integer idAcompanhamento) throws RegraDeNegocioException;
-
-    @Operation(summary = "Busca acompanhamentos por titulo", description = "Realiza busca de acompanhamentos cadastrado por titulo.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Acompanhamento não localizado."),
-            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-    })
-    @GetMapping("/listar-acompanhamento-por-titulo")
-    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentosAtivoPorTitulo(String titulo, Integer page, Integer size) throws RegraDeNegocioException;
-
-    @Operation(summary = "Busca acompanhamentos por nome do programa", description = "Realiza busca de acompanhamentos cadastrado por nome do programa.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Busca realizado com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Acompanhamento não localizado."),
-            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-    })
-
-    @GetMapping("/listar-acompanhamento-por-nome-programa")
-    ResponseEntity<PageDTO<AcompanhamentoFiltroDTO>> listarAcompanhamentosPorNomePrograma(Integer page, Integer size, String nome) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(@RequestParam(required = false)Integer idAcompanhamento,
+                                                                     @RequestParam(required = false)String nomePrograma,
+                                                                     @RequestParam(required = false)String tituloAcompanhamento, Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualiza dados de acompanhamentos por Id", description = "Realiza a busca de acompanhamento por Id, e realiza alteração de dados deste acompanhamentos: titulo.")
     @ApiResponses(value = {

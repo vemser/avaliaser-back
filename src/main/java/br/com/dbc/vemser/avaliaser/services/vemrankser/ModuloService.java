@@ -77,6 +77,9 @@ public class ModuloService {
                 }
             }
         }
+        if (moduloEntityNovo.getProgramas().isEmpty() || moduloEntityNovo.getTrilha().isEmpty()) {
+            throw new RegraDeNegocioException("Programa ou trilha invalido.");
+        }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
         return converterEmDTO(moduloSalvo);
     }
@@ -101,6 +104,9 @@ public class ModuloService {
                     moduloEntity.getTrilha().add(trilhaEnt);
                 }
             }
+        }
+        if (moduloEntity.getProgramas().isEmpty() || moduloEntity.getTrilha().isEmpty()) {
+            throw new RegraDeNegocioException("Programa ou trilha invalido.");
         }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
