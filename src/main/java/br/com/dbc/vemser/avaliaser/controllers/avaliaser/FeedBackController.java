@@ -6,6 +6,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.FeedbackService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,16 @@ public class FeedBackController implements OperationControllerFeedBack {
         return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/listar-feedbacks-com-filtro")
+    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackFiltrado(@RequestParam(required = false)Integer idAluno,
+                                                                       @RequestParam(required = false)Integer idTrilha,
+                                                                       @RequestParam(required = false) TipoAvaliacao situacao,
+                                                                       @RequestParam(required = false) String nomeInstrutor,
+                                                                       Integer page, Integer size) throws RegraDeNegocioException {
+
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarPorFiltro(idAluno,idTrilha, situacao, nomeInstrutor, page, size);
+        return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
+    }
 
     @PostMapping(value = "/cadastrar-feedback")
     public ResponseEntity<FeedBackDTO> cadastrarFeedBack(@Valid @RequestBody FeedBackCreateDTO feedBackCreateDTO) throws RegraDeNegocioException {

@@ -10,6 +10,7 @@ import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.FeedBackRepository;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.ModuloService;
@@ -118,6 +119,20 @@ public class FeedbackService {
         return feedBackDTOS.stream()
                 .map(feedBackEntity -> new UsuarioDTO(feedBackEntity.getNomeInstrutor()))
                 .toList();
+    }
+    public PageDTO<FeedBackDTO> listarPorFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+        }
+
+        if (tamanho > 0) {
+            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findByFiltro(idAluno, idTrilha, situacao, nomeInstrutor, pageRequest);
+            List<FeedBackDTO> feedBackDTOS = paginaDoRepositorio.getContent().stream().map(this::converterParaFeedbackDTO).toList();
+            return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, feedBackDTOS);
+        }
+        List<FeedBackDTO> listaVazia = new ArrayList<>();
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     private Page<FeedBackEntity> filtrarFeed(Integer idFeedBack, Integer idAluno, String nome, Integer pagina, Integer tamanho) {
