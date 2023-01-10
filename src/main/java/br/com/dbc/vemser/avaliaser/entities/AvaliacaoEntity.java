@@ -21,14 +21,9 @@ public class AvaliacaoEntity {
     @Column(name = "id_avaliacao")
     private Integer idAvaliacao;
 
-    @Column(name = "id_aluno", insertable = false, updatable = false)
-    private Integer idAluno;
-
-    @Column(name = "id_acompanhamento", insertable = false, updatable = false)
-    private Integer idAcompanhamento;
 
     @Column(name = "situacao")
-    private TipoAvaliacao situacao;
+    private TipoAvaliacao tipoAvaliacao;
 
     @Column(name = "descricao")
     private String descricao;
@@ -48,9 +43,4 @@ public class AvaliacaoEntity {
     @ToString.Exclude
     private AlunoEntity alunoEntity;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
-    @ToString.Exclude
-    private ProgramaEntity programaEntity;
 }

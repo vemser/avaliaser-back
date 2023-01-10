@@ -75,9 +75,6 @@ public class ProgramaEntity {
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)
     private Set<AtividadeEntity> atividades = new HashSet<>();
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "programaEntity", fetch = FetchType.LAZY)
-    private Set<AvaliacaoEntity> avaliacoes = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)
