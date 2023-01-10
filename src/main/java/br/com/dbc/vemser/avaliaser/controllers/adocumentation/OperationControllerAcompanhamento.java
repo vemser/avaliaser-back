@@ -18,12 +18,12 @@ import javax.validation.Valid;
 
 public interface OperationControllerAcompanhamento {
 
-//    @Operation(summary = "Listar acompanhamentos Cadastrados", description = "Realiza a listagem de todos os acompanhamentos já cadastrados no sistema.")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
-//            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
-//    })
-//    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException;
+    @Operation(summary = "Listar acompanhamentos Cadastrados", description = "Realiza a listagem de todos os acompanhamentos já cadastrados no sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso!"),
+            @ApiResponse(responseCode = "403", description = "Você não possui credenciais para acessar essas informações.")
+    })
+    ResponseEntity<PageDTO<AcompanhamentoDTO>> listarAcompanhamentos(Integer page, Integer size) throws RegraDeNegocioException;
 
     @Operation(summary = "Busca acompanhamentos por Id", description = "Realiza busca de acompanhamentos cadastrado por ID.")
     @ApiResponses(value = {

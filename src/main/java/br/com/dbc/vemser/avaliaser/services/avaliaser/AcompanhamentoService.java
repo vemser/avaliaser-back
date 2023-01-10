@@ -35,9 +35,9 @@ public class AcompanhamentoService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAll(pageRequest);
+            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByAtivo(Ativo.S,pageRequest);
             List<AcompanhamentoDTO> acompanhamentoPaginas = paginaDoRepositorio.getContent().stream()
-                    .map(acompanhamentoEntity -> objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoDTO.class))
+                    .map(this::converterEmDTO)
                     .toList();
 
             return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
@@ -57,9 +57,9 @@ public class AcompanhamentoService {
         }
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByProgramaNome(nome, pageRequest);
+            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByPrograma_NomeLikeIgnoreCaseAndAtivo(nome,Ativo.S,pageRequest);
             List<AcompanhamentoFiltroDTO> acompanhamento = paginaDoRepositorio.getContent().stream()
-                    .map(acompanhamentoEntity -> objectMapper.convertValue(acompanhamentoEntity, AcompanhamentoFiltroDTO.class))
+                    .map(this::converterFiltroParaDTO)
                     .toList();
 
             return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
@@ -158,6 +158,11 @@ public class AcompanhamentoService {
                 acompanhamento.getDataInicio(),
                 acompanhamento.getDataFim(),
                 acompanhamento.getDescricao());
+    }
+    public AcompanhamentoFiltroDTO converterFiltroParaDTO(AcompanhamentoEntity acompanhamento){
+        return new AcompanhamentoFiltroDTO(acompanhamento.getTitulo(),
+                acompanhamento.getPrograma().getNome(),
+                acompanhamento.getDataInicio());
     }
 
     private static void verificarDatas(AcompanhamentoCreateDTO createDTO) throws RegraDeNegocioException {
