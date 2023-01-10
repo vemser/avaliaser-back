@@ -4,7 +4,6 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -245,6 +244,11 @@ public class AlunoService {
         List<AlunoDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
 
+    }
+    public void verificarAlunoInativo(AlunoEntity aluno) throws RegraDeNegocioException {
+        if (aluno.getAtivo().equals(Ativo.S)) {
+            throw new RegraDeNegocioException("Aluno de id " + aluno.getIdAluno() + " Inativo");
+        }
     }
 }
 

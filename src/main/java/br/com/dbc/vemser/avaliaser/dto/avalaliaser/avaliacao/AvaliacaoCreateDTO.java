@@ -29,4 +29,5 @@ public class AvaliacaoCreateDTO {
 
     @Schema(example = "2022-12-01")
     private LocalDate dataCriacao;
+
 }
