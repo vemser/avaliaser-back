@@ -16,8 +16,7 @@ public interface FeedBackModuloRepository extends JpaRepository<FeedBackModuloEn
             "FROM FEEDBACK_MODULO obj " +
             "LEFT JOIN obj.feedBack fb " +
             "LEFT JOIN fb.alunoEntity aluno " +
-            "LEFT JOIN obj.modulo modulo " +
-            "LEFT JOIN modulo.trilha trilha " +
+            "LEFT JOIN aluno.trilha trilha " +
             "WHERE (fb.ativo = 1)" +
             "AND ( aluno.idAluno = :idAluno or :idAluno is null) " +
             "AND ( trilha.idTrilha = :idTrilha or :idTrilha is null) " +
