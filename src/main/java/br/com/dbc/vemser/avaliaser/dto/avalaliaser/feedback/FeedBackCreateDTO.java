@@ -17,10 +17,6 @@ public class FeedBackCreateDTO {
     @NotNull(message = "Campo Id Aluno não pode ser nulo!")
     @Schema(example = "1")
     private Integer idAluno;
-    @NotNull(message = "Usuario logado")
-    @NotBlank(message = "Usuario logado")
-    @Schema(example = "carlos.alberto")
-    private String usuarioLogado;
     @NotNull(message = "Descrição não pode ser nulo.")
     @NotBlank(message = "Descrição não pode ficar em branco.")
     @Schema(example = "Texto descritivo")
