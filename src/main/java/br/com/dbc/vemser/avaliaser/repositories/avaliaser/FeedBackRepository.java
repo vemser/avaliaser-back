@@ -31,10 +31,11 @@ public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Intege
             "LEFT JOIN obj.alunoEntity aluno " +
             "LEFT JOIN obj.moduloEntity modulo " +
             "LEFT JOIN modulo.trilha trilha " +
-            "WHERE ( aluno.idAluno = :idAluno or :idAluno is null) " +
+            "WHERE (obj.ativo = 1)" +
+            "AND ( aluno.idAluno = :idAluno or :idAluno is null) " +
             "AND ( trilha.idTrilha = :idTrilha or :idTrilha is null) " +
             "AND ( obj.situacao = :situacao or :situacao is null)" +
-            "AND ( obj.nomeInstrutor = :nomeInstrutor or :nomeInstrutor is null)" )
+            "AND (:nomeInstrutor is null or UPPER(obj.nomeInstrutor) LIKE UPPER(concat(:nomeInstrutor, '%')))" )
     Page<FeedBackEntity> findByFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Pageable pageable);
 
 }

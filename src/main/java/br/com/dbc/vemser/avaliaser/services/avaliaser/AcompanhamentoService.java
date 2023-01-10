@@ -2,7 +2,6 @@ package br.com.dbc.vemser.avaliaser.services.avaliaser;
 
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
@@ -10,7 +9,6 @@ import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AcompanhamentoRepository;
 import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,17 +23,17 @@ import java.util.List;
 public class AcompanhamentoService {
 
     private final AcompanhamentoRepository acompanhamentoRepository;
-    private final ObjectMapper objectMapper;
-
     private final ProgramaService programaService;
 
-    public PageDTO<AcompanhamentoDTO> listarAcompanhamentosPaginados(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+    public PageDTO<AcompanhamentoDTO> listarAcompanhamentosPaginados(Integer idAcompanhamento,
+                                                                     String nomePrograma,
+                                                                     String tituloAcompanhamento,
+                                                                     Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (tamanho > 0) {
-            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByAtivo(Ativo.S,pageRequest);
+            Page<AcompanhamentoEntity> paginaDoRepositorio = filtrarAcompanhamento(idAcompanhamento, nomePrograma, tituloAcompanhamento, pagina, tamanho);
             List<AcompanhamentoDTO> acompanhamentoPaginas = paginaDoRepositorio.getContent().stream()
                     .map(this::converterEmDTO)
                     .toList();
@@ -49,49 +47,6 @@ public class AcompanhamentoService {
         }
         List<AcompanhamentoDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
-    }
-
-    public PageDTO<AcompanhamentoFiltroDTO> listarAcompanhamentosPorNomePrograma(String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        if (tamanho < 0 || pagina < 0) {
-            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
-        }
-        if (tamanho > 0) {
-            PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByPrograma_NomeLikeIgnoreCaseAndAtivo(nome,Ativo.S,pageRequest);
-            List<AcompanhamentoFiltroDTO> acompanhamento = paginaDoRepositorio.getContent().stream()
-                    .map(this::converterFiltroParaDTO)
-                    .toList();
-
-            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                    paginaDoRepositorio.getTotalPages(),
-                    pagina,
-                    tamanho,
-                    acompanhamento
-            );
-        }
-        List<AcompanhamentoFiltroDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
-    }
-    public PageDTO<AcompanhamentoDTO> listarAcompanhamentosAtivoPorTitulo(String titulo, Integer page, Integer size) throws RegraDeNegocioException {
-        if (page < 0 || size < 0) {
-            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
-        }
-        if (size > 0) {
-            PageRequest pageRequest = PageRequest.of(page, size);
-            Page<AcompanhamentoEntity> paginaDoRepositorio = acompanhamentoRepository.findAllByTituloLikeIgnoreCaseAndAtivo(titulo, Ativo.S, pageRequest);
-            List<AcompanhamentoDTO> acompanhamentoDTOS = paginaDoRepositorio.getContent().stream()
-                    .map(this::converterEmDTO)
-                    .toList();
-
-            return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
-                    paginaDoRepositorio.getTotalPages(),
-                    page,
-                    size,
-                    acompanhamentoDTOS);
-        }
-        List<AcompanhamentoDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, size, listaVazia);
-
     }
 
     public AcompanhamentoDTO create(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
@@ -136,7 +91,6 @@ public class AcompanhamentoService {
 
     public AcompanhamentoDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);
-
         return converterEmDTO(acompanhamentoEntity);
     }
 
@@ -159,11 +113,18 @@ public class AcompanhamentoService {
                 acompanhamento.getDataFim(),
                 acompanhamento.getDescricao());
     }
-    public AcompanhamentoFiltroDTO converterFiltroParaDTO(AcompanhamentoEntity acompanhamento){
-        return new AcompanhamentoFiltroDTO(acompanhamento.getTitulo(),
-                acompanhamento.getPrograma().getNome(),
-                acompanhamento.getDataInicio());
+    private Page<AcompanhamentoEntity> filtrarAcompanhamento(Integer idAcompanhamento, String nomePrograma, String tituloAcompanhamento, Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (!(idAcompanhamento == null)) {
+            return acompanhamentoRepository.findByIdAcompanhamentoAndAtivo(idAcompanhamento, Ativo.S,pageRequest);
+        } else if (!(nomePrograma == null)) {
+            return acompanhamentoRepository.findAllByPrograma_NomeContainingIgnoreCaseAndAtivo(nomePrograma,Ativo.S,pageRequest);
+        } else if(!(tituloAcompanhamento == null)){
+            return acompanhamentoRepository.findAllByTituloContainingIgnoreCaseAndAtivo(tituloAcompanhamento, Ativo.S, pageRequest);
+        }
+        return acompanhamentoRepository.findAllByAtivo(Ativo.S, pageRequest);
     }
+
 
     private static void verificarDatas(AcompanhamentoCreateDTO createDTO) throws RegraDeNegocioException {
         if (createDTO.getDataFim().isBefore(createDTO.getDataInicio())) {
