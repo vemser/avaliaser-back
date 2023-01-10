@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -75,8 +76,8 @@ public class FeedbackService {
         if (feedBackEntity.getModuloEntity().isEmpty()) {
             throw new RegraDeNegocioException("Modulo invalidos.");
         }
-
-        feedBackEntity.setNomeInstrutor(feedBackCreateDTO.getUsuarioLogado());
+        
+        feedBackEntity.setNomeInstrutor(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
         feedBackEntity.setSituacao(feedBackCreateDTO.getSituacao());
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
@@ -123,6 +124,7 @@ public class FeedbackService {
                 .map(feedBackEntity -> new UsuarioDTO(feedBackEntity.getNomeInstrutor()))
                 .toList();
     }
+
     public PageDTO<FeedBackDTO> listarPorFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");

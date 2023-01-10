@@ -34,7 +34,7 @@ public class TokenService {
 
         String idUsuario = keys.get(Claims.ID, String.class);
 
-//        String login = keys.get("username", String.class);
+        String login = keys.get("username", String.class);
 
         List<String> cargosUsuario = keys.get(CARGO, List.class);
 
@@ -43,7 +43,7 @@ public class TokenService {
                 .toList();
 
         UsernamePasswordAuthenticationToken userPassAuthToken =
-                new UsernamePasswordAuthenticationToken(idUsuario, null, listaCargosUsuario);
+                new UsernamePasswordAuthenticationToken(idUsuario, login, listaCargosUsuario);
 
         return userPassAuthToken;
     }
