@@ -8,10 +8,12 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
+import br.com.dbc.vemser.avaliaser.entities.FeedBackModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.FeedBackModuloRepository;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.FeedBackRepository;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.ModuloService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +33,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class FeedbackService {
     private final FeedBackRepository feedBackRepository;
+    private final FeedBackModuloRepository feedBackModuloRepository;
     private final AlunoService alunoService;
     private final ModuloService moduloService;
     private final ObjectMapper objectMapper;
@@ -127,8 +130,8 @@ public class FeedbackService {
 
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findByFiltro(idAluno, idTrilha, situacao, nomeInstrutor, pageRequest);
-            List<FeedBackDTO> feedBackDTOS = paginaDoRepositorio.getContent().stream().map(this::converterParaFeedbackDTO).toList();
+            Page<FeedBackModuloEntity> paginaDoRepositorio = feedBackModuloRepository.findByFiltro(idAluno, idTrilha, situacao, nomeInstrutor, pageRequest);
+            List<FeedBackDTO> feedBackDTOS = paginaDoRepositorio.getContent().stream().map(this::converterFeedBackModuloParaFeedbackDTO).toList();
             return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, feedBackDTOS);
         }
         List<FeedBackDTO> listaVazia = new ArrayList<>();
@@ -151,6 +154,21 @@ public class FeedbackService {
         FeedBackDTO feedBackDTO = objectMapper.convertValue(feedback, FeedBackDTO.class);
         feedBackDTO.setAlunoDTO(alunoService.converterAlunoDTO(feedback.getAlunoEntity()));
         List<ModuloDTO> modulos = feedback.getModuloEntity().stream()
+                .map(modulo -> moduloService.converterEmDTO(modulo))
+                .toList();
+        feedBackDTO.setModuloDTO(modulos);
+        return feedBackDTO;
+    }
+
+    public FeedBackDTO converterFeedBackModuloParaFeedbackDTO(FeedBackModuloEntity feedBackModulo) {
+        FeedBackDTO feedBackDTO = objectMapper.convertValue(feedBackModulo, FeedBackDTO.class);
+        feedBackDTO.setAlunoDTO(alunoService.converterAlunoDTO(feedBackModulo.getFeedBack().getAlunoEntity()));
+        feedBackDTO.setIdFeedBack(feedBackModulo.getFeedBack().getIdFeedBack());
+        feedBackDTO.setDescricao(feedBackModulo.getFeedBack().getDescricao());
+        feedBackDTO.setSituacao(feedBackModulo.getFeedBack().getSituacao());
+        feedBackDTO.setNomeInstrutor(feedBackModulo.getFeedBack().getNomeInstrutor());
+        feedBackDTO.setData(feedBackModulo.getFeedBack().getData());
+        List<ModuloDTO> modulos = feedBackModulo.getFeedBack().getModuloEntity().stream()
                 .map(modulo -> moduloService.converterEmDTO(modulo))
                 .toList();
         feedBackDTO.setModuloDTO(modulos);
