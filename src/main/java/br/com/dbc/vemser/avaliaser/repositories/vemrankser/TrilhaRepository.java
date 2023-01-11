@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,6 +22,8 @@ public interface TrilhaRepository extends JpaRepository<TrilhaEntity, Integer> {
     Page<TrilhaEntity> findAllByAtivo(Pageable pageable, Ativo ativo);
 
     Optional<TrilhaEntity> findByIdTrilhaAndAtivo(Integer id, Ativo ativo);
+
+    List<TrilhaEntity> findAllByPrograma_idProgramaAndAtivo(Integer idPrograma, Ativo ativo);
 
 
 }

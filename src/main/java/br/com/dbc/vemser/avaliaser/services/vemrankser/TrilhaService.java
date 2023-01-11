@@ -69,6 +69,13 @@ public class TrilhaService {
 
     }
 
+    public List<TrilhaDTO> buscarTrilhasPorPrograma(Integer idPrograma){
+        List<TrilhaEntity> listaTrilhas = trilhaRepository.findAllByPrograma_idProgramaAndAtivo(idPrograma, Ativo.S);
+        return listaTrilhas.stream()
+                .map(this::converterEmDTO)
+                .toList();
+    }
+
     public PageDTO<TrilhaDTO> findTrilhaByNome(String nomeTrilha, Integer page, Integer size) throws RegraDeNegocioException {
         if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou size não poder ser menor que zero.");
