@@ -61,14 +61,6 @@ public class ModuloService {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
 
         moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
-        if (modulo.getListPrograma().size() > 0) {
-            for (Integer programa : modulo.getListPrograma()) {
-                ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
-                if (!(programaEntity == null)) {
-                    moduloEntityNovo.getProgramas().add(programaEntity);
-                }
-            }
-        }
         if (modulo.getTrilha().size() > 0) {
             for (Integer trilha : modulo.getTrilha()) {
                 TrilhaEntity trilhaEnt = trilhaService.findByIdTrilha(trilha);
@@ -77,9 +69,6 @@ public class ModuloService {
                 }
             }
         }
-        if (moduloEntityNovo.getProgramas().isEmpty() || moduloEntityNovo.getTrilha().isEmpty()) {
-            throw new RegraDeNegocioException("Programa ou trilha invalido.");
-        }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
         return converterEmDTO(moduloSalvo);
     }
@@ -87,15 +76,6 @@ public class ModuloService {
     public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
         moduloEntity.setNome(moduloCreateDTO.getNome());
-        if (moduloCreateDTO.getListPrograma().size() > 0) {
-            moduloEntity.getProgramas().clear();
-            for (Integer programa : moduloCreateDTO.getListPrograma()) {
-                ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
-                if (!(programaEntity == null)) {
-                    moduloEntity.getProgramas().add(programaEntity);
-                }
-            }
-        }
         if (moduloCreateDTO.getTrilha().size() > 0) {
             moduloEntity.getTrilha().clear();
             for (Integer trilha : moduloCreateDTO.getTrilha()) {
@@ -104,9 +84,8 @@ public class ModuloService {
                     moduloEntity.getTrilha().add(trilhaEnt);
                 }
             }
-        }
-        if (moduloEntity.getProgramas().isEmpty() || moduloEntity.getTrilha().isEmpty()) {
-            throw new RegraDeNegocioException("Programa ou trilha invalido.");
+
+
         }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
@@ -143,9 +122,6 @@ public class ModuloService {
         moduloDTO.setIdModulo(moduloEntity.getIdModulo());
         moduloDTO.setNome(moduloEntity.getNome());
         moduloDTO.setAtivo(moduloEntity.getAtivo());
-        moduloDTO.setListProgramaDTO(moduloEntity.getProgramas().stream()
-                .map(programaService::converterEmDTO)
-                .collect(Collectors.toList()));
         moduloDTO.setTrilhaDTO(moduloEntity.getTrilha().stream()
                 .map(trilha -> objectMapper.convertValue(trilha, TrilhaDTO.class))
                 .toList());
@@ -196,7 +172,6 @@ public class ModuloService {
                 modulo.getNome(),
                 modulo.getAtivo(),
                 new HashSet<>(modulo.getTrilha()),
-                new HashSet<>(modulo.getProgramas()),
                 new HashSet<>(modulo.getFeedBack()));
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
