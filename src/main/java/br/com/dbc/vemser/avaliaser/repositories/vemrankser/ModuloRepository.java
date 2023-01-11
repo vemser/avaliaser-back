@@ -17,6 +17,7 @@ public interface ModuloRepository extends JpaRepository<ModuloEntity, Integer> {
     Page<ModuloEntity> findAllByIdModuloAndAtivo(Pageable pageable, Integer id, Ativo ativo);
     Optional<ModuloEntity> findByIdModuloAndAtivo(Integer idModulo, Ativo ativo);
     Page<ModuloEntity> findAllByAtivo(Ativo ativo, Pageable pageable);
+    List<ModuloEntity> findAllByTrilha_IdTrilhaAndAtivo(Integer id, Ativo ativo);
 
 }
 

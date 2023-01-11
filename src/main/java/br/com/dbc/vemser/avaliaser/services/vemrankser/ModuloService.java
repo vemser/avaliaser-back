@@ -4,6 +4,7 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
@@ -31,9 +32,7 @@ import java.util.stream.Collectors;
 public class ModuloService {
 
     private final ModuloRepository moduloRepository;
-
     private final TrilhaService trilhaService;
-
     private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
 
@@ -174,6 +173,12 @@ public class ModuloService {
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
+    public List<ModuloTrilhaDTO> listarModulosPorTrilha(Integer id){
+        List<ModuloEntity> moduloEntities = moduloRepository.findAllByTrilha_IdTrilhaAndAtivo(id, Ativo.S);
+        List<ModuloTrilhaDTO> moduloTrilhaDTOS = moduloEntities.stream()
+                .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloTrilhaDTO.class)).toList();
+        return moduloTrilhaDTOS;
+    }
 
     public ModuloDTO vincularModuloTrilha(Integer idModulo,
                                           Integer idTrilha) throws RegraDeNegocioException {

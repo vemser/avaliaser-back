@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.ModuloService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +34,12 @@ public class ModuloController {
     public ResponseEntity<PageDTO<ModuloDTO>> listbyname(@RequestParam(required = false) String nomeModulo,@RequestParam(required = false) Integer idModulo, Integer pagina, Integer tamanho
                                                          ) throws RegraDeNegocioException {
         PageDTO<ModuloDTO> modulo = moduloService.listByName(idModulo, nomeModulo, pagina, tamanho);
+        return new ResponseEntity<>(modulo, HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-modulos-por-trilha")
+    public ResponseEntity<List<ModuloTrilhaDTO>> listModuloByTrilha(@RequestParam Integer idTrilha) {
+        List<ModuloTrilhaDTO> modulo = moduloService.listarModulosPorTrilha(idTrilha);
         return new ResponseEntity<>(modulo, HttpStatus.OK);
     }
 
