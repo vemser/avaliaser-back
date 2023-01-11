@@ -26,24 +26,6 @@ public class AvaliacaoController implements ControllerAvaliacao {
 
     private final AvaliacaoService avaliacaoService;
 
-//    @GetMapping
-//    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoesPaginados(@RequestParam Integer page,
-//                                                                           @RequestParam Integer size) throws RegraDeNegocioException {
-//        log.info("Listando Avaliações...");
-//        PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoes(page, size);
-//        log.info("Listagem avaliações com sucesso.");
-//        return new ResponseEntity<>(lista, HttpStatus.OK);
-//    }
-
-//    @GetMapping("/{idAvaliacao}")
-//    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarPorAluno(@PathVariable("idAvaliacao") Integer idAvaliacao,
-//                                                                @RequestParam Integer page,
-//                                                                @RequestParam Integer size) throws RegraDeNegocioException {
-//        log.info("Listando Avaliações por Aluno...");
-//        PageDTO<AvaliacaoDTO> lista = avaliacaoService.listarAvaliacoesPorId(idAvaliacao, page, size);
-//        log.info("Listagem avaliações por Aluno com sucesso.");
-//        return new ResponseEntity<>(lista, HttpStatus.OK);
-//    }
 
     @PostMapping("/create")
     public ResponseEntity<AvaliacaoDTO> create(@Valid @RequestBody AvaliacaoCreateDTO avaliacaoCreateDTO) throws RegraDeNegocioException {
@@ -70,23 +52,6 @@ public class AvaliacaoController implements ControllerAvaliacao {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @GetMapping("/listar-avaliacao-por-acompanhamento-aluno-ativo")
-//    public ResponseEntity<PageDTO<AvaliacaoDTO>> listarAvaliacoes(@RequestParam(required = false)Integer idAcompanhamento,
-//                                                                                            @RequestParam(required = false)String tituloAcompanhamento,
-//                                                                                            @RequestParam(required = false)Integer idAluno,
-//                                                                                            @RequestParam(required = false) Ativo ativo,
-//                                                                                            Integer pagina,
-//                                                                                            Integer tamanho) throws RegraDeNegocioException {
-//        log.info("Realizando busca de dados em lista...");
-//        PageDTO<AvaliacaoDTO> avaliacoes = avaliacaoService.listarAvaliacaoPorAcompanhamentoAlunoSituacao(idAcompanhamento,
-//                tituloAcompanhamento,
-//                idAluno,
-//                ativo,
-//                pagina,
-//                tamanho);
-//        log.info("Retorno de dados em lista paginada realizado com sucesso!");
-//        return new ResponseEntity<>(avaliacoes, HttpStatus.OK);
-//    }
 
     @GetMapping("/listar-avaliacao-por-acompanhamento-aluno")
     public ResponseEntity<PageDTO<AvaliacaoDTO>> filtrarAvaliacao(@RequestParam(required = false) Integer idAvaliacao,

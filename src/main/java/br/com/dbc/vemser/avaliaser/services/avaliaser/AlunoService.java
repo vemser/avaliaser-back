@@ -246,7 +246,7 @@ public class AlunoService {
 
     }
     public void verificarAlunoInativo(AlunoEntity aluno) throws RegraDeNegocioException {
-        if (aluno.getAtivo().equals(Ativo.S)) {
+        if (aluno.getAtivo().equals(Ativo.N)) {
             throw new RegraDeNegocioException("Aluno de id " + aluno.getIdAluno() + " Inativo");
         }
     }
