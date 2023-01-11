@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class AcompanhamentoService {
     }
 
     public AcompanhamentoDTO create(AcompanhamentoCreateDTO acompanhamentoCreateDTO) throws RegraDeNegocioException {
-        ProgramaEntity programaEntity = programaService.findById(acompanhamentoCreateDTO.getIdPrograma());
+        ProgramaEntity programaEntity = programaService.findByIdAtivo(acompanhamentoCreateDTO.getIdPrograma());
         programaService.verificarProgramaFechado(programaEntity);
         if (acompanhamentoCreateDTO.getDataFim() != null) {
             verificarDatas(acompanhamentoCreateDTO);
@@ -63,8 +64,12 @@ public class AcompanhamentoService {
 
     public AcompanhamentoDTO update(AcompanhamentoCreateDTO createDTO, Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);
-        ProgramaEntity programaEntity = programaService.findById(createDTO.getIdPrograma());
-        programaService.verificarProgramaFechado(programaEntity);
+        ProgramaEntity programaEntity = acompanhamentoEntity.getPrograma();
+        if (!Objects.equals(createDTO.getIdPrograma(), acompanhamentoEntity.getPrograma().getIdPrograma())) {
+            ProgramaEntity programaEditado = programaService.findByIdAtivo(createDTO.getIdPrograma());
+            programaService.verificarProgramaFechado(programaEntity);
+            programaEntity = programaEditado;
+        }
         if (createDTO.getDataFim() != null) {
             verificarDatas(createDTO);
         }
@@ -77,6 +82,7 @@ public class AcompanhamentoService {
         AcompanhamentoEntity acompanhamentoSave = acompanhamentoRepository.save(acompanhamentoEntity);
         return converterEmDTO(acompanhamentoSave);
     }
+
     public void desativar(Integer id) throws RegraDeNegocioException {
         AcompanhamentoEntity acompanhamentoEntity = findById(id);
         acompanhamentoEntity.setAtivo(Ativo.N);
@@ -114,13 +120,14 @@ public class AcompanhamentoService {
                 acompanhamento.getDataFim(),
                 acompanhamento.getDescricao());
     }
+
     private Page<AcompanhamentoEntity> filtrarAcompanhamento(Integer idAcompanhamento, String nomePrograma, String tituloAcompanhamento, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idAcompanhamento == null)) {
-            return acompanhamentoRepository.findByIdAcompanhamentoAndAtivo(idAcompanhamento, Ativo.S,pageRequest);
+            return acompanhamentoRepository.findByIdAcompanhamentoAndAtivo(idAcompanhamento, Ativo.S, pageRequest);
         } else if (!(nomePrograma == null)) {
-            return acompanhamentoRepository.findAllByPrograma_NomeContainingIgnoreCaseAndAtivo(nomePrograma,Ativo.S,pageRequest);
-        } else if(!(tituloAcompanhamento == null)){
+            return acompanhamentoRepository.findAllByPrograma_NomeContainingIgnoreCaseAndAtivo(nomePrograma, Ativo.S, pageRequest);
+        } else if (!(tituloAcompanhamento == null)) {
             return acompanhamentoRepository.findAllByTituloContainingIgnoreCaseAndAtivo(tituloAcompanhamento, Ativo.S, pageRequest);
         }
         return acompanhamentoRepository.findAllByAtivo(Ativo.S, pageRequest);

@@ -87,7 +87,7 @@ public class ProgramaService {
 
     public List<ProgramaEntity> findAllById(List<Integer> ids) throws RegraDeNegocioException {
         for (int i = 0; i < ids.size(); i++) {
-            ProgramaEntity programaEntity = findById(ids.get(i));
+            ProgramaEntity programaEntity = findByIdAtivo(ids.get(i));
             verificarProgramaFechado(programaEntity);
         }
         return programaRepository.findAllById(ids);
@@ -98,7 +98,7 @@ public class ProgramaService {
     public ProgramaDTO editar(Integer idPrograma, ProgramaEdicaoDTO programaEdicao) throws RegraDeNegocioException {
         verificarDatasEdicao(programaEdicao);
 
-        ProgramaEntity programaEntity = findById(idPrograma);
+        ProgramaEntity programaEntity = findByIdAtivo(idPrograma);
         programaEntity.setNome(programaEdicao.getNome());
         programaEntity.setDescricao(programaEdicao.getDescricao());
         programaEntity.setDataInicio(programaEdicao.getDataInicio());
@@ -113,13 +113,17 @@ public class ProgramaService {
     }
 
     public void desativar(Integer idPrograma) throws RegraDeNegocioException {
-        ProgramaEntity programaEntity = findById(idPrograma);
+        ProgramaEntity programaEntity = findByIdAtivo(idPrograma);
         programaEntity.setAtivo(Ativo.N);
         programaRepository.save(programaEntity);
     }
 
-    public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
+    public ProgramaEntity findByIdAtivo(Integer id) throws RegraDeNegocioException {
         return programaRepository.findByIdProgramaAndAtivo(id, Ativo.S)
+                .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
+    }
+    public ProgramaEntity findById(Integer id) throws RegraDeNegocioException {
+        return programaRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Programa não encontrado"));
     }
 
@@ -151,7 +155,7 @@ public class ProgramaService {
     }
 
     public ProgramaDTO fecharPrograma(Integer idPrograma) throws RegraDeNegocioException {
-        ProgramaEntity programa = findById(idPrograma);
+        ProgramaEntity programa = findByIdAtivo(idPrograma);
         programa.setSituacaoVagaPrograma(SituacaoVagaPrograma.FECHADO);
         ProgramaEntity programaEntity = programaRepository.save(programa);
         return converterEmDTO(programaEntity);
