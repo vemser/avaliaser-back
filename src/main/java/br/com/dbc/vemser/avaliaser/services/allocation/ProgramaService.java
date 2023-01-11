@@ -129,7 +129,12 @@ public class ProgramaService {
 
 
     public ProgramaDTO converterEmDTO(ProgramaEntity programaEntity) {
-        return objectMapper.convertValue(programaEntity, ProgramaDTO.class);
+        return new ProgramaDTO(programaEntity.getIdPrograma(),
+                programaEntity.getNome(),
+                programaEntity.getDescricao(),
+                programaEntity.getSituacaoVagaPrograma(),
+                programaEntity.getDataInicio(),
+                programaEntity.getDataFim());
     }
 
     public void verificarProgramaFechado(ProgramaEntity programaEntity) throws RegraDeNegocioException {

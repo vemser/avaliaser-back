@@ -45,7 +45,7 @@ public class TrilhaEntity {
     )
     private Set<ModuloEntity> modulos = new HashSet<>();
 
-    @JsonIgnore
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "Programa_Trilha",
