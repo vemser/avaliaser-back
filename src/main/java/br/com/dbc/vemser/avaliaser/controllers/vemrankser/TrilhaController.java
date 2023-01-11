@@ -71,6 +71,14 @@ public class TrilhaController implements TrilhaControllerInterface {
         return new ResponseEntity<>(trilhaService.listarAllTrilhaPaginado(page, size), HttpStatus.OK);
     }
 
+    @GetMapping("/trilhas-por-programa")
+    public ResponseEntity<List<TrilhaDTO>> buscarTrilhaPorPrograma(@RequestParam Integer idPrograma){
+        log.info("Buscando trilhas por programa...");
+        List<TrilhaDTO> listaTrilhas = trilhaService.buscarTrilhasPorPrograma(idPrograma);
+        log.info("Busca Realizada com sucesso.");
+        return new ResponseEntity<>(listaTrilhas, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{idTrilha}")
     public ResponseEntity<Void> desativar(@PathVariable(name = "idTrilha") Integer idTrilha) throws RegraDeNegocioException {
         log.info("Desativando Trilha");
