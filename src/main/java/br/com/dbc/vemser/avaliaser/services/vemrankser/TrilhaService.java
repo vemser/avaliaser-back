@@ -161,9 +161,9 @@ public class TrilhaService {
 
     public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
         TrilhaDTO trilhaDTO = objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
-        List<ProgramaDTO> programaDTO = trilhaEntity.getPrograma().stream().map(programaService::converterEmDTO).toList();
-        trilhaDTO.setProgramaDTO(programaDTO);
-        return trilhaDTO;
+//        List<ProgramaDTO> programaDTO = trilhaEntity.getPrograma().stream().map(programaService::converterEmDTO).toList();
+//        trilhaDTO.setProgramaDTO(programaDTO);
+        return new TrilhaDTO();
     }
 
     public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {
