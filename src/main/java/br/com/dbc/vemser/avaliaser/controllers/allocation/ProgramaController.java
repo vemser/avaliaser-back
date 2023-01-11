@@ -35,6 +35,11 @@ public class ProgramaController implements ProgramaInterfaceController {
         return new ResponseEntity<>(programa, HttpStatus.CREATED);
     }
 
+    @PostMapping("/clone/{idPrograma}")
+    public ResponseEntity<ProgramaDTO> clone(@Valid @PathVariable("idPrograma") Integer idPrograma) throws RegraDeNegocioException {
+        return new ResponseEntity<>(programaService.clonarPrograma(idPrograma), HttpStatus.OK);
+    }
+
     @Override
     public ResponseEntity<PageDTO<ProgramaDTO>> listar(Integer page, Integer size) throws RegraDeNegocioException {
         return ResponseEntity.ok(programaService.listar(page, size));

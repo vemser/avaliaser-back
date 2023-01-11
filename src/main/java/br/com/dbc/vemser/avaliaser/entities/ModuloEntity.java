@@ -41,16 +41,6 @@ public class ModuloEntity {
             inverseJoinColumns = @JoinColumn(name = "id_trilha")
     )
     private Set<TrilhaEntity> trilha = new HashSet<>();
-    ;
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "PROGRAMA_MODULO",
-            joinColumns = @JoinColumn(name = "id_modulo"),
-            inverseJoinColumns = @JoinColumn(name = "id_programa")
-    )
-    private Set<ProgramaEntity> programas = new HashSet<>();
 
     //    @JsonIgnore
 //    @OneToMany(mappedBy = "modulos", fetch = FetchType.LAZY)

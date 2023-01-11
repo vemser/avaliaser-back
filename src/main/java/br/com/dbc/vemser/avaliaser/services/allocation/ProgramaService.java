@@ -5,26 +5,32 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
+import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
+import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.SituacaoVagaPrograma;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.allocation.ProgramaRepository;
+import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
+import br.com.dbc.vemser.avaliaser.repositories.vemrankser.TrilhaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProgramaService {
 
     private final ProgramaRepository programaRepository;
+    private final TrilhaRepository trilhaRepository;
+    private final ModuloRepository moduloRepository;
     private final ObjectMapper objectMapper;
 
 
@@ -76,6 +82,44 @@ public class ProgramaService {
         return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
+
+    public ProgramaDTO clonarPrograma(Integer idPrograma) throws RegraDeNegocioException {
+        ProgramaEntity programaEntity = findById(idPrograma);
+        ProgramaEntity programaEntityClone = new ProgramaEntity();
+        programaEntityClone.setNome(programaEntity.getNome() + " - Clone");
+        programaEntityClone.setDescricao(programaEntity.getDescricao());
+        programaEntityClone.setDataInicio(programaEntity.getDataInicio());
+        programaEntityClone.setDataFim(programaEntity.getDataFim());
+        programaEntityClone.setSituacaoVagaPrograma(programaEntity.getSituacaoVagaPrograma());
+        programaEntityClone.setAtivo(programaEntity.getAtivo());
+        ProgramaEntity programaEntityCloneSaved = programaRepository.save(programaEntityClone);
+        Set<ProgramaEntity> programaEntities = new HashSet<>();
+        programaEntities.add(programaEntityCloneSaved);
+        Set<TrilhaEntity> trilhaEntities = programaEntity.getTrilhas().stream()
+                .map(trilhaEntity -> {
+                    TrilhaEntity trilhaEntityClone = new TrilhaEntity();
+                    trilhaEntityClone.setPrograma(programaEntities);
+                    trilhaEntityClone.setNome(trilhaEntity.getNome());
+                    trilhaEntityClone.setDescricao(trilhaEntity.getDescricao());
+                    trilhaEntityClone.setAtivo(trilhaEntity.getAtivo());
+                    TrilhaEntity trilhaEntityCloneSaved = trilhaRepository.save(trilhaEntityClone);
+                    Set<ModuloEntity> mouloEntities = trilhaEntity.getModulos().stream()
+                            .map(moduloEntity -> {
+                                ModuloEntity ModuloEntityClone = new ModuloEntity();
+                                Set<TrilhaEntity> trilhaEntities1 = new HashSet<>(moduloEntity.getTrilha());
+                                Set<FeedBackEntity> feedBackEntities = new HashSet<>(moduloEntity.getFeedBack());
+                                ModuloEntityClone.setNome(moduloEntity.getNome());
+                                ModuloEntityClone.setAtivo(moduloEntity.getAtivo());
+                                ModuloEntityClone.setTrilha(trilhaEntities1);
+                                ModuloEntityClone.setFeedBack(feedBackEntities);
+                                return moduloRepository.save(ModuloEntityClone);
+                            }).collect(Collectors.toSet());
+                    trilhaEntityClone.setModulos(mouloEntities);
+                    return trilhaEntityCloneSaved;
+                }).collect(Collectors.toSet());
+        programaEntityClone.setTrilhas(trilhaEntities);
+        return objectMapper.convertValue(programaEntityCloneSaved, ProgramaDTO.class);
+    }
 
     public ProgramaDTO buscarProgramaPorId(Integer idPrograma) throws RegraDeNegocioException {
 
