@@ -1,15 +1,18 @@
 package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.rankdto.RankingDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.TrilhaRepository;
+import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -29,20 +29,28 @@ import java.util.stream.Collectors;
 public class TrilhaService {
 
     private final TrilhaRepository trilhaRepository;
+    private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
 
 
     public TrilhaDTO create(TrilhaCreateDTO trilhaNova) {
         TrilhaEntity trilha = objectMapper.convertValue(trilhaNova, TrilhaEntity.class);
+        Set<ProgramaEntity> programa = new HashSet<>();
+        programa.add(programaService.findByIdPrograma(trilhaNova.getIdPrograma()));
+        trilha.setPrograma(programa);
         trilha.setAtivo(Ativo.valueOf("S"));
-        trilhaRepository.save(trilha);
-        return objectMapper.convertValue(trilha, TrilhaDTO.class);
+        TrilhaEntity trilhaSalva = trilhaRepository.save(trilha);
+        return converterEmDTO(trilhaSalva);
     }
 
     public TrilhaDTO updateTrilha(Integer idTrilha, TrilhaCreateDTO trilhaAtualizar) throws RegraDeNegocioException {
         TrilhaEntity trilhaEntity = findById(idTrilha);
+        Set<ProgramaEntity> programa = new HashSet<>();
         trilhaEntity.setNome(trilhaAtualizar.getNome());
         trilhaEntity.setDescricao(trilhaAtualizar.getDescricao());
+        trilhaEntity.getPrograma().clear();
+        programa.add(programaService.findByIdPrograma(trilhaAtualizar.getIdPrograma()));
+        trilhaEntity.setPrograma(programa);
         return objectMapper.convertValue(trilhaRepository.save(trilhaEntity), TrilhaDTO.class);
     }
 
@@ -145,7 +153,10 @@ public class TrilhaService {
     }
 
     public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
-        return objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
+        TrilhaDTO trilhaDTO = objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
+        List<ProgramaDTO> programaDTO = trilhaEntity.getPrograma().stream().map(programaService::converterEmDTO).toList();
+        trilhaDTO.setProgramaDTO(programaDTO);
+        return trilhaDTO;
     }
 
     public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {

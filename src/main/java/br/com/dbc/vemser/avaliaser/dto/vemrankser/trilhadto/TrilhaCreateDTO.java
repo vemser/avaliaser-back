@@ -8,7 +8,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class TrilhaCreateDTO {
-
+    @NotNull
+    @Schema(description = "ID Programa", example = "1")
+    private Integer idPrograma;
     @NotNull(message = "Nome não pode ser nulo!")
     @Schema(description = "Nome", example = "Backend")
     private String nome;

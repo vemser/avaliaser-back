@@ -24,6 +24,6 @@ public class ProgramaTrilhaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idTrilha")
-    @JoinColumn(name = "ID_PROGRAMA")
+    @JoinColumn(name = "id_trilha")
     private TrilhaEntity trilha;
 }
