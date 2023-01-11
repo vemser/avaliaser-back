@@ -4,7 +4,6 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -72,7 +71,7 @@ public class AlunoService {
             alunoEntity.setPontuacao(0);
             alunoEntity.setDescricao(alunoCreateDTO.getDescricao());
             alunoEntity.setSituacao(alunoCreateDTO.getSituacao());
-            alunoEntity.setPrograma(programaService.findById(alunoCreateDTO.getIdPrograma()));
+            alunoEntity.setPrograma(programaService.findByIdAtivo(alunoCreateDTO.getIdPrograma()));
             alunoEntity.setTrilha(trilhaService.findById(alunoCreateDTO.getIdTrilha()));
             if (alunoCreateDTO.getTecnologias().size() > 0) {
                 for (Integer tecnologia : alunoCreateDTO.getTecnologias()) {
@@ -103,7 +102,7 @@ public class AlunoService {
             aluno.setEstado(alunoAtualizado.getEstado());
             aluno.setDescricao(alunoAtualizado.getDescricao());
             aluno.setSituacao(alunoAtualizado.getSituacao());
-            aluno.setPrograma(programaService.findById(alunoAtualizado.getIdPrograma()));
+            aluno.setPrograma(programaService.findByIdAtivo(alunoAtualizado.getIdPrograma()));
             aluno.setTrilha(trilhaService.findById(alunoAtualizado.getIdTrilha()));
             if (alunoAtualizado.getTecnologias().size() > 0) {
                 aluno.getTecnologia().clear();

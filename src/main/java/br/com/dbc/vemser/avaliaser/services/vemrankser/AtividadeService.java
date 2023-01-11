@@ -102,7 +102,7 @@ public class AtividadeService {
     public AtividadeDTO createAtividade(AtividadeCreateDTO atividadeCreateDTO) throws RegraDeNegocioException {
 
         AtividadeEntity atividadeEntity = objectMapper.convertValue(atividadeCreateDTO, AtividadeEntity.class);
-        atividadeEntity.setPrograma(programaService.findById(atividadeCreateDTO.getIdPrograma()));
+        atividadeEntity.setPrograma(programaService.findByIdAtivo(atividadeCreateDTO.getIdPrograma()));
 //        atividadeEntity.setSituacao(Situacao.ABERTO);
         atividadeEntity.setAtivo(Ativo.S);
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
@@ -149,7 +149,7 @@ public class AtividadeService {
         atividadeRecuperada.setTitulo(atividadeAtualizar.getTitulo());
         atividadeRecuperada.setDescricao(atividadeAtualizar.getDescricao());
         atividadeRecuperada.setDataEntrega(atividadeAtualizar.getDataEntrega());
-        atividadeRecuperada.setPrograma(programaService.findById(atividadeAtualizar.getIdPrograma()));
+        atividadeRecuperada.setPrograma(programaService.findByIdAtivo(atividadeAtualizar.getIdPrograma()));
         atividadeRecuperada.setPesoAtividade(atividadeAtualizar.getPesoAtividade());
         atividadeRecuperada.setNomeInstrutor(atividadeAtualizar.getNomeInstrutor());
         Set<ModuloEntity> moduloEntities = new HashSet<>();

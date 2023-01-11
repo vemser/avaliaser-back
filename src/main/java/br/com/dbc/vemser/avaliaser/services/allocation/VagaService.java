@@ -34,7 +34,7 @@ public class VagaService {
 
     public VagaDTO salvar(VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
         verificarDataCreate(vagaCreate);
-        ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
+        ProgramaEntity programa = programaService.findByIdAtivo(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         VagaEntity vagaEntity = converterEntity(vagaCreate);
         vagaEntity.setCliente(cliente);
@@ -72,7 +72,7 @@ public class VagaService {
     public VagaDTO editar(Integer idVaga, VagaCreateDTO vagaCreate) throws RegraDeNegocioException {
         verificarDataCreate(vagaCreate);
         VagaEntity vagaEntity = findById(idVaga);
-        ProgramaEntity programa = programaService.findById(vagaCreate.getIdPrograma());
+        ProgramaEntity programa = programaService.findByIdAtivo(vagaCreate.getIdPrograma());
         ClienteEntity cliente = clienteService.findById(vagaCreate.getIdCliente());
         vagaEntity.setCliente(cliente);
 
