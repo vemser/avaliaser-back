@@ -1,6 +1,7 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
-import br.com.dbc.vemser.avaliaser.entities.pk.ProgramaModuloPK;
+
+import br.com.dbc.vemser.avaliaser.entities.pk.ProgramaTrilhaPK;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,19 +11,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "PROGRAMA_MODULO")
-public class ProgramaModuloEntity {
+@Entity(name = "PROGRAMA_TRILHA")
+public class ProgramaTrilhaEntity {
 
     @EmbeddedId
-    private ProgramaModuloPK idProgramaModulo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("idModulo")
-    @JoinColumn(name = "ID_MODULO")
-    private ModuloEntity modulo;
+    private ProgramaTrilhaPK idProgramaTrilha;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idPrograma")
-    @JoinColumn(name = "ID_PROGRAMA")
+    @JoinColumn(name = "id_programa")
     private ProgramaEntity programa;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("idTrilha")
+    @JoinColumn(name = "ID_PROGRAMA")
+    private TrilhaEntity trilha;
 }

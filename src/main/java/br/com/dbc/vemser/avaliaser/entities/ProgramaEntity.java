@@ -63,11 +63,11 @@ public class ProgramaEntity {
     private Set<VagaEntity> vagas = new HashSet<>();
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "PROGRAMA_MODULO",
+            name = "Programa_Trilha",
             joinColumns = @JoinColumn(name = "id_programa"),
-            inverseJoinColumns = @JoinColumn(name = "id_modulo")
+            inverseJoinColumns = @JoinColumn(name = "id_trilha")
     )
     private Set<ModuloEntity> modulos = new HashSet<>();
 
