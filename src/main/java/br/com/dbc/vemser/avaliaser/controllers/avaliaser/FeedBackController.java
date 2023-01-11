@@ -4,7 +4,6 @@ import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControlle
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -17,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @Validated
@@ -40,13 +38,13 @@ public class FeedBackController implements OperationControllerFeedBack {
     }
 
     @GetMapping("/listar-feedbacks-com-filtro")
-    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackFiltrado(@RequestParam(required = false)Integer idAluno,
-                                                                       @RequestParam(required = false)Integer idTrilha,
+    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackFiltrado(@RequestParam(required = false) Integer idAluno,
+                                                                       @RequestParam(required = false) Integer idTrilha,
                                                                        @RequestParam(required = false) TipoAvaliacao situacao,
                                                                        @RequestParam(required = false) String nomeInstrutor,
                                                                        Integer page, Integer size) throws RegraDeNegocioException {
 
-        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarPorFiltro(idAluno,idTrilha, situacao, nomeInstrutor, page, size);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarPorFiltro(idAluno, idTrilha, situacao, nomeInstrutor, page, size);
         return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
     }
 
@@ -75,8 +73,4 @@ public class FeedBackController implements OperationControllerFeedBack {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/find-usuarios")
-    public ResponseEntity<List<UsuarioDTO>> findUsuarios(@RequestParam String usuario) {
-        return new ResponseEntity<>(feedbackService.findUsuarios(usuario), HttpStatus.OK);
-    }
 }

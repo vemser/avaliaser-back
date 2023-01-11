@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Integer> {
@@ -24,8 +23,6 @@ public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Intege
 
     Page<FeedBackEntity> findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
 
-    Set<FeedBackEntity> findAllByNomeInstrutorContainsIgnoreCase(String nome);
-
     @Query("SELECT obj " +
             "FROM Feedback obj " +
             "LEFT JOIN obj.alunoEntity aluno " +
@@ -35,7 +32,7 @@ public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Intege
             "AND ( aluno.idAluno = :idAluno or :idAluno is null) " +
             "AND ( trilha.idTrilha = :idTrilha or :idTrilha is null) " +
             "AND ( obj.situacao = :situacao or :situacao is null)" +
-            "AND (:nomeInstrutor is null or UPPER(obj.nomeInstrutor) LIKE UPPER(concat(:nomeInstrutor, '%')))" )
+            "AND (:nomeInstrutor is null or UPPER(obj.nomeInstrutor) LIKE UPPER(concat(:nomeInstrutor, '%')))")
     Page<FeedBackEntity> findByFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Pageable pageable);
 
 }

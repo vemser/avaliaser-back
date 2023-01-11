@@ -3,7 +3,6 @@ package br.com.dbc.vemser.avaliaser.services.avaliaser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.EditarFeedBackDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.FeedBackDTO;
-import br.com.dbc.vemser.avaliaser.dto.avalaliaser.feedback.UsuarioDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -26,9 +25,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +73,7 @@ public class FeedbackService {
         if (feedBackEntity.getModuloEntity().isEmpty()) {
             throw new RegraDeNegocioException("Modulo invalidos.");
         }
-        
+
         feedBackEntity.setNomeInstrutor(SecurityContextHolder.getContext().getAuthentication().getCredentials().toString());
         feedBackEntity.setSituacao(feedBackCreateDTO.getSituacao());
         feedBackEntity.setDescricao(feedBackCreateDTO.getDescricao());
@@ -113,16 +110,6 @@ public class FeedbackService {
     public FeedBackDTO findByIdDTO(Integer id) throws RegraDeNegocioException {
         FeedBackEntity feedBackEntity = findById(id);
         return converterParaFeedbackDTO(feedBackEntity);
-    }
-
-    public List<UsuarioDTO> findUsuarios(String usuario) {
-        Set<FeedBackEntity> feedBackDTOS = feedBackRepository.findAllByNomeInstrutorContainsIgnoreCase(usuario);
-        if (feedBackDTOS.isEmpty() || feedBackDTOS == null) {
-            return Collections.emptyList();
-        }
-        return feedBackDTOS.stream()
-                .map(feedBackEntity -> new UsuarioDTO(feedBackEntity.getNomeInstrutor()))
-                .toList();
     }
 
     public PageDTO<FeedBackDTO> listarPorFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
