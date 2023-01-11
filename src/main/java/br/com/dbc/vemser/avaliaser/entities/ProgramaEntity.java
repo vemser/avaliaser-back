@@ -69,7 +69,7 @@ public class ProgramaEntity {
             joinColumns = @JoinColumn(name = "id_programa"),
             inverseJoinColumns = @JoinColumn(name = "id_trilha")
     )
-    private Set<ModuloEntity> modulos = new HashSet<>();
+    private Set<TrilhaEntity> trilhas = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "programa", fetch = FetchType.LAZY)
