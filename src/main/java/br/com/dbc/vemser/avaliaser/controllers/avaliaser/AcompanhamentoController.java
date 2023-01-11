@@ -1,6 +1,6 @@
 package br.com.dbc.vemser.avaliaser.controllers.avaliaser;
 
-import br.com.dbc.vemser.avaliaser.controllers.adocumentation.OperationControllerAcompanhamento;
+import br.com.dbc.vemser.avaliaser.controllers.adocumentation.ControllerAcompanhamento;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.acompanhamento.AcompanhamentoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/acompanhamento")
-public class AcompanhamentoController implements OperationControllerAcompanhamento {
+public class AcompanhamentoController implements ControllerAcompanhamento {
     private final AcompanhamentoService acompanhamentoService;
 
     @GetMapping("/listar-acompanhamento")

@@ -245,6 +245,11 @@ public class AlunoService {
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
 
     }
+    public void verificarAlunoInativo(AlunoEntity aluno) throws RegraDeNegocioException {
+        if (aluno.getAtivo().equals(Ativo.N)) {
+            throw new RegraDeNegocioException("Aluno de id " + aluno.getIdAluno() + " Inativo");
+        }
+    }
 }
 
 

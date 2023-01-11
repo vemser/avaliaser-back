@@ -100,6 +100,7 @@ public class AcompanhamentoService {
         return converterEmDTO(acompanhamentoEntity);
     }
 
+
     public AcompanhamentoEntity converterEntity(AcompanhamentoCreateDTO createDTO, ProgramaEntity programaEntity) {
         return new AcompanhamentoEntity(null,
                 createDTO.getTitulo(),
@@ -138,6 +139,12 @@ public class AcompanhamentoService {
             throw new RegraDeNegocioException("A data final do acompanhamento não pode ser inferior a data inicial. Tente novamente!");
         }
     }
+    public void verificarAcompanhamentoInativo(AcompanhamentoEntity acompanhamento) throws RegraDeNegocioException {
+        if (acompanhamento.getAtivo().equals(Ativo.N)) {
+            throw new RegraDeNegocioException("Acompanhamento de id " + acompanhamento.getIdAcompanhamento() + " Inativo");
+        }
+    }
+
 
 
 }

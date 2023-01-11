@@ -13,21 +13,21 @@ public class AvaliacaoCreateDTO {
     @NotNull(message = "Acompanhamento não pode ser nulo.")
     @Schema(example = "1")
     private Integer idAcompanhamento;
+
     @NotNull(message = "Aluno não pode ser nulo.")
     @Schema(example = "1")
     private Integer idAluno;
-    @NotNull(message = "Nome do gestor responsavel não pode ser nulo.")
-    @NotBlank(message = "Nome do gestor responsavel não pode ser nulo.")
-    @Schema(example = "Carlos Alberto")
-    private String nomeResponsavel;
+
     @NotNull(message = "Descrição não pode ser nulo.")
     @NotBlank(message = "Descrição não pode ser nulo.")
     @Schema(example = "Descrição")
     private String descricao;
+
     @NotNull(message = "Tipo não pode ser nulo.")
     @Schema(example = "POSITIVO")
-    private TipoAvaliacao situacao;
-    @NotNull(message = "Data de Criação não pode ser nula.")
+    private TipoAvaliacao tipoAvaliacao;
+
     @Schema(example = "2022-12-01")
     private LocalDate dataCriacao;
+
 }

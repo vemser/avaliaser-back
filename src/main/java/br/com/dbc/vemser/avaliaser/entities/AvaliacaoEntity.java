@@ -1,5 +1,6 @@
 package br.com.dbc.vemser.avaliaser.entities;
 
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -21,20 +22,22 @@ public class AvaliacaoEntity {
     @Column(name = "id_avaliacao")
     private Integer idAvaliacao;
 
-    @Column(name = "id_aluno", insertable = false, updatable = false)
+    @Column(name = "id_aluno",updatable = false, insertable = false)
     private Integer idAluno;
 
-    @Column(name = "id_acompanhamento", insertable = false, updatable = false)
-    private Integer idAcompanhamento;
 
     @Column(name = "situacao")
-    private TipoAvaliacao situacao;
+    private TipoAvaliacao tipoAvaliacao;
 
     @Column(name = "descricao")
     private String descricao;
 
     @Column(name = "Data_Criacao")
     private LocalDate dataCriacao;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Ativo ativo;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,9 +51,4 @@ public class AvaliacaoEntity {
     @ToString.Exclude
     private AlunoEntity alunoEntity;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_programa", referencedColumnName = "id_programa")
-    @ToString.Exclude
-    private ProgramaEntity programaEntity;
 }
