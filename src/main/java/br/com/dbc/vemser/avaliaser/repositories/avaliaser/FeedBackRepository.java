@@ -23,16 +23,5 @@ public interface FeedBackRepository extends JpaRepository<FeedBackEntity, Intege
 
     Page<FeedBackEntity> findAllByAlunoEntity_NomeContainingIgnoreCaseAndAtivo(String nome, Ativo ativo, Pageable pageable);
 
-    @Query("SELECT obj " +
-            "FROM Feedback obj " +
-            "LEFT JOIN obj.alunoEntity aluno " +
-            "LEFT JOIN obj.moduloEntity modulo " +
-            "LEFT JOIN modulo.trilha trilha " +
-            "WHERE (obj.ativo = 1)" +
-            "AND ( aluno.idAluno = :idAluno or :idAluno is null) " +
-            "AND ( trilha.idTrilha = :idTrilha or :idTrilha is null) " +
-            "AND ( obj.situacao = :situacao or :situacao is null)" +
-            "AND (:nomeInstrutor is null or UPPER(obj.nomeInstrutor) LIKE UPPER(concat(:nomeInstrutor, '%')))")
-    Page<FeedBackEntity> findByFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Pageable pageable);
-
+    Page<FeedBackEntity> findByAlunoEntity_IdAlunoOrAlunoEntity_IdTrilhaOrNomeInstrutorContainingIgnoreCaseOrSituacaoAndAtivo(Integer idAluno, Integer idTrilha, String nomeInstrutor,TipoAvaliacao situacao, Ativo ativo, Pageable pageable);
 }
