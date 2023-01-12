@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao;
 
 import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
 public class EditarAvaliacaoDTO {
 
     @NotNull(message = "Não pode ser nulo.")
