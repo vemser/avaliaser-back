@@ -121,7 +121,7 @@ public class AcompanhamentoService {
                 acompanhamento.getDescricao());
     }
 
-    private Page<AcompanhamentoEntity> filtrarAcompanhamento(Integer idAcompanhamento, String nomePrograma, String tituloAcompanhamento, Integer pagina, Integer tamanho) {
+    public Page<AcompanhamentoEntity> filtrarAcompanhamento(Integer idAcompanhamento, String nomePrograma, String tituloAcompanhamento, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idAcompanhamento == null)) {
             return acompanhamentoRepository.findByIdAcompanhamentoAndAtivo(idAcompanhamento, Ativo.S, pageRequest);
