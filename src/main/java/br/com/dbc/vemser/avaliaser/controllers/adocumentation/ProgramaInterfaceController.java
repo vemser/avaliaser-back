@@ -3,6 +3,7 @@ package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaTrilhaModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,7 +46,7 @@ public interface ProgramaInterfaceController {
             }
     )
     @GetMapping("/list-nome")
-    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size,String nome) throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<ProgramaDTO>> listarPorNome(Integer page, Integer size, String nome) throws RegraDeNegocioException;
 
     @Operation(summary = "Buscar um programa por id", description = "Buscar um programa por id do banco de dados")
     @ApiResponses(
@@ -57,6 +58,17 @@ public interface ProgramaInterfaceController {
     )
     @GetMapping("/{idPrograma}")
     ResponseEntity<ProgramaDTO> buscarProgramaPorId(@PathVariable(name = "idPrograma") Integer idPrograma) throws RegraDeNegocioException;
+
+    @Operation(summary = "Buscar um programa por id", description = "Buscar um programa por id do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Programa resgatado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/buscar-programa-trilha-modulo")
+    public ResponseEntity<ProgramaTrilhaModuloDTO> buscarProgramaTrilhaModulo(@RequestParam Integer idPrograma) throws RegraDeNegocioException;
 
     @Operation(summary = "Editar programa", description = "Editar um programa no banco de dados")
     @ApiResponses(

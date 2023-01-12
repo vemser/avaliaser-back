@@ -5,14 +5,11 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
-import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
-import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.repositories.vemrankser.ModuloRepository;
-import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -67,6 +63,9 @@ public class ModuloService {
                 }
             }
         }
+        if (moduloEntityNovo.getTrilha().isEmpty()) {
+            throw new RegraDeNegocioException("Trilha invalida!");
+        }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
         return converterEmDTO(moduloSalvo);
     }
@@ -82,6 +81,9 @@ public class ModuloService {
                     moduloEntity.getTrilha().add(trilhaEnt);
                 }
             }
+        }
+        if (moduloEntity.getTrilha().isEmpty()) {
+            throw new RegraDeNegocioException("Trilha invalida!");
         }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
@@ -141,7 +143,7 @@ public class ModuloService {
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
-    public List<ModuloTrilhaDTO> listarModulosPorTrilha(Integer id){
+    public List<ModuloTrilhaDTO> listarModulosPorTrilha(Integer id) {
         List<ModuloEntity> moduloEntities = moduloRepository.findAllByTrilha_IdTrilhaAndAtivo(id, Ativo.S);
         List<ModuloTrilhaDTO> moduloTrilhaDTOS = moduloEntities.stream()
                 .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloTrilhaDTO.class)).toList();
