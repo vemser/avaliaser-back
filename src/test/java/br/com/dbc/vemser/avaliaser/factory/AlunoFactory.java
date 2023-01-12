@@ -4,10 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
-<<<<<<< HEAD
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
-=======
->>>>>>> d5e13e2d21c27251fa3a2d9590e7bf1f9b6c41e4
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
