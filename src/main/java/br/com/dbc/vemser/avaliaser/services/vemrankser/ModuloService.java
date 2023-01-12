@@ -4,6 +4,7 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloTrilhaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
@@ -31,9 +32,7 @@ import java.util.stream.Collectors;
 public class ModuloService {
 
     private final ModuloRepository moduloRepository;
-
     private final TrilhaService trilhaService;
-
     private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
 
@@ -61,14 +60,6 @@ public class ModuloService {
         ModuloEntity moduloEntityNovo = converterEntity(modulo);
 
         moduloEntityNovo.setAtivo(Ativo.valueOf("S"));
-        if (modulo.getListPrograma().size() > 0) {
-            for (Integer programa : modulo.getListPrograma()) {
-                ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
-                if (!(programaEntity == null)) {
-                    moduloEntityNovo.getProgramas().add(programaEntity);
-                }
-            }
-        }
         if (modulo.getTrilha().size() > 0) {
             for (Integer trilha : modulo.getTrilha()) {
                 TrilhaEntity trilhaEnt = trilhaService.findByIdTrilha(trilha);
@@ -77,9 +68,6 @@ public class ModuloService {
                 }
             }
         }
-        if (moduloEntityNovo.getProgramas().isEmpty() || moduloEntityNovo.getTrilha().isEmpty()) {
-            throw new RegraDeNegocioException("Programa ou trilha invalido.");
-        }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
         return converterEmDTO(moduloSalvo);
     }
@@ -87,15 +75,6 @@ public class ModuloService {
     public ModuloDTO editar(Integer id, ModuloCreateDTO moduloCreateDTO) throws RegraDeNegocioException {
         ModuloEntity moduloEntity = buscarPorIdModulo(id);
         moduloEntity.setNome(moduloCreateDTO.getNome());
-        if (moduloCreateDTO.getListPrograma().size() > 0) {
-            moduloEntity.getProgramas().clear();
-            for (Integer programa : moduloCreateDTO.getListPrograma()) {
-                ProgramaEntity programaEntity = programaService.findByIdPrograma(programa);
-                if (!(programaEntity == null)) {
-                    moduloEntity.getProgramas().add(programaEntity);
-                }
-            }
-        }
         if (moduloCreateDTO.getTrilha().size() > 0) {
             moduloEntity.getTrilha().clear();
             for (Integer trilha : moduloCreateDTO.getTrilha()) {
@@ -104,9 +83,8 @@ public class ModuloService {
                     moduloEntity.getTrilha().add(trilhaEnt);
                 }
             }
-        }
-        if (moduloEntity.getProgramas().isEmpty() || moduloEntity.getTrilha().isEmpty()) {
-            throw new RegraDeNegocioException("Programa ou trilha invalido.");
+
+
         }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
@@ -143,9 +121,6 @@ public class ModuloService {
         moduloDTO.setIdModulo(moduloEntity.getIdModulo());
         moduloDTO.setNome(moduloEntity.getNome());
         moduloDTO.setAtivo(moduloEntity.getAtivo());
-        moduloDTO.setListProgramaDTO(moduloEntity.getProgramas().stream()
-                .map(programaService::converterEmDTO)
-                .collect(Collectors.toList()));
         moduloDTO.setTrilhaDTO(moduloEntity.getTrilha().stream()
                 .map(trilha -> objectMapper.convertValue(trilha, TrilhaDTO.class))
                 .toList());
@@ -174,6 +149,12 @@ public class ModuloService {
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
+    public List<ModuloTrilhaDTO> listarModulosPorTrilha(Integer id){
+        List<ModuloEntity> moduloEntities = moduloRepository.findAllByTrilha_IdTrilhaAndAtivo(id, Ativo.S);
+        List<ModuloTrilhaDTO> moduloTrilhaDTOS = moduloEntities.stream()
+                .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloTrilhaDTO.class)).toList();
+        return moduloTrilhaDTOS;
+    }
 
     public ModuloDTO vincularModuloTrilha(Integer idModulo,
                                           Integer idTrilha) throws RegraDeNegocioException {
@@ -196,7 +177,6 @@ public class ModuloService {
                 modulo.getNome(),
                 modulo.getAtivo(),
                 new HashSet<>(modulo.getTrilha()),
-                new HashSet<>(modulo.getProgramas()),
                 new HashSet<>(modulo.getFeedBack()));
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);

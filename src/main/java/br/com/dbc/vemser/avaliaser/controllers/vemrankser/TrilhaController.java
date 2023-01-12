@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.rankdto.RankingDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaProgramaDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.TrilhaService;
 import lombok.RequiredArgsConstructor;
@@ -72,9 +73,9 @@ public class TrilhaController implements TrilhaControllerInterface {
     }
 
     @GetMapping("/trilhas-por-programa")
-    public ResponseEntity<List<TrilhaDTO>> buscarTrilhaPorPrograma(@RequestParam Integer idPrograma){
+    public ResponseEntity<List<TrilhaProgramaDTO>> buscarTrilhaPorPrograma(@RequestParam Integer idPrograma){
         log.info("Buscando trilhas por programa...");
-        List<TrilhaDTO> listaTrilhas = trilhaService.buscarTrilhasPorPrograma(idPrograma);
+        List<TrilhaProgramaDTO> listaTrilhas = trilhaService.buscarTrilhasPorPrograma(idPrograma);
         log.info("Busca Realizada com sucesso.");
         return new ResponseEntity<>(listaTrilhas, HttpStatus.OK);
     }

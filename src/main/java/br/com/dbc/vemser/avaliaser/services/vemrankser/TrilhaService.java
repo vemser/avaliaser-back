@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.rankdto.RankingDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaProgramaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
@@ -69,10 +70,10 @@ public class TrilhaService {
 
     }
 
-    public List<TrilhaDTO> buscarTrilhasPorPrograma(Integer idPrograma){
+    public List<TrilhaProgramaDTO> buscarTrilhasPorPrograma(Integer idPrograma){
         List<TrilhaEntity> listaTrilhas = trilhaRepository.findAllByPrograma_idProgramaAndAtivo(idPrograma, Ativo.S);
         return listaTrilhas.stream()
-                .map(this::converterEmDTO)
+                .map(trilhaEntity -> objectMapper.convertValue(trilhaEntity,TrilhaProgramaDTO.class))
                 .toList();
     }
 
@@ -98,8 +99,6 @@ public class TrilhaService {
         List<TrilhaDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
-
-
 
     public PageDTO<TrilhaDTO> listarAllTrilhaPaginado(Integer page, Integer size) throws RegraDeNegocioException {
         if (page < 0 || size < 0) {
