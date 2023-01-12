@@ -34,6 +34,7 @@ public class TrilhaService {
     private final ProgramaService programaService;
 
     public TrilhaDTO create(TrilhaCreateDTO trilhaNova) throws RegraDeNegocioException {
+        programaService.findById(trilhaNova.getIdPrograma());
         TrilhaEntity trilha = objectMapper.convertValue(trilhaNova, TrilhaEntity.class);
         Set<ProgramaEntity> programa = new HashSet<>();
         ProgramaEntity programaEntity = programaService.findByIdPrograma(trilhaNova.getIdPrograma());
@@ -48,15 +49,16 @@ public class TrilhaService {
     }
 
     public TrilhaDTO updateTrilha(Integer idTrilha, TrilhaCreateDTO trilhaAtualizar) throws RegraDeNegocioException {
+        programaService.findById(trilhaAtualizar.getIdPrograma());
         TrilhaEntity trilhaEntity = findById(idTrilha);
         trilhaEntity.setNome(trilhaAtualizar.getNome());
         trilhaEntity.setDescricao(trilhaAtualizar.getDescricao());
-        return objectMapper.convertValue(trilhaRepository.save(trilhaEntity), TrilhaDTO.class);
+        return converterEmDTO(trilhaEntity);
     }
 
     public TrilhaDTO getIdTrilha(Integer id) throws RegraDeNegocioException {
         TrilhaEntity trilhaEntity = findById(id);
-        return objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
+        return converterEmDTO(trilhaEntity);
     }
 
     public TrilhaEntity findById(Integer idTrilha) throws RegraDeNegocioException {
@@ -85,7 +87,9 @@ public class TrilhaService {
             Page<TrilhaEntity> trilhaEntities = trilhaRepository
                     .findAllByNomeContainingIgnoreCaseAndAtivo(nomeTrilha.trim().replaceAll("\\s+", " "), pageRequest, Ativo.S);
 
-            List<TrilhaDTO> trilhaDTOS = trilhaEntities.getContent().stream().map(trilhaEntity -> objectMapper.convertValue(trilhaEntity, TrilhaDTO.class))
+            List<TrilhaDTO> trilhaDTOS = trilhaEntities.getContent()
+                    .stream()
+                    .map(trilhaEntity -> converterEmDTO(trilhaEntity))
                     .collect(Collectors.toList());
 
             return new PageDTO<>(trilhaEntities.getTotalElements(),
@@ -108,7 +112,7 @@ public class TrilhaService {
             Page<TrilhaEntity> trilha = trilhaRepository.findAllByAtivo(pageRequest, Ativo.S);
 
             List<TrilhaDTO> trilhaDTOList = trilha.getContent().stream()
-                    .map(itemEntretenimentoEntity -> objectMapper.convertValue(itemEntretenimentoEntity, TrilhaDTO.class))
+                    .map(trilhaEntity -> converterEmDTO(trilhaEntity))
                     .toList();
             return new PageDTO<>(trilha.getTotalElements(),
                     trilha.getTotalPages(),
