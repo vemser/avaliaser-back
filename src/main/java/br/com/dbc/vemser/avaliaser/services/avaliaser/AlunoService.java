@@ -188,7 +188,7 @@ public class AlunoService {
 
         return alunoDTO;
     }
-    public AlunoFiltroDTO converterAlunoFiltroDTO(AlunoEntity aluno) {
+    private AlunoFiltroDTO converterAlunoFiltroDTO(AlunoEntity aluno) {
 
         AlunoFiltroDTO alunoFiltroDTO = objectMapper.convertValue(aluno, AlunoFiltroDTO.class);
 //        alunoFiltroDTO.setPrograma(programaService.converterEmDTO(aluno.getPrograma()));
