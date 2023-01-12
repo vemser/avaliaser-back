@@ -25,7 +25,7 @@ public interface TrilhaControllerInterface {
     )
     @PostMapping
     ResponseEntity<TrilhaDTO> create(@RequestBody
-                                     @Valid TrilhaCreateDTO trilhaCreateDTO);
+                                     @Valid TrilhaCreateDTO trilhaCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar Trilha", description = "Atualizar Trilha no banco de dados")
     @ApiResponses(

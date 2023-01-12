@@ -10,7 +10,6 @@ import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.TrilhaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +30,7 @@ public class TrilhaController implements TrilhaControllerInterface {
 
     @PostMapping
     public ResponseEntity<TrilhaDTO> create(@RequestBody
-                                                @Valid TrilhaCreateDTO trilhaCreateDTO){
+                                            @Valid TrilhaCreateDTO trilhaCreateDTO) throws RegraDeNegocioException {
         log.info("Criando Trilha...");
         TrilhaDTO trilhaDTO = trilhaService.create(trilhaCreateDTO);
         log.info("Trilha Criada com sucesso!!");
@@ -47,15 +46,15 @@ public class TrilhaController implements TrilhaControllerInterface {
 
     @GetMapping("/lista-ranking")
     public ResponseEntity<PageDTO<RankingDTO>> listRanking(Integer page,
-                                                        Integer size,
-                                                        Integer idTrilha) throws RegraDeNegocioException {
-        return new ResponseEntity<>(trilhaService.rankingTrilha(page,size,idTrilha), HttpStatus.OK);
+                                                           Integer size,
+                                                           Integer idTrilha) throws RegraDeNegocioException {
+        return new ResponseEntity<>(trilhaService.rankingTrilha(page, size, idTrilha), HttpStatus.OK);
     }
 
     @GetMapping("/lista-trilha-nome")
     public ResponseEntity<PageDTO<TrilhaDTO>> findTrilhaByNome(@RequestParam String nome,
-                                                            @RequestParam int page,
-                                                            @RequestParam int size) throws RegraDeNegocioException {
+                                                               @RequestParam int page,
+                                                               @RequestParam int size) throws RegraDeNegocioException {
         return new ResponseEntity<>(trilhaService.findTrilhaByNome(nome, page, size), HttpStatus.OK);
     }
 
@@ -73,7 +72,7 @@ public class TrilhaController implements TrilhaControllerInterface {
     }
 
     @GetMapping("/trilhas-por-programa")
-    public ResponseEntity<List<TrilhaProgramaDTO>> buscarTrilhaPorPrograma(@RequestParam Integer idPrograma){
+    public ResponseEntity<List<TrilhaProgramaDTO>> buscarTrilhaPorPrograma(@RequestParam Integer idPrograma) {
         log.info("Buscando trilhas por programa...");
         List<TrilhaProgramaDTO> listaTrilhas = trilhaService.buscarTrilhasPorPrograma(idPrograma);
         log.info("Busca Realizada com sucesso.");

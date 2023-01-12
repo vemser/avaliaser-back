@@ -8,7 +8,6 @@ import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaProgramaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.ProgramaEntity;
-import br.com.dbc.vemser.avaliaser.entities.TecnologiaEntity;
 import br.com.dbc.vemser.avaliaser.entities.TrilhaEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
@@ -34,10 +33,14 @@ public class TrilhaService {
     private final ObjectMapper objectMapper;
 
 
-    public TrilhaDTO create(TrilhaCreateDTO trilhaNova) {
+    public TrilhaDTO create(TrilhaCreateDTO trilhaNova) throws RegraDeNegocioException {
         TrilhaEntity trilha = objectMapper.convertValue(trilhaNova, TrilhaEntity.class);
         Set<ProgramaEntity> programa = new HashSet<>();
-        programa.add(programaService.findByIdPrograma(trilhaNova.getIdPrograma()));
+        ProgramaEntity programaEntity = programaService.findByIdPrograma(trilhaNova.getIdPrograma());
+        if (programaEntity == null) {
+            throw new RegraDeNegocioException("Programa invalido!");
+        }
+        programa.add(programaEntity);
         trilha.setPrograma(programa);
         trilha.setAtivo(Ativo.valueOf("S"));
         TrilhaEntity trilhaSalva = trilhaRepository.save(trilha);
@@ -70,10 +73,10 @@ public class TrilhaService {
 
     }
 
-    public List<TrilhaProgramaDTO> buscarTrilhasPorPrograma(Integer idPrograma){
+    public List<TrilhaProgramaDTO> buscarTrilhasPorPrograma(Integer idPrograma) {
         List<TrilhaEntity> listaTrilhas = trilhaRepository.findAllByPrograma_idProgramaAndAtivo(idPrograma, Ativo.S);
         return listaTrilhas.stream()
-                .map(trilhaEntity -> objectMapper.convertValue(trilhaEntity,TrilhaProgramaDTO.class))
+                .map(trilhaEntity -> objectMapper.convertValue(trilhaEntity, TrilhaProgramaDTO.class))
                 .toList();
     }
 
@@ -128,7 +131,7 @@ public class TrilhaService {
         trilhaRepository.save(trilhaEntity);
     }
 
-    public PageDTO<RankingDTO> rankingTrilha(Integer page, Integer size,Integer idTrilha) throws RegraDeNegocioException {
+    public PageDTO<RankingDTO> rankingTrilha(Integer page, Integer size, Integer idTrilha) throws RegraDeNegocioException {
         if (size < 0 || page < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
