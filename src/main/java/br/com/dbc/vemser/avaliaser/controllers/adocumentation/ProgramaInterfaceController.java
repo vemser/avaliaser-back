@@ -67,8 +67,8 @@ public interface ProgramaInterfaceController {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/buscar-programa-trilha-modulo/{idPrograma}")
-    public ResponseEntity<ProgramaTrilhaModuloDTO> buscarProgramaTrilhaModulo(Integer idPrograma) throws RegraDeNegocioException;
+    @GetMapping("/buscar-programa-trilha-modulo")
+    public ResponseEntity<ProgramaTrilhaModuloDTO> buscarProgramaTrilhaModulo(@RequestParam Integer idPrograma) throws RegraDeNegocioException;
 
     @Operation(summary = "Editar programa", description = "Editar um programa no banco de dados")
     @ApiResponses(
