@@ -1,111 +1,110 @@
-//package br.com.dbc.vemser.avaliaser.service;
-//
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
-//import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-//import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
-//import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
-//import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
-//import br.com.dbc.vemser.avaliaser.entities.UsuarioEntity;
-//import br.com.dbc.vemser.avaliaser.enums.Cargo;
-//import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
-//import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
-//import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
-//import br.com.dbc.vemser.avaliaser.factory.AvaliacaoFactory;
-//import br.com.dbc.vemser.avaliaser.factory.UsuarioFactory;
-//import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AvaliacaoRepository;
-//import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
-//import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
-//import br.com.dbc.vemser.avaliaser.services.avaliaser.AvaliacaoService;
-//import br.com.dbc.vemser.avaliaser.services.avaliaser.UsuarioService;
-//import com.fasterxml.jackson.databind.DeserializationFeature;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.fasterxml.jackson.databind.SerializationFeature;
-//import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.springframework.data.domain.PageImpl;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.test.util.ReflectionTestUtils;
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.ArgumentMatchers.anyInt;
-//import static org.mockito.Mockito.when;
-//
-//@RunWith(MockitoJUnitRunner.class)
-//public class AvaliacaoServiceTest {
-//
-//    @InjectMocks
-//    private AvaliacaoService avaliacaoService;
-//
-//    @Mock
-//    private AvaliacaoRepository avaliacaoRepository;
-//    @Mock
-//    private AcompanhamentoService acompanhamentoService;
-//    @Mock
-//    private UsuarioService usuarioService;
-//    @Mock
-//    private AlunoService alunoService;
-//
-//    private ObjectMapper objectMapper = new ObjectMapper();
-//
-//    @Before
-//    public void init() {
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        ReflectionTestUtils.setField(avaliacaoService, "objectMapper", objectMapper);
-//    }
-//
-//    @Test
-//    public void deveTestarCadastroAvaliacaoComSucesso() throws RegraDeNegocioException {
-//        UsuarioEntity usuario = UsuarioFactory.getUsuarioEntity();
-//        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
-//        AvaliacaoCreateDTO avaliacaoDTO = AvaliacaoFactory.getAvaliacaoCreateDTOFactory();
-//        UsernamePasswordAuthenticationToken dto
-//                = new UsernamePasswordAuthenticationToken(1, Cargo.GESTOR, Collections.emptyList());
-//        SecurityContextHolder.getContext().setAuthentication(dto);
-//
-//        when(alunoService.findById(anyInt())).thenReturn(AlunoFactory.getAlunoEntity());
-//        when(usuarioService.getLoggedUser()).thenReturn(usuario);
-//        when(acompanhamentoService.findById(anyInt())).thenReturn(AcompanhamentoFactory.getAcompanhamento());
-//        when(avaliacaoRepository.save(any())).thenReturn(avaliacao);
-//
-//        AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.cadastrarAvaliacao(avaliacaoDTO);
-//
-//        assertNotNull(avaliacaoDTO1);
-//        assertEquals("Descrição Bala", avaliacaoDTO1.getDescricao());
-//    }
-//
-//    @Test
-//    public void deveTestarEditarAvaliacao() throws RegraDeNegocioException {
-//        AvaliacaoEntity avaliacaoEntity = AvaliacaoFactory.getAvaliacaoFactory();
-//        AlunoEntity alunoEntity = AlunoFactory.getAlunoEntity();
-//        AcompanhamentoEntity acompanhamentoEntity = AcompanhamentoFactory.getAcompanhamento();
-//
-//        when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.of(avaliacaoEntity));
-//        when(alunoService.findById(anyInt())).thenReturn(alunoEntity);
-//        when(acompanhamentoService.findById(anyInt())).thenReturn(acompanhamentoEntity);
-//        when(avaliacaoRepository.save(any())).thenReturn(avaliacaoEntity);
-//
-//        AvaliacaoDTO avaliacaoDTO = avaliacaoService.editarAvaliacao(1, AvaliacaoFactory.getEditarAvaliacaoDTOFactory());
-//
-//        assertNotNull(avaliacaoDTO);
-//        assertEquals("Descrição Chiclete", avaliacaoDTO.getDescricao());
-//    }
+package br.com.dbc.vemser.avaliaser.service;
+
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoCreateDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.avaliacao.AvaliacaoDTO;
+import br.com.dbc.vemser.avaliaser.entities.AcompanhamentoEntity;
+import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
+import br.com.dbc.vemser.avaliaser.entities.AvaliacaoEntity;
+import br.com.dbc.vemser.avaliaser.enums.Ativo;
+import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
+import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
+import br.com.dbc.vemser.avaliaser.factory.AcompanhamentoFactory;
+import br.com.dbc.vemser.avaliaser.factory.AlunoFactory;
+import br.com.dbc.vemser.avaliaser.factory.AvaliacaoFactory;
+import br.com.dbc.vemser.avaliaser.repositories.avaliaser.AvaliacaoRepository;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AcompanhamentoService;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
+import br.com.dbc.vemser.avaliaser.services.avaliaser.AvaliacaoService;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class AvaliacaoServiceTest {
+
+    @InjectMocks
+    private AvaliacaoService avaliacaoService;
+
+    @Mock
+    private AvaliacaoRepository avaliacaoRepository;
+    @Mock
+    private AcompanhamentoService acompanhamentoService;
+
+    @Mock
+    private AlunoService alunoService;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    @Before
+    public void init() {
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        ReflectionTestUtils.setField(avaliacaoService, "objectMapper", objectMapper);
+    }
+
+    @Test
+    public void deveTestarCreateAvaliacaoComSucesso() throws RegraDeNegocioException {
+        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
+        AvaliacaoCreateDTO avaliacaoCreateDTO= AvaliacaoFactory.getAvaliacaoCreateDTOFactory();
+        AcompanhamentoEntity acompanhamento = AcompanhamentoFactory.getAcompanhamento();
+        AlunoEntity aluno = AlunoFactory.getAlunoEntity();
+
+        when(alunoService.findById(anyInt())).thenReturn(AlunoFactory.getAlunoEntity());
+        when(acompanhamentoService.findById(anyInt())).thenReturn(AcompanhamentoFactory.getAcompanhamento());
+        when(avaliacaoRepository.save(any())).thenReturn(avaliacao);
+
+        acompanhamentoService.verificarAcompanhamentoInativo(acompanhamento);
+        alunoService.verificarAlunoInativo(aluno);
+        avaliacaoService.converterEmEntity(avaliacaoCreateDTO, acompanhamento, aluno);
+        avaliacaoRepository.save(avaliacao);
+
+        AvaliacaoDTO avaliacaoDTO1 = avaliacaoService.create(avaliacaoCreateDTO);
+
+        assertNotNull(avaliacaoDTO1);
+        assertEquals("avaliando aluno", avaliacaoDTO1.getDescricao());
+    }
+
+    @Test
+    public void deveTestarEditarAvaliacao() throws RegraDeNegocioException {
+        AvaliacaoEntity avaliacaoEntity = AvaliacaoFactory.getAvaliacaoFactory();
+        AlunoEntity alunoEntity = AlunoFactory.getAlunoEntity();
+
+        when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.of(avaliacaoEntity));
+        when(avaliacaoRepository.save(any())).thenReturn(avaliacaoEntity);
+
+        AvaliacaoDTO avaliacaoDTO = avaliacaoService.update(1, AvaliacaoFactory.getEditarAvaliacaoDTOFactory());
+
+        assertNotNull(avaliacaoDTO);
+        assertEquals("aluno editado", avaliacaoDTO.getDescricao());
+        assertEquals(TipoAvaliacao.POSITIVO, avaliacaoDTO.getTipoAvaliacao());
+    }
+    @Test
+    public void deveTestarDeletarComSucesso() throws RegraDeNegocioException {
+        Integer id = 1;
+        AvaliacaoEntity avaliacao = AvaliacaoFactory.getAvaliacaoFactory();
+        when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.of(avaliacao));
+        avaliacao.setAtivo(Ativo.N);
+
+        avaliacaoService.desativar(id);
+
+    }
 //
 //    @Test
 //    public void deveListarAvaliacaoPaginadoComSucesso() throws RegraDeNegocioException {
@@ -204,4 +203,4 @@
 //        when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.empty());
 //        avaliacaoService.findById(1);
 //    }
-//}
+}

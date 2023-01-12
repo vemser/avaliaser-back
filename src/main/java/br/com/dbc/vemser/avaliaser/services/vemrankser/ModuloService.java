@@ -67,6 +67,7 @@ public class ModuloService {
             throw new RegraDeNegocioException("Trilha invalida!");
         }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntityNovo);
+        
         return converterEmDTO(moduloSalvo);
     }
 

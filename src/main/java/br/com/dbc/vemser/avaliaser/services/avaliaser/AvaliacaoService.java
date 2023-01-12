@@ -138,9 +138,9 @@ public class AvaliacaoService {
                 alunoService.converterAlunoDTO(avaliacao.getAlunoEntity()));
     }
 
-    private AvaliacaoEntity converterEmEntity(AvaliacaoCreateDTO avaliacaoCreateDTO,
-                                              AcompanhamentoEntity acompanhamento,
-                                              AlunoEntity aluno) {
+    public AvaliacaoEntity converterEmEntity(AvaliacaoCreateDTO avaliacaoCreateDTO,
+                                             AcompanhamentoEntity acompanhamento,
+                                             AlunoEntity aluno) {
         return new AvaliacaoEntity(null,
                 avaliacaoCreateDTO.getIdAluno(),
                 avaliacaoCreateDTO.getTipoAvaliacao(),
