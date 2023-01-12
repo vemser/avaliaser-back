@@ -96,7 +96,7 @@
 //
 //        when(acompanhamentoRepository.save(any())).thenReturn(acompanhamentoEntity);
 //
-//        AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.cadastrarAcompanhamento(acompanhamentoCreateDTO);
+//        AcompanhamentoDTO acompanhamentoDTO = acompanhamentoService.create(acompanhamentoCreateDTO);
 //
 //        assertEquals(acompanhamentoEntity.getIdAcompanhamento(), acompanhamentoDTO.getIdAcompanhamento());
 //        assertEquals(acompanhamentoEntity.getTitulo(), acompanhamentoDTO.getTitulo());
@@ -149,4 +149,4 @@
 //    }
 //
 //}
-//
+
