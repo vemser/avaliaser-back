@@ -7,12 +7,10 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.entities.FeedBackEntity;
-import br.com.dbc.vemser.avaliaser.entities.FeedBackModuloEntity;
 import br.com.dbc.vemser.avaliaser.entities.ModuloEntity;
 import br.com.dbc.vemser.avaliaser.enums.Ativo;
 import br.com.dbc.vemser.avaliaser.enums.TipoAvaliacao;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
-import br.com.dbc.vemser.avaliaser.repositories.avaliaser.FeedBackModuloRepository;
 import br.com.dbc.vemser.avaliaser.repositories.avaliaser.FeedBackRepository;
 import br.com.dbc.vemser.avaliaser.services.vemrankser.ModuloService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -111,14 +109,17 @@ public class FeedbackService {
         return converterParaFeedbackDTO(feedBackEntity);
     }
 
-    public PageDTO<FeedBackDTO> listarPorFiltro(Integer idAluno, Integer idTrilha, TipoAvaliacao situacao, String nomeInstrutor, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+    public PageDTO<FeedBackDTO> listarPorFiltro(String nomeAluno, String trilha, TipoAvaliacao situacao, String nomeInstrutor, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
 
         if (tamanho > 0) {
             PageRequest pageRequest = PageRequest.of(pagina, tamanho);
-            Page<FeedBackEntity> paginaDoRepositorio = feedBackRepository.findByAlunoEntity_IdAlunoOrAlunoEntity_IdTrilhaOrNomeInstrutorContainingIgnoreCaseOrSituacaoAndAtivo(idAluno, idTrilha, nomeInstrutor, situacao, Ativo.S,  pageRequest);
+            Page<FeedBackEntity> paginaDoRepositorio;
+            
+            paginaDoRepositorio = feedBackRepository.findByFiltro(nomeAluno, trilha, nomeInstrutor, situacao, Ativo.S, pageRequest);
+
             List<FeedBackDTO> feedBackDTOS = paginaDoRepositorio.getContent().stream().map(this::converterParaFeedbackDTO).toList();
             return new PageDTO<>(paginaDoRepositorio.getTotalElements(), paginaDoRepositorio.getTotalPages(), pagina, tamanho, feedBackDTOS);
         }

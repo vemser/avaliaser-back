@@ -11,12 +11,13 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Getter
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Entity(name = "Feedback")
+@Entity(name =  "Feedback")
 public class FeedBackEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FEED_SEQUENCIA")

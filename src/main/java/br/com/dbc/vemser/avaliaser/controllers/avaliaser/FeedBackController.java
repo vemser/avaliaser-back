@@ -38,13 +38,13 @@ public class FeedBackController implements OperationControllerFeedBack {
     }
 
     @GetMapping("/listar-feedbacks-com-filtro")
-    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackFiltrado(@RequestParam(required = false) Integer idAluno,
-                                                                       @RequestParam(required = false) Integer idTrilha,
+    public ResponseEntity<PageDTO<FeedBackDTO>> listarFeedBackFiltrado(@RequestParam(required = false) String nomeAluno,
+                                                                       @RequestParam(required = false) String trilha,
                                                                        @RequestParam(required = false) TipoAvaliacao situacao,
                                                                        @RequestParam(required = false) String nomeInstrutor,
                                                                        Integer page, Integer size) throws RegraDeNegocioException {
 
-        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarPorFiltro(idAluno, idTrilha, situacao, nomeInstrutor, page, size);
+        PageDTO<FeedBackDTO> feedBackDTOPageDTO = feedbackService.listarPorFiltro(nomeAluno, trilha, situacao, nomeInstrutor, page, size);
         return new ResponseEntity<>(feedBackDTOPageDTO, HttpStatus.OK);
     }
 
