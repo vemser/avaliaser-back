@@ -22,9 +22,5 @@ public class ModuloDTO  {
     private Integer idModulo;
     @Schema(description = "nome do modulo", example = "OOP")
     private String nome;
-    @Schema(description = "Status do modulo", example = "ATIVO")
-    private Ativo ativo;
-    private List<TrilhaDTO> trilhaDTO;
-    private List<ProgramaDTO> listProgramaDTO;
 
 }

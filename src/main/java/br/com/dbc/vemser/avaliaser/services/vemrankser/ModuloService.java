@@ -32,9 +32,8 @@ import java.util.stream.Collectors;
 public class ModuloService {
 
     private final ModuloRepository moduloRepository;
-    private final TrilhaService trilhaService;
-    private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
+    private final TrilhaService trilhaService;
 
     public PageDTO<ModuloDTO> listByName(Integer idModulo, String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
         if (tamanho < 0 || pagina < 0) {
@@ -83,8 +82,6 @@ public class ModuloService {
                     moduloEntity.getTrilha().add(trilhaEnt);
                 }
             }
-
-
         }
         ModuloEntity moduloSalvo = moduloRepository.save(moduloEntity);
         return converterEmDTO(moduloSalvo);
@@ -116,14 +113,9 @@ public class ModuloService {
     }
 
     public ModuloDTO converterEmDTO(ModuloEntity moduloEntity) {
-
         ModuloDTO moduloDTO = objectMapper.convertValue(moduloEntity, ModuloDTO.class);
         moduloDTO.setIdModulo(moduloEntity.getIdModulo());
         moduloDTO.setNome(moduloEntity.getNome());
-        moduloDTO.setAtivo(moduloEntity.getAtivo());
-        moduloDTO.setTrilhaDTO(moduloEntity.getTrilha().stream()
-                .map(trilha -> objectMapper.convertValue(trilha, TrilhaDTO.class))
-                .toList());
         return moduloDTO;
     }
 
@@ -154,21 +146,6 @@ public class ModuloService {
         List<ModuloTrilhaDTO> moduloTrilhaDTOS = moduloEntities.stream()
                 .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloTrilhaDTO.class)).toList();
         return moduloTrilhaDTOS;
-    }
-
-    public ModuloDTO vincularModuloTrilha(Integer idModulo,
-                                          Integer idTrilha) throws RegraDeNegocioException {
-        ModuloEntity moduloEntity = buscarPorIdModulo(idModulo);
-        TrilhaEntity trilhaEntity = trilhaService.findById(idTrilha);
-        moduloEntity.getTrilha().add(trilhaEntity);
-        moduloRepository.save(moduloEntity);
-        return converterEmDTO(moduloEntity);
-    }
-
-    public List<ModuloDTO> listAllModulos() {
-        return moduloRepository.findAll().stream()
-                .map(this::converterEmDTO)
-                .toList();
     }
 
     public ModuloDTO clonarModulo(Integer idModulo) throws RegraDeNegocioException {

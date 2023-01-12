@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.services.vemrankser;
 
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
+import br.com.dbc.vemser.avaliaser.dto.vemrankser.modulodto.ModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.rankdto.RankingDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
@@ -29,9 +30,8 @@ import java.util.stream.Collectors;
 public class TrilhaService {
 
     private final TrilhaRepository trilhaRepository;
-    private final ProgramaService programaService;
     private final ObjectMapper objectMapper;
-
+    private final ProgramaService programaService;
 
     public TrilhaDTO create(TrilhaCreateDTO trilhaNova) throws RegraDeNegocioException {
         TrilhaEntity trilha = objectMapper.convertValue(trilhaNova, TrilhaEntity.class);
@@ -49,12 +49,8 @@ public class TrilhaService {
 
     public TrilhaDTO updateTrilha(Integer idTrilha, TrilhaCreateDTO trilhaAtualizar) throws RegraDeNegocioException {
         TrilhaEntity trilhaEntity = findById(idTrilha);
-        Set<ProgramaEntity> programa = new HashSet<>();
         trilhaEntity.setNome(trilhaAtualizar.getNome());
         trilhaEntity.setDescricao(trilhaAtualizar.getDescricao());
-        trilhaEntity.getPrograma().clear();
-        programa.add(programaService.findByIdPrograma(trilhaAtualizar.getIdPrograma()));
-        trilhaEntity.setPrograma(programa);
         return objectMapper.convertValue(trilhaRepository.save(trilhaEntity), TrilhaDTO.class);
     }
 
@@ -162,12 +158,13 @@ public class TrilhaService {
     }
 
     public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
-        List<ProgramaDTO> programaDTO = trilhaEntity.getPrograma().stream().map(programaService::converterEmDTO).toList();
-        //        trilhaDTO.setProgramaDTO(programaDTO);
+        List<ModuloDTO> modulosDTO = trilhaEntity.getModulos().stream()
+                .map(moduloEntity -> objectMapper.convertValue(moduloEntity, ModuloDTO.class))
+                .toList();
         return new TrilhaDTO(trilhaEntity.getIdTrilha(),
                 trilhaEntity.getDescricao(),
                 trilhaEntity.getNome(),
-                programaDTO);
+                modulosDTO);
     }
 
     public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {

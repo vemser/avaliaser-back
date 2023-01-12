@@ -21,10 +21,8 @@ public class ModuloCreateDTO {
     @NotNull(message = "Campo não pode estar em branco ou nulo!")
     @Schema(example = "[1, 2, 3]")
     private List<Integer> listPrograma;
-
     @NotEmpty(message = "Campo não pode estar em branco ou nulo!")
     @Schema(example = "[1, 2, 3]")
     private List<Integer> trilha;
-
 
 }

@@ -5,6 +5,7 @@ import br.com.dbc.vemser.avaliaser.controllers.adocumentation.ProgramaInterfaceC
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaEdicaoDTO;
+import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaTrilhaModuloDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.allocation.ProgramaService;
@@ -53,8 +54,12 @@ public class ProgramaController implements ProgramaInterfaceController {
     }
 
     @Override
-    public ResponseEntity<ProgramaDTO> pegarPrograma(Integer idPrograma) throws RegraDeNegocioException {
+    public ResponseEntity<ProgramaDTO> buscarProgramaPorId(Integer idPrograma) throws RegraDeNegocioException {
         return ResponseEntity.ok(programaService.buscarProgramaPorId(idPrograma));
+    }
+    @GetMapping("/buscar-programa-trilha-modulo/{idPrograma}")
+    public ResponseEntity<ProgramaTrilhaModuloDTO> buscarProgramaTrilhaModulo(Integer idPrograma) throws RegraDeNegocioException {
+        return ResponseEntity.ok(programaService.buscarProgramaTrilhaPorId(idPrograma));
     }
 
     @Override
