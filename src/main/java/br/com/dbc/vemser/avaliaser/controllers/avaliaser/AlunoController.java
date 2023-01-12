@@ -5,7 +5,6 @@ import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
-import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import br.com.dbc.vemser.avaliaser.services.avaliaser.AlunoService;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +42,12 @@ public class AlunoController implements OperationControllerAluno {
     }
 
     @GetMapping("/alunos-ativos-por-programa/{idPrograma}")
-    public ResponseEntity<PageDTO<AlunoDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
-                                                                                @RequestParam Integer size,
-                                                                                @PathVariable Integer idPrograma,
-                                                                                @RequestParam List<Integer> idTrilhas) throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<AlunoFiltroDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
+                                                                                      @RequestParam Integer size,
+                                                                                      @PathVariable Integer idPrograma,
+                                                                                      @RequestParam List<Integer> idTrilhas) throws RegraDeNegocioException {
         log.info("Buscando dados de Alunos por ID...");
-        PageDTO<AlunoDTO> aluno = alunoService.listarAlunosAtivoPorProgramaTrilha(idPrograma,idTrilhas,page,size);
+        PageDTO<AlunoFiltroDTO> aluno = alunoService.listarAlunosAtivoPorProgramaTrilha(idPrograma,idTrilhas,page,size);
         log.info("Retorno de dados de Aluno por ID realizado com sucesso!");
         return new ResponseEntity<>(aluno, HttpStatus.OK);
     }

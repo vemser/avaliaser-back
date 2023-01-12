@@ -2,6 +2,7 @@ package br.com.dbc.vemser.avaliaser.controllers.adocumentation;
 
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,7 +57,7 @@ public interface OperationControllerAluno {
             }
     )
     @GetMapping("/alunos-ativos-por-programa/{idPrograma}")
-     ResponseEntity<PageDTO<AlunoDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
+     ResponseEntity<PageDTO<AlunoFiltroDTO>> listarAlunosAtivoPorProgramaTrilha(@RequestParam Integer page,
                                                                                 @RequestParam Integer size,
                                                                                 @PathVariable Integer idPrograma,
                                                                                 @RequestParam List<Integer> idTrilhas) throws RegraDeNegocioException;

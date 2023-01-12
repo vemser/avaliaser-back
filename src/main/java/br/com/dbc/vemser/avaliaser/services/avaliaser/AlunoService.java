@@ -4,6 +4,7 @@ import br.com.dbc.vemser.avaliaser.dto.allocation.programa.ProgramaDTO;
 import br.com.dbc.vemser.avaliaser.dto.allocation.tecnologia.TecnologiaDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoCreateDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoDTO;
+import br.com.dbc.vemser.avaliaser.dto.avalaliaser.aluno.AlunoFiltroDTO;
 import br.com.dbc.vemser.avaliaser.dto.avalaliaser.paginacaodto.PageDTO;
 import br.com.dbc.vemser.avaliaser.dto.vemrankser.trilhadto.TrilhaDTO;
 import br.com.dbc.vemser.avaliaser.entities.AlunoEntity;
@@ -178,14 +179,26 @@ public class AlunoService {
     public AlunoDTO converterAlunoDTO(AlunoEntity aluno) {
 
         AlunoDTO alunoDTO = objectMapper.convertValue(aluno, AlunoDTO.class);
-        alunoDTO.setPrograma(objectMapper.convertValue(aluno.getPrograma(), ProgramaDTO.class));
-        alunoDTO.setTrilha(objectMapper.convertValue(aluno.getTrilha(), TrilhaDTO.class));
+        alunoDTO.setPrograma(programaService.converterEmDTO(aluno.getPrograma()));
+        alunoDTO.setTrilha(trilhaService.converterEmDTO(aluno.getTrilha()));
         List<TecnologiaDTO> listaTecnologia = aluno.getTecnologia()
                 .stream()
                 .map(tecnologia -> objectMapper.convertValue(tecnologia, TecnologiaDTO.class)).toList();
         alunoDTO.setTecnologias(listaTecnologia);
 
         return alunoDTO;
+    }
+    public AlunoFiltroDTO converterAlunoFiltroDTO(AlunoEntity aluno) {
+
+        AlunoFiltroDTO alunoFiltroDTO = objectMapper.convertValue(aluno, AlunoFiltroDTO.class);
+//        alunoFiltroDTO.setPrograma(programaService.converterEmDTO(aluno.getPrograma()));
+        alunoFiltroDTO.setTrilha(trilhaService.converterEmDTO(aluno.getTrilha()));
+        List<TecnologiaDTO> listaTecnologia = aluno.getTecnologia()
+                .stream()
+                .map(tecnologia -> objectMapper.convertValue(tecnologia, TecnologiaDTO.class)).toList();
+        alunoFiltroDTO.setTecnologias(listaTecnologia);
+
+        return alunoFiltroDTO;
     }
 
     public AlunoEntity alterarStatusAluno(Integer idAluno,
@@ -224,15 +237,18 @@ public class AlunoService {
         }
     }
 
-    public PageDTO<AlunoDTO> listarAlunosAtivoPorProgramaTrilha(Integer idPrograma,List<Integer> idTrilhas, Integer page, Integer size) throws RegraDeNegocioException {
+    public PageDTO<AlunoFiltroDTO> listarAlunosAtivoPorProgramaTrilha(Integer idPrograma,List<Integer> idTrilhas, Integer page, Integer size) throws RegraDeNegocioException {
         if (page < 0 || size < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (size > 0) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(idTrilhas, idPrograma, Ativo.S, pageRequest);
-            List<AlunoDTO> aluno = paginaDoRepositorio.getContent().stream()
-                    .map(this::converterAlunoDTO)
+            Page<AlunoEntity> paginaDoRepositorio = alunoRepository.findAllByTrilha_IdTrilhaInAndProgramaIdProgramaAndAtivo(idTrilhas,
+                    idPrograma,
+                    Ativo.S,
+                    pageRequest);
+            List<AlunoFiltroDTO> aluno = paginaDoRepositorio.getContent().stream()
+                    .map(this::converterAlunoFiltroDTO)
                     .toList();
 
             return new PageDTO<>(paginaDoRepositorio.getTotalElements(),
@@ -241,7 +257,7 @@ public class AlunoService {
                     size,
                     aluno);
         }
-        List<AlunoDTO> listaVazia = new ArrayList<>();
+        List<AlunoFiltroDTO> listaVazia = new ArrayList<>();
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
 
     }

@@ -160,10 +160,12 @@ public class TrilhaService {
     }
 
     public TrilhaDTO converterEmDTO(TrilhaEntity trilhaEntity) {
-        TrilhaDTO trilhaDTO = objectMapper.convertValue(trilhaEntity, TrilhaDTO.class);
-//        List<ProgramaDTO> programaDTO = trilhaEntity.getPrograma().stream().map(programaService::converterEmDTO).toList();
-//        trilhaDTO.setProgramaDTO(programaDTO);
-        return new TrilhaDTO();
+        List<ProgramaDTO> programaDTO = trilhaEntity.getPrograma().stream().map(programaService::converterEmDTO).toList();
+        //        trilhaDTO.setProgramaDTO(programaDTO);
+        return new TrilhaDTO(trilhaEntity.getIdTrilha(),
+                trilhaEntity.getDescricao(),
+                trilhaEntity.getNome(),
+                programaDTO);
     }
 
     public void verificarTrilhaDesativada(TrilhaEntity trilhaEntity) throws RegraDeNegocioException {
