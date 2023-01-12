@@ -48,7 +48,7 @@ public class AvaliacaoServiceTest {
 
     @Mock
     private AlunoService alunoService;
-    @Mock
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -87,7 +87,6 @@ public class AvaliacaoServiceTest {
         AlunoEntity alunoEntity = AlunoFactory.getAlunoEntity();
 
         when(avaliacaoRepository.findById(anyInt())).thenReturn(Optional.of(avaliacaoEntity));
-        when(alunoService.findById(anyInt())).thenReturn(alunoEntity);
         when(avaliacaoRepository.save(any())).thenReturn(avaliacaoEntity);
 
         AvaliacaoDTO avaliacaoDTO = avaliacaoService.update(1, AvaliacaoFactory.getEditarAvaliacaoDTOFactory());
@@ -104,8 +103,6 @@ public class AvaliacaoServiceTest {
         avaliacao.setAtivo(Ativo.N);
 
         avaliacaoService.desativar(id);
-//        AvaliacaoEntity save = avaliacaoRepository.save(avaliacao);
-//        assertEquals(Ativo.N, save.getAtivo());
 
     }
 //
